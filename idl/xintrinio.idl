@@ -1,0 +1,15 @@
+// com.intrinio.fintech.localc
+
+module com {
+    module intrinio {
+        module fintech {
+            module localc {
+                interface XIntrinio
+                {
+                  // Access code ID (e.g. com_fin_data), data key (e.g. limit, percent, current)
+                  any getIntrinioUsage( [in] string a, [in] string b );
+                };
+            };
+        };
+    };
+};
