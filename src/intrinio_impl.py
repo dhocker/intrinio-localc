@@ -41,10 +41,11 @@ if cmd_folder not in sys.path:
     sys.path.insert(0, cmd_folder)
 
 # Local imports go here
-import app_logger
+from app_logger import AppLogger
+from intrinio_lib import IntrinioBase
 
 # Logger init
-app_logger.EnableLogging()
+app_logger = AppLogger("intrinio-extension")
 logger = app_logger.getAppLogger()
 logger.debug("Logger running...")
 
@@ -53,6 +54,8 @@ class IntrinioImpl(unohelper.Base, XIntrinio ):
     """Define the main class for the Intrinio LO Calc extension """
     def __init__( self, ctx ):
         self.ctx = ctx
+        # Reset usage data when it is known to be stale
+        self.usage_data = None
         logger.debug("IntrinioImpl initialized")
 
     def getIntrinioUsage(self, access_code, key):
@@ -63,7 +66,9 @@ class IntrinioImpl(unohelper.Base, XIntrinio ):
         :return:
         """
         logger.debug("getIntrinioUsage called: %s %s", access_code, key)
-        return "{0} {1} is not implemented".format(access_code, key)
+        if not self.usage_data:
+            self.usage_data = IntrinioBase.get_usage(access_code)
+        return self.usage_data[key]
 
 #
 # Boiler plate code for adding an instance of the extension

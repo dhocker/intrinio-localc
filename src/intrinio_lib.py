@@ -21,9 +21,10 @@ import urllib.error
 import json
 import os
 import ssl
-import app_logger
+from app_logger import AppLogger
 
 # Logger init
+app_logger = AppLogger("intrinio-extension")
 logger = app_logger.getAppLogger()
 
 

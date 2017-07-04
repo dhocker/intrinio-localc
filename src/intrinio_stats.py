@@ -17,10 +17,10 @@
 
 from http import HTTPStatus
 from intrinio_lib import IntrinioBase, QConfiguration
-import app_logger
+from app_logger import AppLogger
 
 # Logger init
-app_logger.EnableLogging()
+app_logger = AppLogger("intrinio-extension")
 logger = app_logger.getAppLogger()
 logger.debug("Logger running...")
 

@@ -52,7 +52,7 @@ shutil.copy("src/description-en-US.txt", "build/")
 shutil.copy("src/description.xml", "build/")
 shutil.copy("src/intrinio_impl.py", "build/")
 shutil.copy("src/app_logger.py", "build/")
-# shutil.copy("src/intrinio_lib.py", "build/")
+shutil.copy("src/intrinio_lib.py", "build/")
 # shutil.copy("src/intrinio_stats.py", "build/")
 
 # Generate the XCU file
