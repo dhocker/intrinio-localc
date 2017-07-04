@@ -24,6 +24,7 @@ import os
 import subprocess
 import shutil
 from xcu_file import XCUFile
+import xml.etree.ElementTree as etree
 
 # Set up environment vars
 os.environ["PATH"] = os.environ["PATH"] + ":/usr/lib/ure/bin/"
@@ -31,6 +32,14 @@ os.environ["PATH"] = os.environ["PATH"] + ":/Users/dhocker/LibreOffice5.3_SDK/bi
 os.environ["DYLD_LIBRARY_PATH"] = os.environ["OO_SDK_URE_LIB_DIR"]
 #subprocess.call("env")
 #print (os.environ["DYLD_LIBRARY_PATH"])
+
+# Extract version from description.xml
+tree = etree.parse("src/description.xml")
+root = tree.getroot()
+nodes = root.findall('{http://openoffice.org/extensions/description/2006}version')
+print ("=============================")
+print ("Building Version:", nodes[0].attrib["value"])
+print ("=============================")
 
 # Create required build folders
 if not os.path.exists("build"):
