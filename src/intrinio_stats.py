@@ -15,16 +15,29 @@
 # along with this program (the LICENSE file).  If not, see <http://www.gnu.org/licenses/>.
 #
 
+from http import HTTPStatus
 from intrinio_lib import IntrinioBase, QConfiguration
+import app_logger
+
+# Logger init
+app_logger.EnableLogging()
+logger = app_logger.getAppLogger()
+logger.debug("Logger running...")
 
 
 if __name__ == '__main__':
     r = IntrinioBase.get_usage("com_fin_data")
-    print ("Stats for Intrinio account with username", QConfiguration.get_masked_user())
-    for k, v in r.items():
-        print ("  ", k, ":", v)
+    if r["status_code"] == HTTPStatus.OK:
+        print ("Stats for Intrinio account with username", QConfiguration.get_masked_user())
+        for k, v in r.items():
+            print ("  ", k, ":", v)
+    else:
+        print ("Intrinio stats call failed: %d", r["status_code"])
 
     r = IntrinioBase.get_excel_version()
-    print ("Excel version info")
-    for k, v in r.items():
-        print ("  ", k, ":", v)
+    if r["status_code"] == HTTPStatus.OK:
+        print ("Excel version info")
+        for k, v in r.items():
+            print ("  ", k, ":", v)
+    else:
+        print ("Intrinio excel call failed: %d", r["status_code"])

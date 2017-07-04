@@ -21,6 +21,10 @@ import urllib.error
 import json
 import os
 import ssl
+import app_logger
+
+# Logger init
+logger = app_logger.getAppLogger()
 
 
 class QConfiguration:
@@ -63,10 +67,10 @@ class QConfiguration:
                 cls.cacerts = cfj["certifi"]
             cf.close()
         except FileNotFoundError as ex:
-            print (cls.full_file_path, " was not found")
+            logger.error("%s was not found", cls.full_file_path)
         except Exception as ex:
-            print ("An exception occurred while attempting to load intrinio.conf")
-            print (str(ex))
+            logger.error("An exception occurred while attempting to load intrinio.conf")
+            logger.error(str(ex))
 
     @classmethod
     def get_masked_user(cls):
@@ -82,6 +86,7 @@ class QConfiguration:
             return QConfiguration.auth_user and QConfiguration.auth_passwd and QConfiguration.cacerts
         return QConfiguration.auth_user and QConfiguration.auth_passwd
 
+# Set up configuration with user credentials
 QConfiguration.load()
 
 class IntrinioBase:
@@ -129,19 +134,22 @@ class IntrinioBase:
         """
          Submit https request to Intrinio
         :param url_string:
-        :return: JSON decoded dict containing results of https GET
+        :return: JSON decoded dict containing results of https GET.
+        The status_code key is added to return the HTTPS status code.
         """
         # print(url_string)
         IntrinioBase.setup_authorization(url_string)
         try:
-            if QConfiguration.macOS:
-                res = urllib.request.urlopen(url_string).read()
-            else:
-                res = urllib.request.urlopen(url_string).read()
+            logger.debug("Calling Intrinio: %s", url_string)
+            response = urllib.request.urlopen(url_string)
+            status_code = response.getcode()
+            res = response.read()
             res = str(res, "utf-8")
         except urllib.error.HTTPError as ex:
-            print(ex.msg)
-            print (ex)
-            return None
+            logger.error(ex.msg)
+            logger.error(str(ex))
+            return {"status_code":ex.code}
 
-        return json.loads(res)
+        j = json.loads(res)
+        j["status_code"] = status_code
+        return j
