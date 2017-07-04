@@ -23,3 +23,8 @@ if __name__ == '__main__':
     print ("Stats for Intrinio account with username", QConfiguration.get_masked_user())
     for k, v in r.items():
         print ("  ", k, ":", v)
+
+    r = IntrinioBase.get_excel_version()
+    print ("Excel version info")
+    for k, v in r.items():
+        print ("  ", k, ":", v)

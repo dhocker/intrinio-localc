@@ -114,6 +114,17 @@ class IntrinioBase:
         return res
 
     @staticmethod
+    def get_excel_version():
+        """
+        Get Excel version info. Really not useful for LOCalc, but included as an exercise.
+        :return: Version info in a dict
+        """
+        template_url = "{0}/excel"
+        url_string = template_url.format(QConfiguration.base_url)
+        res = IntrinioBase.exec_request(url_string)
+        return res
+
+    @staticmethod
     def exec_request(url_string):
         """
          Submit https request to Intrinio
