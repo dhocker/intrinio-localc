@@ -177,10 +177,15 @@ except Exception as ex:
 
 
 def _add_awt_model(dlg_model, srv, ctl_name, prop_list):
-    '''
+    """
     Helper function for building dialog
-    Insert UnoControl<srv>Model into given DialogControlModel oDM by given sName and properties dProps
-    '''
+    Insert UnoControl<srv>Model into given DialogControlModel
+    :param dlg_model: dialog model where control is to be added
+    :param srv: control model type to be added
+    :param ctl_name: name to be assigned to the control model
+    :param prop_list: properties to be assigned to new control model
+    :return: None
+    """
     ctl_model = dlg_model.createInstance("com.sun.star.awt.UnoControl" + srv + "Model")
     while prop_list:
         prp = prop_list.popitem()

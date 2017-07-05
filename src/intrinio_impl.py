@@ -58,6 +58,8 @@ class IntrinioImpl(unohelper.Base, XIntrinio ):
         # Reset usage data when it is known to be stale
         self.usage_data = None
         logger.debug("IntrinioImpl initialized")
+        logger.debug("self: %s", str(self))
+        logger.debug("ctx: %s", str(ctx))
 
     def getIntrinioUsage(self, access_code, key):
         """
@@ -67,9 +69,13 @@ class IntrinioImpl(unohelper.Base, XIntrinio ):
         :return:
         """
         logger.debug("getIntrinioUsage called: %s %s", access_code, key)
-        if not self.usage_data:
-            self.usage_data = IntrinioBase.get_usage(access_code)
-        return self.usage_data[key]
+        if _check_configuration():
+            if not self.usage_data:
+                self.usage_data = IntrinioBase.get_usage(access_code)
+            return self.usage_data[key]
+        else:
+            self.usage_data = None
+            return "No configuration"
 
 
 # Configuration lock. Used to deal with the fact that sometimes
@@ -84,18 +90,19 @@ def _check_configuration():
    :return: Returns True if Intrinio is configured. Otherwise,
    returns False.
    """
-   configured = False
-   if not QConfiguration.is_configured():
+   configured = QConfiguration.is_configured()
+   if not configured:
         try:
             if dialog_lock.acquire(blocking=False):
                 logger.debug("Calling intrinio_login()")
                 res = intrinio_login()
                 if res:
+                    # The return value is a tuple (username, password)
                     QConfiguration.save(res[0], res[1])
                 else:
                     logger.error("intrinio_login() returned false")
                 dialog_lock.release()
-                configured = True
+                configured = QConfiguration.is_configured()
             else:
                 logger.warn("Intrinio configuration dialog is already active")
         except Exception as ex:
