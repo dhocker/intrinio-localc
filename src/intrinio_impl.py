@@ -29,6 +29,7 @@ try:
     from urllib.error import URLError
 except ImportError:
     from urllib2 import Request, urlopen, URLError
+import threading
 from codecs import iterdecode
 import unohelper
 from com.intrinio.fintech.localc import XIntrinio
@@ -42,7 +43,7 @@ if cmd_folder not in sys.path:
 
 # Local imports go here
 from app_logger import AppLogger
-from intrinio_lib import IntrinioBase
+from intrinio_lib import IntrinioBase, QConfiguration, intrinio_login
 
 # Logger init
 app_logger = AppLogger("intrinio-extension")
@@ -69,6 +70,37 @@ class IntrinioImpl(unohelper.Base, XIntrinio ):
         if not self.usage_data:
             self.usage_data = IntrinioBase.get_usage(access_code)
         return self.usage_data[key]
+
+
+# Configuration lock. Used to deal with the fact that sometimes
+# LO Calc makes concurrent calls into the extension.
+dialog_lock = threading.Lock()
+
+def _check_configuration():
+   """
+   Force Intrinio configuration. Even if the configuration attempt
+   fails, we'll continue on because the request might hit cache.
+   Only if we need to call Intrinio will we fail the request.
+   :return: Returns True if Intrinio is configured. Otherwise,
+   returns False.
+   """
+   configured = False
+   if not QConfiguration.is_configured():
+        try:
+            if dialog_lock.acquire(blocking=False):
+                logger.debug("Calling intrinio_login()")
+                res = intrinio_login()
+                if res:
+                    QConfiguration.save(res[0], res[1])
+                else:
+                    logger.error("intrinio_login() returned false")
+                dialog_lock.release()
+                configured = True
+            else:
+                logger.warn("Intrinio configuration dialog is already active")
+        except Exception as ex:
+            logger.error("intrinio_login() failed %s", str(ex))
+   return configured
 
 #
 # Boiler plate code for adding an instance of the extension
