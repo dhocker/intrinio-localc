@@ -7,7 +7,7 @@ module com {
                 interface XIntrinio
                 {
                   // Access code ID (e.g. com_fin_data), data key (e.g. limit, percent, current)
-                  any getIntrinioUsage( [in] string a, [in] string b );
+                  any IntrinioUsage( [in] string a, [in] string b );
                 };
             };
         };

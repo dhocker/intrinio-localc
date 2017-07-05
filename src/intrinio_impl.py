@@ -61,14 +61,14 @@ class IntrinioImpl(unohelper.Base, XIntrinio ):
         logger.debug("self: %s", str(self))
         logger.debug("ctx: %s", str(ctx))
 
-    def getIntrinioUsage(self, access_code, key):
+    def IntrinioUsage(self, access_code, key):
         """
 
         :param access_code: e.g. com_fin_data. See Intrinio site for list
         :param key: Name of usage stat to return
         :return:
         """
-        logger.debug("getIntrinioUsage called: %s %s", access_code, key)
+        logger.debug("IntrinioUsage called: %s %s", access_code, key)
         if _check_configuration():
             if not self.usage_data:
                 self.usage_data = IntrinioBase.get_usage(access_code)
