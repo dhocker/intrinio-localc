@@ -8,6 +8,8 @@ module com {
                 {
                   // Access code ID (e.g. com_fin_data), data key (e.g. limit, percent, current)
                   any IntrinioUsage( [in] string a, [in] string b );
+                  // Identifier (e.g. ticker symbol), item (e.g. tag or series id)
+                  any IntrinioDataPoint( [in] string identifier, [in] string item );
                 };
             };
         };

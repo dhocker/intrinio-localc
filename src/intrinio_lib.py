@@ -90,6 +90,7 @@ class QConfiguration:
 # Set up configuration with user credentials
 QConfiguration.load()
 
+
 class IntrinioBase:
 
     @staticmethod
@@ -144,6 +145,7 @@ class IntrinioBase:
             logger.debug("Calling Intrinio: %s", url_string)
             response = urllib.request.urlopen(url_string)
             status_code = response.getcode()
+            logger.debug("Status code: %d", status_code)
             res = response.read()
             res = str(res, "utf-8")
         except urllib.error.HTTPError as ex:
@@ -154,6 +156,148 @@ class IntrinioBase:
         j = json.loads(res)
         j["status_code"] = status_code
         return j
+
+    @staticmethod
+    def status_code_message(status_code):
+        """
+        Return an appropriate message for a non-200 status code
+        :param status_code:
+        :return:
+        """
+        if status_code == 429:
+            return "Plan limit reached"
+        elif status_code == 401:
+            return "Your username and password keys are incorrect"
+        elif status_code == 403:
+            return "Visit Intrinio.com to subscribe"
+        elif status_code == 503:
+            return "You have reached your throttle limit regarding requests/second"
+        return "Unexpected status code " + str(status_code)
+
+
+class IntrinioCompanies(IntrinioBase):
+    def __init__(self):
+        pass
+
+    @staticmethod
+    def verify_company(ticker):
+        """
+
+        :param ticker:
+        :return:
+        """
+
+        template_url = "{0}/companies/verify?ticker={1}"
+        url_string = template_url.format(QConfiguration.base_url, ticker.upper())
+        res = IntrinioCompanies.exec_request(url_string)
+        return "ticker" in res
+
+
+class IntrinioSecurities(IntrinioBase):
+    def __init__(self):
+        pass
+
+    @staticmethod
+    def verify_security(ticker):
+        """
+
+        :param ticker:
+        :return:
+        """
+
+        template_url = "{0}/securities/verify?ticker={1}"
+        url_string = template_url.format(QConfiguration.base_url, ticker.upper())
+        res = IntrinioSecurities.exec_request(url_string)
+        return "ticker" in res
+
+
+class IntrinioBanks(IntrinioBase):
+    def __init__(self):
+        pass
+
+    @staticmethod
+    def verify_bank(identifier):
+        """
+
+        :param identifier:
+        :return:
+        """
+
+        template_url = "{0}/banks/verify?identifier={1}"
+        url_string = template_url.format(QConfiguration.base_url, identifier.upper())
+        res = IntrinioBanks.exec_request(url_string)
+        return "identifier" in res
+
+
+class IntrinioDataPoint(IntrinioBase):
+    def __init__(self):
+        pass
+
+    @staticmethod
+    def get_data_point(identifier, item):
+        """
+
+        :param identifier:
+        :param item:
+        :return:
+        """
+
+        template_url = "{0}/data_point?identifier={1}&item={2}"
+        url_string = template_url.format(QConfiguration.base_url, identifier.upper(), item)
+        res = IntrinioDataPoint.exec_request(url_string)
+        return res
+
+
+from intrinio_cache import IdentifierCache, DataPointCache, UsageDataCache
+
+
+def is_valid_identifier(identifier):
+    """
+    Answer the question: Is this identifier believed to be valid?
+    :param identifier: An Intrinio acceptable identifier (e.g a ticker symbol)
+    :return: Returns True if the identifier is believed to be valid.
+    """
+    id = identifier.upper()
+
+    if not IdentifierCache.is_known_identifier(id):
+        # This set of tests was adapted from the Excel addin
+        if id.startswith("FRED.") or id == "DMD.ERP" or ":" in id or id.startswith("$"):
+            IdentifierCache.add_identifier(id, True)
+        else:
+            if IntrinioCompanies.verify_company(id):
+                IdentifierCache.add_identifier(id, True)
+            elif IntrinioSecurities.verify_security(id):
+                IdentifierCache.add_identifier(id, True)
+            elif IntrinioBanks.verify_bank(id):
+                IdentifierCache.add_identifier(id, True)
+            else:
+                # This identifier failed all of the tests
+                IdentifierCache.add_identifier(id, False)
+
+    return IdentifierCache.is_valid_identifier(id)
+
+
+def get_data_point(identifier, item):
+    """
+    Return a data point value for a given identifer and item/tag.
+    :param identifier: An Intrinio acceptable identifier (e.g a ticker symbol)
+    :param item: tag or series ID (e.g. close_price)
+    :return: The data point value or a message
+    """
+    if DataPointCache.is_value_cached(identifier, item):
+        logger.debug("Cache hit for data point %s %s", identifier, item)
+        return DataPointCache.get_value(identifier, item)
+    res = IntrinioDataPoint.get_data_point(identifier, item)
+    if "value" in res:
+        v = res["value"]
+        DataPointCache.add_value(identifier, item, v)
+        # After a successful API call, the usage stats are stale
+        UsageDataCache.clear()
+        if str(v).isnumeric():
+            return float(v)
+        return v
+
+    return IntrinioBase.status_code_message(res["status_code"])
 
 
 #

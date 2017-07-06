@@ -43,7 +43,8 @@ if cmd_folder not in sys.path:
 
 # Local imports go here
 from app_logger import AppLogger
-from intrinio_lib import IntrinioBase, QConfiguration, intrinio_login
+from intrinio_lib import IntrinioBase, QConfiguration, intrinio_login, is_valid_identifier, get_data_point
+from intrinio_cache import UsageDataCache
 
 # Logger init
 app_logger = AppLogger("intrinio-extension")
@@ -55,26 +56,45 @@ class IntrinioImpl(unohelper.Base, XIntrinio ):
     """Define the main class for the Intrinio LO Calc extension """
     def __init__( self, ctx ):
         self.ctx = ctx
-        # Reset usage data when it is known to be stale
-        self.usage_data = None
         logger.debug("IntrinioImpl initialized")
         logger.debug("self: %s", str(self))
         logger.debug("ctx: %s", str(ctx))
 
     def IntrinioUsage(self, access_code, key):
         """
-
+        Return usage data for Intrinio API
         :param access_code: e.g. com_fin_data. See Intrinio site for list
         :param key: Name of usage stat to return
         :return:
         """
         logger.debug("IntrinioUsage called: %s %s", access_code, key)
         if _check_configuration():
-            if not self.usage_data:
-                self.usage_data = IntrinioBase.get_usage(access_code)
-            return self.usage_data[key]
+            if not UsageDataCache.is_usage_data():
+                usage_data = IntrinioBase.get_usage(access_code)
+                UsageDataCache.add_usage_data(usage_data)
+            else:
+                logger.debug("Cache hit for usage data %s %s", access_code, key)
+            return UsageDataCache.get_usage_data()[key]
         else:
-            self.usage_data = None
+            UsageDataCache.clear()
+            return "No configuration"
+
+    def IntrinioDataPoint(self, identifier, item):
+        """
+        Retrieve a single data point for an identifier/item combination.
+        Basically the same as the Excel IntrinioDataPoint function
+        :param identifier: ticker symbol
+        :param item: tag or series id
+        :return:
+        """
+        logger.debug("IntrinioDataPoint called: %s %s", identifier, item)
+        if _check_configuration():
+            if is_valid_identifier(identifier):
+                return get_data_point(identifier, item)
+            else:
+                logger.debug("Invalid identifier %s", identifier)
+                return "Invalid identifier"
+        else:
             return "No configuration"
 
 

@@ -62,6 +62,7 @@ shutil.copy("src/description.xml", "build/")
 shutil.copy("src/intrinio_impl.py", "build/")
 shutil.copy("src/app_logger.py", "build/")
 shutil.copy("src/intrinio_lib.py", "build/")
+shutil.copy("src/intrinio_cache.py", "build/")
 shutil.copy("src/extn_helper.py", "build/")
 # shutil.copy("src/intrinio_stats.py", "build/")
 
@@ -69,6 +70,7 @@ shutil.copy("src/extn_helper.py", "build/")
 print ("Generating intrinio.xcu")
 xcu = XCUFile("com.intrinio.fintech.localc.python.IntrinioImpl", "XIntrinio")
 xcu.add_function("IntrinioUsage", "Get Intrinio usage satistics", [('a', 'The access code ID.'), ('b', 'The statistic key name.')])
+xcu.add_function("IntrinioDataPoint", "Get Intrinio data point", [('identifier', 'Identifier (e.g. ticker symbol).'), ('item', 'item (e.g. tag or series id).')])
 xcu.generate("build/intrinio.xcu")
 
 # Zip contents of build folder and rename it to .oxt
