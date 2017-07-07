@@ -20,6 +20,7 @@ import urllib.parse
 import urllib.error
 import json
 import os
+import os.path
 import ssl
 from app_logger import AppLogger
 
@@ -37,6 +38,7 @@ class QConfiguration:
     # Base URL for Intrinio services
     base_url = "https://api.intrinio.com"
     macOS = False
+    file_path = ""
     full_file_path = ""
     cacerts = ""
 
@@ -51,16 +53,16 @@ class QConfiguration:
         file_name = "intrinio.conf"
         if os.name == "posix":
             # Linux or OS X
-            file_path = "{0}/libreoffice/intrinio/".format(os.environ["HOME"])
+            cls.file_path = "{0}/libreoffice/intrinio/".format(os.environ["HOME"])
             cls.macOS = (os.uname()[0] == "Darwin")
         elif os.name == "nt":
             # Windows
-            file_path = "{0}\\libreoffice\\intrinio\\".format(os.environ["APPDATALOCAL"])
-        cls.full_file_path = file_path + file_name
+            cls.file_path = "{0}\\libreoffice\\intrinio\\".format(os.environ["APPDATALOCAL"])
+        cls.full_file_path = cls.file_path + file_name
 
         # Read credentials
         try:
-            cf = open(QConfiguration.full_file_path, "r")
+            cf = open(cls.full_file_path, "r")
             cfj = json.loads(cf.read())
             cls.auth_user = cfj["user"]
             cls.auth_passwd = cfj["password"]
@@ -72,6 +74,36 @@ class QConfiguration:
         except Exception as ex:
             logger.error("An exception occurred while attempting to load intrinio.conf")
             logger.error(str(ex))
+
+    @classmethod
+    def save(cls, username, password):
+        """
+        Save configuraton back to intrinio.conf
+        :return:
+        """
+        cls.auth_user = username
+        cls.auth_passwd = password
+
+        # Make sure folders exist
+        if not os.path.exists(cls.file_path):
+            os.makedirs(cls.file_path)
+
+        conf = {}
+        conf["user"] = cls.auth_user
+        conf["password"] = cls.auth_passwd
+        conf["certifi"] = cls.cacerts
+
+        logger.debug("Saving configuration to %s", cls.full_file_path)
+        cf = open(cls.full_file_path, "w")
+        json.dump(conf, cf, indent=4)
+        cf.close()
+
+        if os.name == "posix":
+            import stat
+            # The user gets R/W permissions
+            os.chmod(cls.full_file_path, stat.S_IRUSR | stat.S_IWUSR)
+        else:
+            pass
 
     @classmethod
     def get_masked_user(cls):
@@ -413,7 +445,7 @@ def intrinio_login():
     # 1 = save
     # 2 = cancel
     button_id = dialog.execute()
-    logger.debug("intrinio login dialog returned: %s", x)
+    logger.debug("intrinio login dialog returned: %s", button_id)
     if button_id == 1:
         return (name_ctl.getText(), pass_ctl.getText())
     else:

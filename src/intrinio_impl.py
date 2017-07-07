@@ -116,17 +116,19 @@ def _check_configuration():
             if dialog_lock.acquire(blocking=False):
                 logger.debug("Calling intrinio_login()")
                 res = intrinio_login()
+                logger.debug("Returned from intrinio_login()")
                 if res:
                     # The return value is a tuple (username, password)
                     QConfiguration.save(res[0], res[1])
                 else:
                     logger.error("intrinio_login() returned false")
-                dialog_lock.release()
                 configured = QConfiguration.is_configured()
             else:
                 logger.warn("Intrinio configuration dialog is already active")
         except Exception as ex:
-            logger.error("intrinio_login() failed %s", str(ex))
+            logger.error("Exception occurred trying to create configuraton: %s", str(ex))
+        finally:
+            dialog_lock.release()
    return configured
 
 #
