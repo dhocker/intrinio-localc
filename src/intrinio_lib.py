@@ -214,7 +214,7 @@ class IntrinioCompanies(IntrinioBase):
     @staticmethod
     def verify_company(ticker):
         """
-
+        Call Intrinio API to verify a given company ticker symbol
         :param ticker:
         :return:
         """
@@ -222,7 +222,9 @@ class IntrinioCompanies(IntrinioBase):
         template_url = "{0}/companies/verify?ticker={1}"
         url_string = template_url.format(QConfiguration.base_url, ticker.upper())
         res = IntrinioCompanies.exec_request(url_string)
-        return "ticker" in res
+        if "ticker" in res:
+            return res["ticker"] == ticker
+        return False
 
 
 class IntrinioSecurities(IntrinioBase):
@@ -232,7 +234,7 @@ class IntrinioSecurities(IntrinioBase):
     @staticmethod
     def verify_security(ticker):
         """
-
+        Call Intrinio API to verify a given security ticker symbol
         :param ticker:
         :return:
         """
@@ -240,7 +242,9 @@ class IntrinioSecurities(IntrinioBase):
         template_url = "{0}/securities/verify?ticker={1}"
         url_string = template_url.format(QConfiguration.base_url, ticker.upper())
         res = IntrinioSecurities.exec_request(url_string)
-        return "ticker" in res
+        if "ticker" in res:
+            return res["ticker"] == ticker
+        return False
 
 
 class IntrinioBanks(IntrinioBase):
@@ -250,7 +254,7 @@ class IntrinioBanks(IntrinioBase):
     @staticmethod
     def verify_bank(identifier):
         """
-
+        Call Intrinio API to verify a given bank identifier
         :param identifier:
         :return:
         """
@@ -258,7 +262,9 @@ class IntrinioBanks(IntrinioBase):
         template_url = "{0}/banks/verify?identifier={1}"
         url_string = template_url.format(QConfiguration.base_url, identifier.upper())
         res = IntrinioBanks.exec_request(url_string)
-        return "identifier" in res
+        if "identifier" in res:
+            return res["identifier"] == identifier
+        return False
 
 
 class IntrinioDataPoint(IntrinioBase):
