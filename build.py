@@ -71,6 +71,15 @@ print ("Generating intrinio.xcu")
 xcu = XCUFile("com.intrinio.fintech.localc.python.IntrinioImpl", "XIntrinio")
 xcu.add_function("IntrinioUsage", "Get Intrinio usage satistics", [('a', 'The access code ID.'), ('b', 'The statistic key name.')])
 xcu.add_function("IntrinioDataPoint", "Get Intrinio data point", [('identifier', 'Identifier (e.g. ticker symbol).'), ('item', 'item (e.g. tag or series id).')])
+xcu.add_function("IntrinioHistoricalPrices", "Get Intrinio historical price data",
+                 [
+                     ('ticker', 'Ticker symbol.'),
+                     ('item', 'The selected observation of the historical price (e.g. open | close).'),
+                     ('sequence_number', 'an integer, 0-last available data point'),
+                     ('start_date', 'Optional, first date of prices'),
+                     ('end_date', 'Optional, last date of prices'),
+                     ('frequency', 'Periodicity of data points (e.g. daily, weekly)')
+                 ])
 xcu.generate("build/intrinio.xcu")
 
 # Zip contents of build folder and rename it to .oxt

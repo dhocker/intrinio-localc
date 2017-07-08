@@ -97,6 +97,14 @@ class IntrinioImpl(unohelper.Base, XIntrinio ):
         else:
             return "No configuration"
 
+    def IntrinioHistoricalPrices(self, ticker, item, sequence_number, start_date, end_date, frequency):
+        """
+        ticker As String, Item As String, sequence As Integer, start_date As String, end_date As String, frequency As String
+        :return:
+        """
+        logger.debug("IntrinioHistoricalPrices called: %s %s %d %s %s %s", ticker, item, sequence_number, start_date, end_date, frequency)
+        return "Not implemented"
+
 
 # Configuration lock. Used to deal with the fact that sometimes
 # LO Calc makes concurrent calls into the extension.

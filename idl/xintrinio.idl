@@ -10,6 +10,9 @@ module com {
                   any IntrinioUsage( [in] string a, [in] string b );
                   // Identifier (e.g. ticker symbol), item (e.g. tag or series id)
                   any IntrinioDataPoint( [in] string identifier, [in] string item );
+                  // ticker As String, Item As String, sequence As Integer, start_date As String, end_date As String, frequency As String
+                  any IntrinioHistoricalPrices( [in] string ticker, [in] string item, [in] long sequence_number,
+                    [in] any start_date, [in] any end_date, [in] any frequency );
                 };
             };
         };
