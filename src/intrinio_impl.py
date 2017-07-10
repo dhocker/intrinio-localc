@@ -43,7 +43,8 @@ if cmd_folder not in sys.path:
 
 # Local imports go here
 from app_logger import AppLogger
-from intrinio_lib import IntrinioBase, QConfiguration, intrinio_login, is_valid_identifier, get_data_point
+from intrinio_lib import IntrinioBase, QConfiguration, intrinio_login, is_valid_identifier, get_data_point, \
+    get_historical_prices
 from intrinio_cache import UsageDataCache
 
 # Logger init
@@ -99,11 +100,25 @@ class IntrinioImpl(unohelper.Base, XIntrinio ):
 
     def IntrinioHistoricalPrices(self, ticker, item, sequence_number, start_date, end_date, frequency):
         """
-        ticker As String, Item As String, sequence As Integer, start_date As String, end_date As String, frequency As String
+        Return a single price of type 'item' for ticker symbol 'ticker'.
+        Reference http://docs.intrinio.com/excel-addin#intriniohistoricalprices
+        :param ticker:
+        :param item:
+        :param sequence_number:
+        :param start_date:
+        :param end_date:
+        :param frequency:
         :return:
         """
         logger.debug("IntrinioHistoricalPrices called: %s %s %d %s %s %s", ticker, item, sequence_number, start_date, end_date, frequency)
-        return "Not implemented"
+        if _check_configuration():
+            if is_valid_identifier(ticker):
+                return get_historical_prices(ticker, item, sequence_number, start_date, end_date, frequency)
+            else:
+                logger.debug("Invalid ticker symbol %s", ticker)
+                return "Invalid ticker symbol"
+        else:
+            return "No configuration"
 
 
 # Configuration lock. Used to deal with the fact that sometimes

@@ -102,3 +102,35 @@ class DataPointCache:
     def add_value(cls, identifier, item, value):
         key = identifier + "_" + item
         cls.id_values[key] = value
+
+
+class HistoricalPricesCache:
+    """
+    Used to track historical price queries
+    """
+    # The key is a compound value consisting of all of the parameters
+    # that are used in the API call.
+    query_values = {}
+
+    def __init__(self):
+        pass
+
+    @staticmethod
+    def _query_key(identifier, start_date, end_date, frequency, page_number):
+        return identifier + "_" + str(start_date) + "_" + str(end_date) + "_" + str(frequency) + "_" + str(page_number)
+
+    @classmethod
+    def is_query_value_cached(cls, identifier, start_date, end_date, frequency, page_number):
+        key = HistoricalPricesCache._query_key(identifier, start_date, end_date, frequency, page_number)
+        return key in cls.query_values
+
+    @classmethod
+    def get_query_value(cls, identifier, start_date, end_date, frequency, page_number):
+        key = HistoricalPricesCache._query_key(identifier, start_date, end_date, frequency, page_number)
+        # This returns the entire API call result (which is a large dict)
+        return cls.query_values[key]
+
+    @classmethod
+    def add_query_value(cls, query_value, identifier, start_date, end_date, frequency, page_number):
+        key = HistoricalPricesCache._query_key(identifier, start_date, end_date, frequency, page_number)
+        cls.query_values[key] = query_value
