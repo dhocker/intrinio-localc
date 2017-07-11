@@ -9,10 +9,10 @@
 # This program is distributed in the hope that it will be useful,
 # but WITHOUT ANY WARRANTY; without even the implied warranty of
 # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
-# See the LICENSE file for more details.
+# See the LICENSE.md file for more details.
 #
 # You should have received a copy of the GNU General Public License
-# along with this program (the LICENSE file).  If not, see <http://www.gnu.org/licenses/>.
+# along with this program (the LICENSE.md file).  If not, see <http://www.gnu.org/licenses/>.
 #
 
 from app_logger import AppLogger

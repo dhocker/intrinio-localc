@@ -6,7 +6,7 @@
 # it under the terms of the GNU General Public License as published by
 # the Free Software Foundation, version 3 of the License.
 #
-# See the LICENSE file for more details.
+# See the LICENSE.md file for more details.
 #
 
 import logging
