@@ -44,7 +44,7 @@ if cmd_folder not in sys.path:
 # Local imports go here
 from app_logger import AppLogger
 from intrinio_lib import IntrinioBase, QConfiguration, intrinio_login, is_valid_identifier, get_data_point, \
-    get_historical_prices
+    get_historical_prices, get_historical_data
 from intrinio_cache import UsageDataCache
 import xml.etree.ElementTree as etree
 
@@ -142,8 +142,7 @@ class IntrinioImpl(unohelper.Base, XIntrinio ):
                      start_date, end_date, frequency, period_type, show_date)
         if _check_configuration():
             if is_valid_identifier(identifier):
-                # return get_historical_data(identifier, item, sequence_number, start_date, end_date, frequency, period_type, show_date)
-                return "Not implemented"
+                return get_historical_data(identifier, item, sequence_number, start_date, end_date, frequency, period_type, show_date)
             else:
                 logger.debug("Invalid identifier %s", identifier)
                 return "Invalid identifier"

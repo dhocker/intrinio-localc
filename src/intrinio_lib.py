@@ -308,6 +308,7 @@ class IntrinioDataPoint(IntrinioBase):
         template_url = "{0}/data_point?identifier={1}&item={2}"
         url_string = template_url.format(QConfiguration.base_url, identifier.upper(), item)
         res = IntrinioDataPoint.exec_request(url_string)
+        logger.debug("%s %s %s", res["identifier"], res["item"], res["value"])
         return res
 
 
@@ -348,11 +349,55 @@ class IntrinioHistoricalPrices(IntrinioBase):
         # Also, it should be noted that the dates go backwards. Sequence 0 will always
         # be the newest date, while sequence numbers 1 to n will go backwards in time.
         res = IntrinioHistoricalPrices.exec_request(url_string)
-        # print (res)
+        logger.debug("Result count: %s", res["result_count"])
         return res
 
 
-from intrinio_cache import IdentifierCache, DataPointCache, UsageDataCache, HistoricalPricesCache
+class IntrinioHistoricalData(IntrinioBase):
+    def __init__(self):
+        pass
+
+    @staticmethod
+    def get_historical_data_page(identifier, item, sequence, start_date, end_date, frequency, period_type):
+        """
+        Retrieve the page of price data that contains the given sequence number
+        :param identifier:
+        :param sequence:
+        :param start_date:
+        :param end_date:
+        :param frequency:
+        :param period_type:
+        :return:
+        """
+        page_number = IntrinioHistoricalData.get_page_number(sequence)
+
+        template_url = "{0}/historical_data?identifier={1}&item={2}&page_size={3}&page_number={4}"
+        url_string = template_url.format(QConfiguration.base_url, identifier.upper(), item,
+                                         IntrinioHistoricalData.page_size, page_number)
+
+        # Add additional query parameters
+        if start_date:
+            url_string += "&start_date=" + start_date
+        if end_date:
+            url_string += "&end_date=" + end_date
+        if frequency:
+            url_string += "&frequency=" + frequency
+        if period_type:
+            url_string += "&type=" + period_type
+
+        # print (url_string)
+        # Note for future reference. It looks like this URL is designed for
+        # you to run the query for the first page. It returns the number of total_pages available
+        # as one of the JSON values. You could use that value to know how many pages are
+        # left to be retrieved.
+        # Also, it should be noted that the dates go backwards. Sequence 0 will always
+        # be the newest date, while sequence numbers 1 to n will go backwards in time.
+        res = IntrinioHistoricalData.exec_request(url_string)
+        logger.debug("Result count: %s", res["result_count"])
+        return res
+
+
+from intrinio_cache import IdentifierCache, DataPointCache, UsageDataCache, HistoricalPricesCache, HistoricalDataCache
 
 
 def is_valid_identifier(identifier):
@@ -451,6 +496,65 @@ def get_historical_prices(identifier, item, sequence, start_date=None, end_date=
                 return float(v)
             return v
         return "Invalid item"
+
+    return IntrinioBase.status_code_message(res["status_code"])
+
+
+def get_historical_data(identifier, item, sequence, start_date=None, end_date=None, frequency=None,
+                        period_type=None, show_date=False):
+    """
+    Returns the historical data for for a selected identifier (ticker symbol or index symbol) for a selected tag.
+    Reference: http://docs.intrinio.com/?javascript--api#historical-data
+    :param identifier: An Intrinio acceptable identifier (e.g a ticker symbol)
+    :param item: date | open | high | low | close | volume | ex_dividend | split_ratio | adj_open | adj_high | adj_low | adj_close | adj_volume
+    :param sequence: index of desired price within the entire set of data returned (0 to last available).
+    :param start_date: First date for historical data.
+    :param end_date: Last date for historical data.
+    :param frequency: daily | weekly | monthly | quarterly | yearly
+    :param period_type:
+    :param show_date:
+    :return: The data point value or a message
+    """
+    page_number = IntrinioBase.get_page_number(sequence)
+    page_index = IntrinioBase.get_page_index(sequence)
+
+    # If dates are present, convert to ISO format
+    try:
+        n_start_date = normalize_date(start_date)
+        n_end_date = normalize_date(end_date)
+    except Exception as ex:
+        logger.warning(str(ex))
+        return str(ex)
+
+    if HistoricalDataCache.is_query_value_cached(identifier, item, n_start_date, n_end_date, frequency, period_type, page_number):
+        logger.debug("Cache hit for historical price %s %s", identifier, item)
+        query_value = HistoricalDataCache.get_query_value(identifier, item, n_start_date, n_end_date, frequency, period_type, page_number)
+        if len(query_value["data"]) > sequence:
+            if show_date:
+                v = query_value["data"][page_index]["date"]
+            else:
+                v =  query_value["data"][page_index]["value"]
+            if str(v).isnumeric():
+                return float(v)
+        else:
+            v = "Sequence out of range"
+        return v
+
+    res = IntrinioHistoricalData.get_historical_data_page(identifier, item, sequence, n_start_date, n_end_date,
+                                                          frequency, period_type)
+
+    if "data" in res:
+        HistoricalDataCache.add_query_value(res, identifier, item, n_start_date, n_end_date, frequency, period_type, page_number)
+        if len(res["data"]) > sequence:
+            if show_date:
+                v = res["data"][page_index]["date"]
+            else:
+                v = res["data"][page_index]["value"]
+            if str(v).isnumeric():
+                return float(v)
+        else:
+            v = "Sequence is out of range"
+        return v
 
     return IntrinioBase.status_code_message(res["status_code"])
 
