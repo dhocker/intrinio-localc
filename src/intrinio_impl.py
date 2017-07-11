@@ -46,11 +46,16 @@ from app_logger import AppLogger
 from intrinio_lib import IntrinioBase, QConfiguration, intrinio_login, is_valid_identifier, get_data_point, \
     get_historical_prices
 from intrinio_cache import UsageDataCache
+import xml.etree.ElementTree as etree
 
 # Logger init
 app_logger = AppLogger("intrinio-extension")
 logger = app_logger.getAppLogger()
-logger.debug("Logger running...")
+# Extract version from description.xml
+tree = etree.parse(cmd_folder + "/description.xml")
+root = tree.getroot()
+nodes = root.findall('{http://openoffice.org/extensions/description/2006}version')
+logger.debug("Intrinio-LOCalc Version: %s", nodes[0].attrib["value"])
 
 
 class IntrinioImpl(unohelper.Base, XIntrinio ):
@@ -117,6 +122,31 @@ class IntrinioImpl(unohelper.Base, XIntrinio ):
             else:
                 logger.debug("Invalid ticker symbol %s", ticker)
                 return "Invalid ticker symbol"
+        else:
+            return "No configuration"
+
+    def IntrinioHistoricalData(self, identifier, item, sequence_number, start_date, end_date, frequency, period_type, show_date):
+        """
+        Returns the historical data for for a selected identifier (ticker symbol or index symbol) for a selected tag.
+        :param identifier:
+        :param item:
+        :param sequence_number:
+        :param start_date:
+        :param end_date:
+        :param frequency:
+        :param period_type:
+        :param show_date:
+        :return:
+        """
+        logger.debug("IntrinioHistoricalData called: %s %s %d %s %s %s %s %s", identifier, item, sequence_number,
+                     start_date, end_date, frequency, period_type, show_date)
+        if _check_configuration():
+            if is_valid_identifier(identifier):
+                # return get_historical_data(identifier, item, sequence_number, start_date, end_date, frequency, period_type, show_date)
+                return "Not implemented"
+            else:
+                logger.debug("Invalid identifier %s", identifier)
+                return "Invalid identifier"
         else:
             return "No configuration"
 

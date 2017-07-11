@@ -69,16 +69,35 @@ shutil.copy("src/extn_helper.py", "build/")
 # Generate the XCU file
 print ("Generating intrinio.xcu")
 xcu = XCUFile("com.intrinio.fintech.localc.python.IntrinioImpl", "XIntrinio")
-xcu.add_function("IntrinioUsage", "Get Intrinio usage satistics", [('a', 'The access code ID.'), ('b', 'The statistic key name.')])
-xcu.add_function("IntrinioDataPoint", "Get Intrinio data point", [('identifier', 'Identifier (e.g. ticker symbol).'), ('item', 'item (e.g. tag or series id).')])
+xcu.add_function("IntrinioUsage", "Get Intrinio usage satistics",
+                 [
+                     ('a', 'The access code ID.'),
+                     ('b', 'The statistic key name.')
+                 ])
+xcu.add_function("IntrinioDataPoint", "Get Intrinio data point",
+                 [
+                     ('identifier', 'Identifier (e.g. ticker symbol).'),
+                     ('item', 'item (e.g. tag or series id).')
+                 ])
 xcu.add_function("IntrinioHistoricalPrices", "Get Intrinio historical price data",
                  [
                      ('ticker', 'Ticker symbol.'),
-                     ('item', 'The selected observation of the historical price (e.g. open | close).'),
-                     ('sequence_number', 'an integer, 0-last available data point'),
-                     ('start_date', 'Optional, first date of prices'),
-                     ('end_date', 'Optional, last date of prices'),
-                     ('frequency', 'Periodicity of data points (e.g. daily, weekly)')
+                     ('item', 'The selected observation of the historical price (e.g. open, close, etc.).'),
+                     ('sequence_number', 'An integer, 0-last available data point.'),
+                     ('start_date', 'Optional, first date of prices.'),
+                     ('end_date', 'Optional, last date of prices.'),
+                     ('frequency', 'Periodicity of data points (e.g. daily, weekly, monthly, quarterly, yearly).')
+                 ])
+xcu.add_function("IntrinioHistoricalData", "Get the historical data for for a selected identifier",
+                 [
+                     ('identifier', 'Ticker symbol.'),
+                     ('item', 'The specified standardized tag requested'),
+                     ('sequence_number', 'An integer, 0-last available data point'),
+                     ('start_date', 'Optional, first date of data'),
+                     ('end_date', 'Optional, last date of data'),
+                     ('frequency', 'Periodicity of data points (e.g. daily, weekly, monthly, quarterly, yearly).'),
+                     ('period_type', ''),
+                     ('show_date', 'Show date (True) or show data (false, default).')
                  ])
 xcu.generate("build/intrinio.xcu")
 
