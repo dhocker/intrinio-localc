@@ -40,7 +40,7 @@ Excel AddIn function.
 
 ### IntrinioHistoricalPrices
 This function works like the equivalent
-[IntrinioHistoricalData](http://docs.intrinio.com/excel-addin#intriniohistoricalprices)
+[IntrinioHistoricalPrices](http://docs.intrinio.com/excel-addin#intriniohistoricalprices)
 Excel AddIn function.
 ```
 =IntrinioHistoricalPrices(ticker, item, sequence, start_date, end_date, frequency)
