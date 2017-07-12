@@ -11,12 +11,12 @@ module com {
                   // Identifier (e.g. ticker symbol), item (e.g. tag or series id)
                   any IntrinioDataPoint( [in] string identifier, [in] string item );
                   // ticker As String, Item As String, sequence As Integer, start_date As String, end_date As String, frequency As String
-                  any IntrinioHistoricalPrices( [in] string ticker, [in] string item, [in] long sequence_number,
-                    [in] any start_date, [in] any end_date, [in] any frequency );
+                  any IntrinioHistoricalPrices( [in] string ticker, [in] string item, [in] long sequencenumber,
+                    [in] any startdate, [in] any enddate, [in] any frequency );
                   // identifier As String, Item As String, sequence As Integer, start_date As String, end_date As String, frequency As String
-                  any IntrinioHistoricalData( [in] string identifier, [in] string item, [in] long sequence_number,
-                    [in] any start_date, [in] any end_date, [in] any frequency, [in] any period_type,
-                    [in] any show_date );
+                  any IntrinioHistoricalData( [in] string identifier, [in] string item, [in] long sequencenumber,
+                    [in] any startdate, [in] any enddate, [in] any frequency, [in] any periodtype,
+                    [in] any showdate );
                 };
             };
         };

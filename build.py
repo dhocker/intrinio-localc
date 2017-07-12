@@ -21,6 +21,7 @@
 #
 
 import os
+import sys
 import subprocess
 import shutil
 from xcu_file import XCUFile
@@ -50,8 +51,8 @@ if not os.path.exists("build/META-INF"):
     os.mkdir("build/META-INF")
 
 # Compile idl
-subprocess.call(["idlc", "idl/xintrinio.idl"])
-subprocess.call(["regmerge", "-v", "build/xintrinio.rdb", "UCR", "idl/xintrinio.urd"])
+subprocess.run(["idlc", "-w", "idl/xintrinio.idl"], stdout=sys.stdout, stderr=sys.stderr)
+subprocess.run(["regmerge", "-v", "build/xintrinio.rdb", "UCR", "idl/xintrinio.urd"])
 os.remove("idl/xintrinio.urd")
 
 # Copy all required files to build folder

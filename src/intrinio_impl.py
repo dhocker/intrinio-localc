@@ -66,20 +66,20 @@ class IntrinioImpl(unohelper.Base, XIntrinio ):
         logger.debug("self: %s", str(self))
         logger.debug("ctx: %s", str(ctx))
 
-    def IntrinioUsage(self, access_code, key):
+    def IntrinioUsage(self, accesscode, key):
         """
         Return usage data for Intrinio API
-        :param access_code: e.g. com_fin_data. See Intrinio site for list
+        :param accesscode: e.g. com_fin_data. See Intrinio site for list
         :param key: Name of usage stat to return
         :return:
         """
-        logger.debug("IntrinioUsage called: %s %s", access_code, key)
+        logger.debug("IntrinioUsage called: %s %s", accesscode, key)
         if _check_configuration():
             if not UsageDataCache.is_usage_data():
-                usage_data = IntrinioBase.get_usage(access_code)
+                usage_data = IntrinioBase.get_usage(accesscode)
                 UsageDataCache.add_usage_data(usage_data)
             else:
-                logger.debug("Cache hit for usage data %s %s", access_code, key)
+                logger.debug("Cache hit for usage data %s %s", accesscode, key)
             return UsageDataCache.get_usage_data()[key]
         else:
             UsageDataCache.clear()
@@ -103,46 +103,46 @@ class IntrinioImpl(unohelper.Base, XIntrinio ):
         else:
             return "No configuration"
 
-    def IntrinioHistoricalPrices(self, ticker, item, sequence_number, start_date, end_date, frequency):
+    def IntrinioHistoricalPrices(self, ticker, item, sequencenumber, startdate, enddate, frequency):
         """
         Return a single price of type 'item' for ticker symbol 'ticker'.
         Reference http://docs.intrinio.com/excel-addin#intriniohistoricalprices
         :param ticker:
         :param item:
-        :param sequence_number:
-        :param start_date:
-        :param end_date:
+        :param sequencenumber:
+        :param startdate:
+        :param enddate:
         :param frequency:
         :return:
         """
-        logger.debug("IntrinioHistoricalPrices called: %s %s %d %s %s %s", ticker, item, sequence_number, start_date, end_date, frequency)
+        logger.debug("IntrinioHistoricalPrices called: %s %s %d %s %s %s", ticker, item, sequencenumber, startdate, enddate, frequency)
         if _check_configuration():
             if is_valid_identifier(ticker):
-                return get_historical_prices(ticker, item, sequence_number, start_date, end_date, frequency)
+                return get_historical_prices(ticker, item, sequencenumber, startdate, enddate, frequency)
             else:
                 logger.debug("Invalid ticker symbol %s", ticker)
                 return "Invalid ticker symbol"
         else:
             return "No configuration"
 
-    def IntrinioHistoricalData(self, identifier, item, sequence_number, start_date, end_date, frequency, period_type, show_date):
+    def IntrinioHistoricalData(self, identifier, item, sequence_number, startdate, enddate, frequency, periodtype, showdate):
         """
         Returns the historical data for for a selected identifier (ticker symbol or index symbol) for a selected tag.
         :param identifier:
         :param item:
         :param sequence_number:
-        :param start_date:
-        :param end_date:
+        :param startdate:
+        :param enddate:
         :param frequency:
-        :param period_type:
-        :param show_date:
+        :param periodtype:
+        :param showdate:
         :return:
         """
         logger.debug("IntrinioHistoricalData called: %s %s %d %s %s %s %s %s", identifier, item, sequence_number,
-                     start_date, end_date, frequency, period_type, show_date)
+                     startdate, enddate, frequency, periodtype, showdate)
         if _check_configuration():
             if is_valid_identifier(identifier):
-                return get_historical_data(identifier, item, sequence_number, start_date, end_date, frequency, period_type, show_date)
+                return get_historical_data(identifier, item, sequence_number, startdate, enddate, frequency, periodtype, showdate)
             else:
                 logger.debug("Invalid identifier %s", identifier)
                 return "Invalid identifier"
