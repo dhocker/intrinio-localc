@@ -30,14 +30,10 @@ class AppLogger:
             logformat = '%(asctime)s, %(module)s, %(levelname)s, %(message)s'
             logdateformat = '%Y-%m-%d %H:%M:%S'
 
-            # Logging level override
-            loglevel = logging.DEBUG
-            # loglevel = logging.INFO
-            # loglevel = logging.WARNING
-            # loglevel = logging.ERROR
-
             self.logger = logging.getLogger(logname)
-            self.logger.setLevel(loglevel)
+
+            # Default logging to DEBUG until the level is set from the configuration
+            self.logger.setLevel(logging.DEBUG)
 
             formatter = logging.Formatter(logformat, datefmt=logdateformat)
 
@@ -49,12 +45,14 @@ class AppLogger:
             elif os.name == "nt":
                 # Windows
                 file_path = "{0}\\libreoffice\\intrinio\\".format(os.environ["LOCALAPPDATA"])
+            else:
+                file_path = ""
             logfile = file_path + logname + ".log"
 
             fh = logging.handlers.TimedRotatingFileHandler(logfile, when='midnight', backupCount=3)
-            fh.setLevel(loglevel)
             fh.setFormatter(formatter)
             self.logger.addHandler(fh)
+            self.logger.debug("New logger %s created: %s", logname, str(self.logger))
             self.logger.debug("%s logging to file: %s", logname, logfile)
 
             # Note that this logname has been defined
@@ -69,6 +67,23 @@ class AppLogger:
         :return: logger instance
         """
         return self.logger
+
+    def set_log_level(self, loglevel):
+        # Logging level override (defaults to INFO)
+        loglevel_setting = logging.INFO
+        if loglevel:
+            loglevel = loglevel.upper()
+            if loglevel == "DEBUG":
+                loglevel_setting = logging.DEBUG
+            elif loglevel == "INFO":
+                loglevel_setting = logging.INFO
+            elif loglevel == "WARNING":
+                loglevel_setting = logging.WARNING
+            elif loglevel == "ERROR":
+                loglevel_setting = logging.ERROR
+
+        self.logger.setLevel(loglevel_setting)
+        self.logger.debug("Log level set to %s", loglevel)
 
     # Controlled logging shutdown
     def Shutdown(self):

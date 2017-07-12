@@ -23,13 +23,13 @@ import os
 import os.path
 import ssl
 import math
-from app_logger import AppLogger
+from intrinio_app_logger import AppLogger
 from extn_helper import float_to_date_str, normalize_date
 
 
 # Logger init
-app_logger = AppLogger("intrinio-extension")
-logger = app_logger.getAppLogger()
+the_app_logger = AppLogger("intrinio-extension")
+logger = the_app_logger.getAppLogger()
 
 
 class QConfiguration:
@@ -44,6 +44,7 @@ class QConfiguration:
     file_path = ""
     full_file_path = ""
     cacerts = ""
+    loglevel = ""
 
     @classmethod
     def load(cls):
@@ -63,7 +64,7 @@ class QConfiguration:
             cls.file_path = "{0}\\libreoffice\\intrinio\\".format(os.environ["APPDATALOCAL"])
         cls.full_file_path = cls.file_path + file_name
 
-        # Read credentials
+        # Read intrinio.conf file
         try:
             cf = open(cls.full_file_path, "r")
             cfj = json.loads(cf.read())
@@ -71,6 +72,9 @@ class QConfiguration:
             cls.auth_passwd = cfj["password"]
             if "certifi" in cfj:
                 cls.cacerts = cfj["certifi"]
+            if "loglevel" in cfj:
+                cls.loglevel = cfj["loglevel"]
+                the_app_logger.set_log_level(cls.loglevel)
             cf.close()
         except FileNotFoundError as ex:
             logger.error("%s was not found", cls.full_file_path)

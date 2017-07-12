@@ -8,7 +8,7 @@
         <l:LibreOffice-minimal-version value="5.0" d:name="LibreOffice 5.0"/>
     </dependencies>
     <identifier value="com.intrinio.fintech.localc"/>
-    <version value="0.0.14"/>
+    <version value="0.0.17"/>
     <display-name>
         <name lang="en">Intrinio Fintech Marketplace Data Extension</name>
     </display-name>

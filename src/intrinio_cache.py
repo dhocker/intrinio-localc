@@ -15,11 +15,11 @@
 # along with this program (the LICENSE.md file).  If not, see <http://www.gnu.org/licenses/>.
 #
 
-from app_logger import AppLogger
+from intrinio_app_logger import AppLogger
 
 # Logger init
-app_logger = AppLogger("intrinio-extension")
-logger = app_logger.getAppLogger()
+the_app_logger = AppLogger("intrinio-extension")
+logger = the_app_logger.getAppLogger()
 
 
 class UsageDataCache:

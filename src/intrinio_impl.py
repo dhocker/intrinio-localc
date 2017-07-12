@@ -42,20 +42,20 @@ if cmd_folder not in sys.path:
     sys.path.insert(0, cmd_folder)
 
 # Local imports go here
-from app_logger import AppLogger
+from intrinio_app_logger import AppLogger
 from intrinio_lib import IntrinioBase, QConfiguration, intrinio_login, is_valid_identifier, get_data_point, \
     get_historical_prices, get_historical_data
 from intrinio_cache import UsageDataCache
 import xml.etree.ElementTree as etree
 
 # Logger init
-app_logger = AppLogger("intrinio-extension")
-logger = app_logger.getAppLogger()
+the_app_logger = AppLogger("intrinio-extension")
+logger = the_app_logger.getAppLogger()
 # Extract version from description.xml
 tree = etree.parse(cmd_folder + "/description.xml")
 root = tree.getroot()
 nodes = root.findall('{http://openoffice.org/extensions/description/2006}version')
-logger.debug("Intrinio-LOCalc Version: %s", nodes[0].attrib["value"])
+logger.info("Intrinio-LOCalc Version: %s", nodes[0].attrib["value"])
 
 
 class IntrinioImpl(unohelper.Base, XIntrinio ):
