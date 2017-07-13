@@ -85,3 +85,14 @@ class XCUFile:
     
         xcufile.close()
 
+    def dump_functions(self):
+        """
+        Print a list of all of the defined functions
+        :return:
+        """
+        print ("XCU Function List")
+        for f in self.function_list:
+            print (" ", f["name"], ":", f["desc"])
+            for p_name, p_desc in f["parms"]:
+                print ("   ", p_name.strip("[]"), ":", p_desc)
+

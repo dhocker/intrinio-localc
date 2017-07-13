@@ -1,4 +1,5 @@
 // com.intrinio.fintech.localc
+// Naming convention: https://wiki.openoffice.org/wiki/Documentation/DevGuide/AppendixA/General_Design_Rules
 
 module com {
     module intrinio {
@@ -17,6 +18,8 @@ module com {
                   any IntrinioHistoricalData( [in] string identifier, [in] string item, [in] long sequencenumber,
                     [in] any startdate, [in] any enddate, [in] any frequency, [in] any periodtype,
                     [in] any showdate );
+                  // Returns news article data for the selected identifier
+                  any IntrinioNews( [in] string identifier, [in] string item, [in] long sequencenumber);
                 };
             };
         };

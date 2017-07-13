@@ -89,7 +89,7 @@ xcu.add_function("IntrinioHistoricalPrices", "Get Intrinio historical price data
                      ('end_date', 'Optional, last date of prices.'),
                      ('frequency', 'Periodicity of data points (e.g. daily, weekly, monthly, quarterly, yearly).')
                  ])
-xcu.add_function("IntrinioHistoricalData", "Get the historical data for for a selected identifier",
+xcu.add_function("IntrinioHistoricalData", "Get the historical data for a selected identifier",
                  [
                      ('identifier', 'Ticker symbol.'),
                      ('item', 'The specified standardized tag requested'),
@@ -100,7 +100,14 @@ xcu.add_function("IntrinioHistoricalData", "Get the historical data for for a se
                      ('period_type', ''),
                      ('show_date', 'Show date (True) or show data (false, default).')
                  ])
+xcu.add_function("IntrinioNews", "Get news for the selected identifier",
+                 [
+                     ('identifier', 'Ticker symbol.'),
+                     ('item', 'News attribute: title, publication_date, summary, url'),
+                     ('sequence_number', 'An integer, 0-last available data point')
+                 ])
 xcu.generate("build/intrinio.xcu")
+xcu.dump_functions()
 
 # Zip contents of build folder and rename it to .oxt
 print ("Zipping build files into .oxt file")

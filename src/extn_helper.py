@@ -37,6 +37,17 @@ def float_to_date_str(float_date):
     eff_date = d.strftime("%Y-%m-%d")
     return eff_date
 
+def date_str_to_float(date_str):
+    """
+    Magic algorithm to convert an ISO date string (e.g. 2017-07-11 12:49:12 +0000)
+    to a LibreOffice date as a float.
+    :param date_str: Date to be converted.
+    :return:
+    """
+    dt = datetime.datetime.strptime(date_str, "%Y-%m-%d %H:%M:%S %z")
+    float_date = (dt.timestamp() / 86400.0) + 25569.0
+    return float_date
+
 def normalize_date(tgtdate):
     """
     Normalize an LO Calc date to an ISO formatted string

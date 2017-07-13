@@ -23,6 +23,7 @@
 import os
 import sys
 import inspect
+import datetime
 #Try/except is for LibreOffice Python3.x vs. OpenOffice Python2.x.
 try:
     from urllib.request import Request, urlopen
@@ -44,8 +45,9 @@ if cmd_folder not in sys.path:
 # Local imports go here
 from intrinio_app_logger import AppLogger
 from intrinio_lib import IntrinioBase, QConfiguration, intrinio_login, is_valid_identifier, get_data_point, \
-    get_historical_prices, get_historical_data
+    get_historical_prices, get_historical_data, get_news
 from intrinio_cache import UsageDataCache
+from extn_helper import date_str_to_float
 import xml.etree.ElementTree as etree
 
 # Logger init
@@ -143,6 +145,28 @@ class IntrinioImpl(unohelper.Base, XIntrinio ):
         if _check_configuration():
             if is_valid_identifier(identifier):
                 return get_historical_data(identifier, item, sequence_number, startdate, enddate, frequency, periodtype, showdate)
+            else:
+                logger.debug("Invalid identifier %s", identifier)
+                return "Invalid identifier"
+        else:
+            return "No configuration"
+
+    def IntrinioNews(self, identifier, item, sequence_number):
+        """
+        Returns the historical data for for a selected identifier (ticker symbol or index symbol) for a selected tag.
+        :param identifier:
+        :param item:
+        :param sequence_number:
+        :return:
+        """
+        logger.debug("IntrinioNews called: %s %s %d", identifier, item, sequence_number)
+        if _check_configuration():
+            if is_valid_identifier(identifier):
+                v = get_news(identifier, item, sequence_number)
+                # Convert ISO date to LO date-float
+                if item == "publication_date":
+                    v = date_str_to_float(v)
+                return v
             else:
                 logger.debug("Invalid identifier %s", identifier)
                 return "Invalid identifier"
