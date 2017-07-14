@@ -29,9 +29,12 @@ def float_to_date_str(float_date):
     LibreOffice date as a float (actually the format used by Excel)
     base_date = 1899-12-30 = the float value 0.0
     see this reference: http://www.cpearson.com/excel/datetime.htm
-    :param float_date: ddddd.tttttt where d is days from 1899-12-30 and .tttttt is fraction of 24 hours
+    :param float_date: ddddd.tttttt where d is days from 1899-12-31 and .tttttt is fraction of 24 hours
     :return:
     """
+    # 25569 = number of days from 1899-12-30 to 1970-1-1
+    # 86400 = number of seconds in a day
+    # seconds = number of seconds from 1970-1-1 00:00:00
     seconds = (int(float_date) - 25569) * 86400
     d = datetime.datetime.utcfromtimestamp(seconds)
     eff_date = d.strftime("%Y-%m-%d")
@@ -45,7 +48,12 @@ def date_str_to_float(date_str):
     :return:
     """
     dt = datetime.datetime.strptime(date_str, "%Y-%m-%d %H:%M:%S %z")
+    # Here, timestamp() is the number of seconds from 1970-1-1 00:00:00
+    # 25569.0 = number of days from 1899-12-30 to 1970-1-1
+    # 86400.0 = number of seconds in a day
     float_date = (dt.timestamp() / 86400.0) + 25569.0
+    # The result is a float of the form ddddd.tttttt where ddddd is the number of days
+    # since 1899-12-31 and .tttttt is the fractional portion of a day.
     return float_date
 
 def normalize_date(tgtdate):
