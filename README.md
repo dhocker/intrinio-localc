@@ -1,17 +1,21 @@
 # LibreOffice Calc Extension for Intrinio Marketplace
-Copyright © 2017 by Dave Hocker
+Copyright © 2017 by Dave Hocker as TheAgency
 
 ## Overview
 This project implements a LibreOffice Calc (LOCalc) addin extension that can
 retrieve data from the Intrinio Marketplace service. It provides a
-similar set of functions as the
+subset of the functions implemented by the
 [Intrinio Excel AddIn](https://github.com/intrinio/intrinio-excel).
+Currently, only functions that will work with a basic, free Intrinio
+account have been implemented. In the future, the function set may be
+expanded to provide parity with the Intrinio Excel AddIn.
 
 The addin should work on the Windows, macOS and Ubuntu versions of
-LibreOffice (version >= 5.0).
+[LibreOffice (version >= 5.0)](https://www.libreoffice.org/).
 
 ## License
-GNU GENERAL PUBLIC LICENSE Version 3, 29 June 2007. Refer to the LICENSE
+GNU GENERAL PUBLIC LICENSE Version 3, 29 June 2007. Refer to the
+[LICENSE.md](https://github.com/dhocker/intrinio-localc/blob/master/README.md)
 file for complete details.
 
 
@@ -47,10 +51,20 @@ Excel AddIn function.
 ```
 
 ### IntrinioHistoricalData
-TBI.
+This function works like the equivalent
+[IntrinioHistoricalDate](http://docs.intrinio.com/excel-addin#intriniohistoricaldata)
+Excel AddIn function.
+```
+=IntrinioHistoricalData(ticker, item, sequence, start_date, end_date, frequency, data_type)
+```
 
 ### IntrinioNews
-TBI.
+This function works like the equivalent
+[IntrinioNews](http://docs.intrinio.com/excel-addin#intrinionews)
+Excel AddIn function.
+```
+=IntrinioNews(identifier, item, sequence)
+```
 
 ### IntrinioStandardizedFundamentals
 TBI.
@@ -64,3 +78,7 @@ TBI.
 ### IntrinioFinancials
 TBI.
 
+## References
+* [Intrinio Web Site](https://intrinio.com)
+* [Intrinio Excel AddIn](http://docs.intrinio.com/excel-addin#intrinionews)
+* [LibreOffice](https://www.libreoffice.org/)
