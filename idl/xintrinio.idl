@@ -20,6 +20,9 @@ module com {
                     [in] any showdate );
                   // Returns news article data for the selected identifier
                   any IntrinioNews( [in] string identifier, [in] string item, [in] long sequencenumber);
+                  // Returns a list of available standardized fundamentals
+                  any IntrinioFundamentals( [in] string ticker, [in] string statement, [in] string periodtype,
+                    [in] long sequencenumber, [in] string item);
                 };
             };
         };

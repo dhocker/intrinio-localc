@@ -435,8 +435,44 @@ class IntrinioNews(IntrinioBase):
         return res
 
 
+class IntrinioFundamentals(IntrinioBase):
+    def __init__(self):
+        pass
+
+    @staticmethod
+    def get_fundamentals_page(identifier, statement, period_type, sequence):
+        """
+
+        :param identifier: Ticker symbol
+        :param statement: income_statement | balance_sheet | cash_flow_statement | calculations
+        :param period_type: FY | QTR | TTM | YTD
+        :param sequence: most recent first: 0..last available
+        :return:
+        """
+        page_number = IntrinioFundamentals.get_page_number(sequence)
+
+        template_url = "{0}/fundamentals/standardized?identifier={1}&statement={2}&page_size={3}&page_number={4}"
+        url_string = template_url.format(QConfiguration.base_url, identifier.upper(), statement,
+                                         IntrinioFundamentals.page_size, page_number)
+
+        # Add additional query parameters
+        if period_type:
+            url_string += "&type=" + period_type
+
+        # print (url_string)
+        # Note for future reference. It looks like this URL is designed for
+        # you to run the query for the first page. It returns the number of total_pages available
+        # as one of the JSON values. You could use that value to know how many pages are
+        # left to be retrieved.
+        # Also, it should be noted that the dates go backwards. Sequence 0 will always
+        # be the newest date, while sequence numbers 1 to n will go backwards in time.
+        res = IntrinioFundamentals.exec_request(url_string)
+        logger.debug("Result count: %s", res["result_count"])
+        return res
+
+
 from intrinio_cache import IdentifierCache, DataPointCache, UsageDataCache, HistoricalPricesCache, \
-    HistoricalDataCache, IntrinioNewsCache
+    HistoricalDataCache, IntrinioNewsCache, FundamentalsCache
 
 
 def is_valid_identifier(identifier):
@@ -629,6 +665,45 @@ def get_news(identifier, item, sequence):
                 v = res["data"][page_index][item]
             else:
                 v = "Invalid item"
+        else:
+            v = "Sequence is out of range"
+        return v
+
+    return IntrinioBase.status_code_message(res["status_code"])
+
+
+def get_fundamentals_data(identifier, statement, period_type, sequence, item):
+    """
+    Returns a list of available standardized fundamentals (fiscal year and fiscal period)
+    for a given ticker and statement.
+    :param identifier:
+    :param statement:
+    :param period_type:
+    :param sequence:
+    :param item:
+    :return:
+    """
+    page_number = IntrinioBase.get_page_number(sequence)
+    page_index = IntrinioBase.get_page_index(sequence)
+
+    if FundamentalsCache.is_query_value_cached(identifier, statement, period_type, page_number):
+        logger.debug("Cache hit for fundamentals data %s %s %s %d", identifier, statement, period_type, sequence)
+        query_value = FundamentalsCache.get_query_value(identifier, statement, period_type, page_number)
+        if len(query_value["data"]) > page_index:
+            v =  query_value["data"][page_index][item]
+        else:
+            v = "Sequence out of range"
+        return v
+
+    res = IntrinioFundamentals.get_fundamentals_page(identifier, statement, period_type, sequence)
+
+    if "data" in res:
+        FundamentalsCache.add_query_value(res, identifier, statement, period_type, page_number)
+        if len(res["data"]) > page_index:
+            if item in res["data"][page_index]:
+                v = res["data"][page_index][item]
+            else:
+                v = "Invalid item: " + item
         else:
             v = "Sequence is out of range"
         return v

@@ -66,9 +66,6 @@ Excel AddIn function.
 =IntrinioNews(identifier, item, sequence)
 ```
 
-### IntrinioStandardizedFundamentals
-TBI.
-
 ### IntrinioFundamentals
 TBI.
 

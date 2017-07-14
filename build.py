@@ -97,7 +97,7 @@ xcu.add_function("IntrinioHistoricalData", "Get the historical data for a select
                      ('start_date', 'Optional, first date of data'),
                      ('end_date', 'Optional, last date of data'),
                      ('frequency', 'Periodicity of data points (e.g. daily, weekly, monthly, quarterly, yearly).'),
-                     ('period_type', ''),
+                     ('period_type', 'The type of periods requested (e.g. FY, QTR, TTM, YTD  or count, sum, max, 75thpctl, mean, median, 25thpctl, min'),
                      ('show_date', 'Show date (True) or show data (false, default).')
                  ])
 xcu.add_function("IntrinioNews", "Get news for the selected identifier",
@@ -105,6 +105,14 @@ xcu.add_function("IntrinioNews", "Get news for the selected identifier",
                      ('identifier', 'Ticker symbol.'),
                      ('item', 'News attribute: title, publication_date, summary, url'),
                      ('sequence_number', 'An integer, 0-last available data point')
+                 ])
+xcu.add_function("IntrinioFundamentals", "Returns a list of available standardized fundamentals",
+                 [
+                     ('ticker', 'Ticker symbol.'),
+                     ('statement', 'The financial statement requested (e.g.income_statement, balance_sheet, cash_flow_statement, calculations)'),
+                     ('period_type', 'The type of periods requested (e.g. FY, QTR, TTM, YTD)'),
+                     ('sequence_number', 'An integer, 0-last available data point'),
+                     ('item', 'The return value for the fundamental (e.g. fiscal_year, fiscal_period, end_date, start_date)')
                  ])
 xcu.generate("build/intrinio.xcu")
 xcu.dump_functions()
