@@ -553,24 +553,32 @@ def get_historical_prices(identifier, item, sequence, start_date=None, end_date=
         logger.debug("Cache hit for historical price %s %s", identifier, item)
         query_value = HistoricalPricesCache.get_query_value(identifier, n_start_date, n_end_date, frequency, page_number)
         # Verify that item exists
-        if item in query_value["data"][page_index]:
-            v =  query_value["data"][page_index][item]
-            if str(v).isnumeric():
-                return float(v)
-            return v
-        return "Invalid item"
+        if len(query_value["data"]) > page_index:
+            if item in query_value["data"][page_index]:
+                v =  query_value["data"][page_index][item]
+                if str(v).isnumeric():
+                    return float(v)
+            else:
+                v = "Invalid item"
+        else:
+            v = "Sequence out of range"
+        return v
 
     res = IntrinioHistoricalPrices.get_price_page(identifier, sequence, n_start_date, n_end_date, frequency)
 
     if "data" in res:
         HistoricalPricesCache.add_query_value(res, identifier, n_start_date, n_end_date, frequency, page_number)
         # Verify that item exists
-        if item in res["data"][page_index]:
-            v = res["data"][page_index][item]
-            if str(v).isnumeric():
-                return float(v)
-            return v
-        return "Invalid item"
+        if len(res["data"]) > page_index:
+            if item in res["data"][page_index]:
+                v = res["data"][page_index][item]
+                if str(v).isnumeric():
+                    v = float(v)
+            else:
+                v = "Invalid item"
+        else:
+            v = "Sequence out of range"
+        return v
 
     return IntrinioBase.status_code_message(res["status_code"])
 
@@ -604,13 +612,13 @@ def get_historical_data(identifier, item, sequence, start_date=None, end_date=No
     if HistoricalDataCache.is_query_value_cached(identifier, item, n_start_date, n_end_date, frequency, period_type, page_number):
         logger.debug("Cache hit for historical price %s %s", identifier, item)
         query_value = HistoricalDataCache.get_query_value(identifier, item, n_start_date, n_end_date, frequency, period_type, page_number)
-        if len(query_value["data"]) > sequence:
+        if len(query_value["data"]) > page_index:
             if show_date:
                 v = query_value["data"][page_index]["date"]
             else:
                 v =  query_value["data"][page_index]["value"]
-            if str(v).isnumeric():
-                return float(v)
+                if str(v).isnumeric():
+                    v = float(v)
         else:
             v = "Sequence out of range"
         return v
@@ -620,13 +628,13 @@ def get_historical_data(identifier, item, sequence, start_date=None, end_date=No
 
     if "data" in res:
         HistoricalDataCache.add_query_value(res, identifier, item, n_start_date, n_end_date, frequency, period_type, page_number)
-        if len(res["data"]) > sequence:
+        if len(res["data"]) > page_index:
             if show_date:
                 v = res["data"][page_index]["date"]
             else:
                 v = res["data"][page_index]["value"]
-            if str(v).isnumeric():
-                return float(v)
+                if str(v).isnumeric():
+                    v = float(v)
         else:
             v = "Sequence is out of range"
         return v
@@ -650,17 +658,21 @@ def get_news(identifier, item, sequence):
     if IntrinioNewsCache.is_query_value_cached(identifier, page_number):
         logger.debug("Cache hit for company news %s %s %d", identifier, item, sequence)
         query_value = IntrinioNewsCache.get_query_value(identifier, page_number)
-        if len(query_value["data"]) > sequence:
-            v =  query_value["data"][page_index][item]
+        if len(query_value["data"]) > page_index:
+            if item in query_value["data"][page_index]:
+                v =  query_value["data"][page_index][item]
+            else:
+                v = "Invalid item"
         else:
             v = "Sequence out of range"
+
         return v
 
     res = IntrinioNews.get_news_page(identifier, sequence)
 
     if "data" in res:
         IntrinioNewsCache.add_query_value(res, identifier, page_number)
-        if len(res["data"]) > sequence:
+        if len(res["data"]) > page_index:
             if item in res["data"][page_index]:
                 v = res["data"][page_index][item]
             else:
@@ -690,7 +702,10 @@ def get_fundamentals_data(identifier, statement, period_type, sequence, item):
         logger.debug("Cache hit for fundamentals data %s %s %s %d", identifier, statement, period_type, sequence)
         query_value = FundamentalsCache.get_query_value(identifier, statement, period_type, page_number)
         if len(query_value["data"]) > page_index:
-            v =  query_value["data"][page_index][item]
+            if item in query_value["data"][page_index]:
+                v =  query_value["data"][page_index][item]
+            else:
+                v = "Invalid item"
         else:
             v = "Sequence out of range"
         return v
