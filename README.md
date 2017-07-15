@@ -67,7 +67,12 @@ Excel AddIn function.
 ```
 
 ### IntrinioFundamentals
-TBI.
+This function works like the equivalent
+[IntrinioFundamentals](http://docs.intrinio.com/excel-addin#intriniofundamentals)
+Excel AddIn function.
+```
+=IntrinioFundamentals(ticker, statement, type, sequence, item)
+```
 
 ### IntrinioTags
 TBI.
