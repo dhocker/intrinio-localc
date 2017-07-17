@@ -45,7 +45,7 @@ if cmd_folder not in sys.path:
 # Local imports go here
 from intrinio_app_logger import AppLogger
 from intrinio_lib import IntrinioBase, QConfiguration, intrinio_login, is_valid_identifier, get_data_point, \
-    get_historical_prices, get_historical_data, get_news, get_fundamentals_data
+    get_historical_prices, get_historical_data, get_news, get_fundamentals_data, get_tags
 from intrinio_cache import UsageDataCache
 from extn_helper import date_str_to_float
 import xml.etree.ElementTree as etree
@@ -209,11 +209,7 @@ class IntrinioImpl(unohelper.Base, XIntrinio ):
         logger.debug("IntrinioTags called: %s %s %d %s", identifier, statement, sequence_number, item)
         if _check_configuration():
             if is_valid_identifier(identifier):
-                # v = get_news(identifier, item, sequence_number)
-                # # Convert ISO date to LO date-float
-                # if item == "publication_date":
-                #     v = date_str_to_float(v)
-                v = "Not implemented"
+                v = get_tags(identifier, statement, sequence_number, item)
                 return v
             else:
                 logger.debug("Invalid identifier %s", identifier)

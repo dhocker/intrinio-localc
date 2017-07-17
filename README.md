@@ -71,11 +71,16 @@ This function works like the equivalent
 [IntrinioFundamentals](http://docs.intrinio.com/excel-addin#intriniofundamentals)
 Excel AddIn function.
 ```
-=IntrinioFundamentals(ticker, statement, type, sequence, item)
+=IntrinioFundamentals(identifier, statement, type, sequence, item)
 ```
 
 ### IntrinioTags
-TBI.
+This function works like the equivalent
+[IntrinioTags](http://docs.intrinio.com/excel-addin#intriniotags)
+Excel AddIn function.
+```
+=IntrinioTags(identifier, statement, sequence, item)
+```
 
 ### IntrinioFinancials
 TBI.

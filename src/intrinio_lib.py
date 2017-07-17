@@ -471,8 +471,42 @@ class IntrinioFundamentals(IntrinioBase):
         return res
 
 
+class IntrinioTags(IntrinioBase):
+    def __init__(self):
+        pass
+
+    @staticmethod
+    def get_tags_page(identifier, statement, sequence):
+        """
+        Retrieve the page of price data that contains the given sequence number
+        :param identifier:
+        :param sequence:
+        :param start_date:
+        :param end_date:
+        :param frequency:
+        :param period_type:
+        :return:
+        """
+        page_number = IntrinioTags.get_page_number(sequence)
+
+        template_url = "{0}/tags/standardized?identifier={1}&statement={2}&page_size={3}&page_number={4}"
+        url_string = template_url.format(QConfiguration.base_url, identifier.upper(), statement,
+                                         IntrinioTags.page_size, page_number)
+
+        print (url_string)
+        # Note for future reference. It looks like this URL is designed for
+        # you to run the query for the first page. It returns the number of total_pages available
+        # as one of the JSON values. You could use that value to know how many pages are
+        # left to be retrieved.
+        # Also, it should be noted that the dates go backwards. Sequence 0 will always
+        # be the newest date, while sequence numbers 1 to n will go backwards in time.
+        res = IntrinioTags.exec_request(url_string)
+        # print (res)
+        return res
+
+
 from intrinio_cache import IdentifierCache, DataPointCache, UsageDataCache, HistoricalPricesCache, \
-    HistoricalDataCache, IntrinioNewsCache, FundamentalsCache
+    HistoricalDataCache, IntrinioNewsCache, FundamentalsCache, IntrinioTagsCache
 
 
 def is_valid_identifier(identifier):
@@ -705,7 +739,7 @@ def get_fundamentals_data(identifier, statement, period_type, sequence, item):
             if item in query_value["data"][page_index]:
                 v =  query_value["data"][page_index][item]
             else:
-                v = "Invalid item"
+                v = "Invalid item: " + item
         else:
             v = "Sequence out of range"
         return v
@@ -715,6 +749,46 @@ def get_fundamentals_data(identifier, statement, period_type, sequence, item):
     if "data" in res:
         FundamentalsCache.add_query_value(res, identifier, statement, period_type, page_number)
         if len(res["data"]) > page_index:
+            if item in res["data"][page_index]:
+                v = res["data"][page_index][item]
+            else:
+                v = "Invalid item: " + item
+        else:
+            v = "Sequence is out of range"
+        return v
+
+    return IntrinioBase.status_code_message(res["status_code"])
+
+
+def get_tags(identifier, statement, sequence, item):
+    """
+    Returns the standardized tags and labels for a given ticker, statement, and date or fiscal year/fiscal quarter.
+    :param identifier: Stock ticker symbol.
+    :param statement: income_statement | balance_sheet | cash_flow_statement | calculations | current
+    :param sequence: an integer whose value is 0-max available number of results.
+    :param item: name | tag | parent | factor | balance | type | units
+    :return:
+    """
+    page_number = IntrinioBase.get_page_number(sequence)
+    page_index = IntrinioBase.get_page_index(sequence)
+
+    if IntrinioTagsCache.is_query_value_cached(identifier, statement, page_number):
+        logger.debug("Cache hit for standardized tags %s %s %s %d", identifier, statement, item, sequence)
+        query_value = IntrinioTagsCache.get_query_value(identifier, statement, page_number)
+        if len(query_value["data"]) > page_index:
+            if item in query_value["data"][page_index]:
+                v =  query_value["data"][page_index][item]
+            else:
+                v = "Invalid item: " + item
+        else:
+            v = "Sequence out of range"
+        return v
+
+    res = IntrinioTags.get_tags_page(identifier, statement, sequence)
+
+    if "data" in res:
+        IntrinioTagsCache.add_query_value(res, identifier, statement, page_number)
+        if len(res["data"]) > sequence:
             if item in res["data"][page_index]:
                 v = res["data"][page_index][item]
             else:
