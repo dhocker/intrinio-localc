@@ -197,6 +197,30 @@ class IntrinioImpl(unohelper.Base, XIntrinio ):
         else:
             return "No configuration"
 
+    def IntrinioTags(self, identifier, statement, sequence_number, item):
+        """
+
+        :param identifier:
+        :param statement:
+        :param sequence_number:
+        :param item:
+        :return:
+        """
+        logger.debug("IntrinioTags called: %s %s %d %s", identifier, statement, sequence_number, item)
+        if _check_configuration():
+            if is_valid_identifier(identifier):
+                # v = get_news(identifier, item, sequence_number)
+                # # Convert ISO date to LO date-float
+                # if item == "publication_date":
+                #     v = date_str_to_float(v)
+                v = "Not implemented"
+                return v
+            else:
+                logger.debug("Invalid identifier %s", identifier)
+                return "Invalid identifier"
+        else:
+            return "No configuration"
+
 
 # Configuration lock. Used to deal with the fact that sometimes
 # LO Calc makes concurrent calls into the extension.

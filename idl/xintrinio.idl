@@ -23,6 +23,8 @@ module com {
                   // Returns a list of available standardized fundamentals
                   any IntrinioFundamentals( [in] string ticker, [in] string statement, [in] string periodtype,
                     [in] long sequencenumber, [in] string item);
+                  // Returns the standardized tags and labels for a given ticker, statement, and date or fiscal year/fiscal quarter.
+                  any IntrinioTags( [in] string identifier, [in] string statement, [in] long sequencenumber, [in] string item);
                 };
             };
         };

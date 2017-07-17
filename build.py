@@ -114,6 +114,13 @@ xcu.add_function("IntrinioFundamentals", "Returns a list of available standardiz
                      ('sequence_number', 'An integer, 0-last available data point'),
                      ('item', 'The return value for the fundamental (e.g. fiscal_year, fiscal_period, end_date, start_date)')
                  ])
+xcu.add_function("IntrinioTags", "Returns the standardized tags and labels for a given ticker, statement, and date or fiscal year/fiscal quarter.",
+                 [
+                     ('identifier', 'Ticker symbol.'),
+                     ('statement', 'The financial statement requested (e.g. income_statement, balance_sheet, cash_flow_statement, calculations, current)'),
+                     ('sequence_number', 'An integer, 0-last available data point'),
+                     ('item', 'the return value for the tag (e.g. name, tag, parent, factor, balance, type, units')
+                 ])
 xcu.generate("build/intrinio.xcu")
 xcu.dump_functions()
 
