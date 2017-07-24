@@ -38,8 +38,9 @@ os.environ["DYLD_LIBRARY_PATH"] = os.environ["OO_SDK_URE_LIB_DIR"]
 tree = etree.parse("src/description.xml")
 root = tree.getroot()
 nodes = root.findall('{http://openoffice.org/extensions/description/2006}version')
+build_version = nodes[0].attrib["value"]
 print ("=============================")
-print ("Building Version:", nodes[0].attrib["value"])
+print ("Building Version:", build_version)
 print ("=============================")
 
 # Create required build folders
@@ -119,19 +120,31 @@ xcu.add_function("IntrinioTags", "Returns the standardized tags and labels for a
                      ('identifier', 'Ticker symbol.'),
                      ('statement', 'The financial statement requested (e.g. income_statement, balance_sheet, cash_flow_statement, calculations, current)'),
                      ('sequence_number', 'An integer, 0-last available data point'),
-                     ('item', 'the return value for the tag (e.g. name, tag, parent, factor, balance, type, units')
+                     ('item', 'The return value for the tag (e.g. name, tag, parent, factor, balance, type, units')
+                 ])
+xcu.add_function("IntrinioFinancials", "Returns professional-grade historical financial data.",
+                 [
+                     ('ticker', 'The stock market ticker symbol.'),
+                     ('statement',
+                      'The financial statement requested (e.g.income_statement, balance_sheet, cash_flow_statement, calculations)'),
+                     ('fiscal_year', 'the fiscal year associated with the fundamental OR the sequence of the requested fundamental'),
+                     ('fiscal_period', 'the fiscal period associated with the fundamental, or the fiscal period type'),
+                     ('tag', 'The specified standardized tag'),
+                     ('rounding', 'Round the returned value (e.g. A, K, M, B)')
                  ])
 xcu.generate("build/intrinio.xcu")
 xcu.dump_functions()
 
 # Zip contents of build folder and rename it to .oxt
-print ("Zipping build files into .oxt file")
+print ("Zipping build files into intrinio.oxt file")
 os.chdir("build/")
 for f in os.listdir("./"):
     if os.path.isfile(f) or os.path.isdir(f):
-        subprocess.call(["zip", "-r", "intrinio.zip", f])
+        subprocess.run(["zip", "-r", "intrinio.zip", f])
 os.chdir("..")
 shutil.move("build/intrinio.zip", "intrinio.oxt")
 print ("Extension file intrinio.oxt created")
 
-print ("Build complete")
+print ("============================================")
+print ("Build complete for version:", build_version)
+print ("============================================")

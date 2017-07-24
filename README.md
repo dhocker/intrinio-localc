@@ -83,9 +83,35 @@ Excel AddIn function.
 ```
 
 ### IntrinioFinancials
-TBI.
+This function works like the equivalent
+[IntrinioFinancials](http://docs.intrinio.com/?javascript--api#standardized-financials)
+Excel AddIn function.
+```
+=IntrinioFinancials(identifier, statement, fiscal_year, fiscal_period, tag, rounding)
+OR
+=IntrinioFinancials(identifier, statement, sequence, type, tag, rounding)
+```
+Some expalnation is in order as the Intrinio documentation does not really clarify
+exactly how the parameters work.
+
+The IntrinioFinancials function starts by assuming that the first form
+is being used. However, if the fiscal_year parameter is a value
+less than 1900, the value is treated as a sequence number. This
+implies that the second form is being used.
+
+In this case, the sequence and type parameters are translated to
+a fiscal_year and fiscal_period value by using the IntrinioFundamentals
+function.
+```
+fiscal_year = IntrinioFundamentals(ticker, statement, type, sequence, "fiscal_year")
+fiscal_period = IntrinioFundamentals(ticker, statement, type, sequence, "fiscal_period")
+```
+Essentially, this maps the sequence parameter to a year in an inverse order.
+Sequence value 0 will correspond to the most recent fundamental while
+value 1 will be back one increment. For example, if the type value is "FY",
+then the sequence number will be the relative fiscal year.
 
 ## References
 * [Intrinio Web Site](https://intrinio.com)
 * [Intrinio Excel AddIn](http://docs.intrinio.com/excel-addin#intrinionews)
-* [LibreOffice](https://www.libreoffice.org/)
+* [LibreOffice Web Site](https://www.libreoffice.org/)

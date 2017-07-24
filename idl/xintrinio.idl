@@ -25,6 +25,9 @@ module com {
                     [in] long sequencenumber, [in] string item);
                   // Returns the standardized tags and labels for a given ticker, statement, and date or fiscal year/fiscal quarter.
                   any IntrinioTags( [in] string identifier, [in] string statement, [in] long sequencenumber, [in] string item);
+                  // Returns professional-grade historical financial data.
+                  any IntrinioFinancials( [in] string ticker, [in] string statement, [in] long fiscalyear,
+                     [in] string fiscalperiod, [in] string tag, [in] any rounding);
                 };
             };
         };

@@ -505,9 +505,41 @@ class IntrinioTags(IntrinioBase):
         return res
 
 
-from intrinio_cache import IdentifierCache, DataPointCache, UsageDataCache, HistoricalPricesCache, \
-    HistoricalDataCache, IntrinioNewsCache, FundamentalsCache, IntrinioTagsCache
+class IntrinioFinancials(IntrinioBase):
+    def __init__(self):
+        pass
 
+    @staticmethod
+    def get_financials_page(identifier, statement, fiscal_year, fiscal_period, page_number):
+        """
+
+        :param identifier:
+        :param statement:
+        :param fiscal_year:
+        :param fiscal_period:
+        :param page_number: 1-total_pages
+        :return:
+        """
+        template_url = "{0}/financials/standardized?ticker={1}&statement={2}&fiscal_year={3}&fiscal_period={4}&page_size={5}&page_number={6}"
+        url_string = template_url.format(QConfiguration.base_url, identifier.upper(), statement,
+                                         fiscal_year, fiscal_period,
+                                         IntrinioFinancials.page_size, page_number)
+
+        # print (url_string)
+        # Note for future reference. It looks like this URL is designed for
+        # you to run the query for the first page. It returns the number of total_pages available
+        # as one of the JSON values. You could use that value to know how many pages are
+        # left to be retrieved.
+        # Also, it should be noted that the dates go backwards. Sequence 0 will always
+        # be the newest date, while sequence numbers 1 to n will go backwards in time.
+        res = IntrinioFinancials.exec_request(url_string)
+        # print (res)
+        return res
+
+
+from intrinio_cache import IdentifierCache, DataPointCache, UsageDataCache, HistoricalPricesCache, \
+    HistoricalDataCache, IntrinioNewsCache, FundamentalsCache, IntrinioTagsCache, FinancialsDataCache, \
+    FinancialsQueryCache
 
 def is_valid_identifier(identifier):
     """
@@ -798,6 +830,86 @@ def get_tags(identifier, statement, sequence, item):
         return v
 
     return IntrinioBase.status_code_message(res["status_code"])
+
+
+def get_financials_data(identifier, statement, fiscal_year, fiscal_period, tag):
+    """
+    Returns professional-grade historical financial data for a specific data tag.
+    :param identifier: Stock ticker symbol.
+    :param statement:
+    :param fiscal_year:
+    :param fiscal_period:
+    :param tag:
+    :return:
+    """
+    logger.debug("get_financials_data: %s %s %d %s %s", identifier, statement, fiscal_year, fiscal_period, tag)
+    # Translate fiscal year and period if required
+    if int(fiscal_year) < 1900:
+        # fiscal year is a sequence number and fiscal period is a type
+        lookup_fp = fiscal_period
+        lookup_fy = int(fiscal_year)
+        fiscal_year = get_fundamentals_data(identifier, statement, lookup_fp, lookup_fy, "fiscal_year")
+        fiscal_period = get_fundamentals_data(identifier, statement, lookup_fp, lookup_fy, "fiscal_period")
+        logger.debug("Translated fy/fp from %d/%s to %d/%s", lookup_fy, lookup_fp, fiscal_year, fiscal_period)
+
+    # Check cache for the specific tag
+    if FinancialsDataCache.is_query_value_cached(identifier, statement, fiscal_year, fiscal_period, tag):
+        logger.debug("Cache hit for financials data: %s %s %d %s %s",
+                     identifier, statement, fiscal_year, fiscal_period, tag)
+        v = FinancialsDataCache.get_query_value(identifier, statement, fiscal_year, fiscal_period, tag)
+        return v
+
+    # Before calling Intrinio API, check to see if we have already fetched the data for this query
+    # If we have run the query, then the requested tag is not defined.
+    if FinancialsQueryCache.is_query_value_cached(identifier, statement, fiscal_year, fiscal_period):
+        logger.debug("Tag not defined for financials data %s %s %d %s %s",
+                     identifier, statement, fiscal_year, fiscal_period, tag)
+        v = "na"
+        return v
+
+
+    # We have to read ALL of the pages for the given parameters to get all of the tags available.
+    # Essentially, we are building a big cache of all available data.
+    total_pages = 1
+    current_page = 1
+    tag_found = False
+    while current_page <= total_pages:
+        res = IntrinioFinancials.get_financials_page(identifier, statement, fiscal_year, fiscal_period, current_page)
+        # print (res)
+        if "total_pages" in res:
+            total_pages = int(res["total_pages"])
+            logger.debug("Total financials pages: %d", total_pages)
+        else:
+            # This is an error
+            return IntrinioBase.status_code_message(res["status_code"])
+        # Cache each tag/value pair in this page
+        if "data" not in res:
+            logger.debug("Financials page contains no data")
+        for tv in res["data"]:
+            logger.debug("Adding to financials data cache: %s %s %s %d %s %s", tv["value"],
+                   identifier, statement, fiscal_year, fiscal_period, tv["tag"])
+            # Note that this overwrites an existing cache entry
+            FinancialsDataCache.add_query_value(tv["value"], identifier, statement, fiscal_year, fiscal_period, tv["tag"])
+            # Note when we find the desired tag and its value
+            if tv["tag"] == tag:
+                tag_found = True
+                v = tv["value"]
+                logger.debug("Financial tag found: %s=%s", tv["tag"], tv["value"])
+
+        # Mark this query as cached
+        FinancialsQueryCache.add_query_value(True, identifier, statement, fiscal_year, fiscal_period)
+        logger.debug("Added financials query to cache: %d %s %s %d %s", True, identifier, statement, fiscal_year, fiscal_period)
+
+        # On to the next page
+        current_page += 1
+
+    if tag_found:
+        return v
+
+    # Prevent another API call for this tag
+    FinancialsDataCache.add_query_value("na", identifier, statement, fiscal_year, fiscal_period, tag)
+    logger.debug("Adding financials data cache: %s %s %d %s %s %s", "na", identifier, statement, fiscal_year, fiscal_period, tag)
+    return "na"
 
 
 #

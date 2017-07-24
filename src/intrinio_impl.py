@@ -45,7 +45,8 @@ if cmd_folder not in sys.path:
 # Local imports go here
 from intrinio_app_logger import AppLogger
 from intrinio_lib import IntrinioBase, QConfiguration, intrinio_login, is_valid_identifier, get_data_point, \
-    get_historical_prices, get_historical_data, get_news, get_fundamentals_data, get_tags
+    get_historical_prices, get_historical_data, get_news, get_fundamentals_data, get_tags, \
+    get_financials_data
 from intrinio_cache import UsageDataCache
 from extn_helper import date_str_to_float
 import xml.etree.ElementTree as etree
@@ -199,7 +200,7 @@ class IntrinioImpl(unohelper.Base, XIntrinio ):
 
     def IntrinioTags(self, identifier, statement, sequence_number, item):
         """
-
+        Returns the standardized tags and labels for a given ticker, statement, and date or fiscal year/fiscal quarter.
         :param identifier:
         :param statement:
         :param sequence_number:
@@ -216,6 +217,45 @@ class IntrinioImpl(unohelper.Base, XIntrinio ):
                 return "Invalid identifier"
         else:
             return "No configuration"
+
+    def IntrinioFinancials(self, ticker, statement, fiscalyear, fiscalperiod, tag, rounding):
+        """
+        Returns professional-grade historical financial data.
+        :param ticker:
+        :param statement:
+        :param fiscalyear:
+        :param fiscalperiod:
+        :param tag:
+        :param rounding:
+        :return:
+        """
+        logger.debug("IntrinioFinancials called: %s %s %d %s %s %s", ticker, statement, fiscalyear, fiscalperiod, tag, rounding)
+        if _check_configuration():
+            if is_valid_identifier(ticker):
+                v = get_financials_data(ticker, statement, fiscalyear, fiscalperiod, tag)
+            else:
+                logger.debug("Invalid ticker %s", ticker)
+                return "Invalid ticker"
+        else:
+            return "No configuration"
+
+        # Apply rounding factor to numeric values
+        try:
+            v = float(v)
+            if rounding:
+                rounding = str(rounding).upper()
+                logger.debug("Applying rounding %s", rounding)
+                rf = 1.0
+                if rounding == "K":
+                    rf = 1000.0
+                elif rounding == "M":
+                    rf = 1000000.0
+                elif rounding == "B":
+                    rf = 1000000000.0
+            v = v / rf
+        except:
+            pass
+        return v
 
 
 # Configuration lock. Used to deal with the fact that sometimes
