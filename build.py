@@ -132,6 +132,31 @@ xcu.add_function("IntrinioFinancials", "Returns professional-grade historical fi
                      ('tag', 'The specified standardized tag'),
                      ('rounding', 'Round the returned value (e.g. A, K, M, B)')
                  ])
+xcu.add_function("IntrinioReportedFundamentals", "Returns a list of available as reported fundamentals",
+                 [
+                     ('ticker', 'Ticker symbol.'),
+                     ('statement', 'The financial statement requested (e.g.income_statement, balance_sheet, cash_flow_statement)'),
+                     ('period_type', 'The type of periods requested (e.g. FY, QTR)'),
+                     ('sequence_number', 'An integer, 0-last available data point'),
+                     ('item', 'The return value for the fundamental (e.g. fiscal_year, fiscal_period, end_date, start_date, filing_date)')
+                 ])
+xcu.add_function("IntrinioReportedTags", "Returns the as reported XBRL tags and labels for a given ticker, statement, and date or fiscal year/fiscal quarter.",
+                 [
+                     ('identifier', 'Ticker symbol.'),
+                     ('statement', 'The financial statement requested (e.g. income_statement, balance_sheet, cash_flow_statement)'),
+                     ('sequence_number', 'An integer, 0-last available data point'),
+                     ('item', 'The return value for the tag (e.g. name, tag, balance, unit, domain_tag, abstract, sequence, depth, factor)')
+                 ])
+xcu.add_function("IntrinioReportedFinancials", "Returns the As Reported Financials directly from the financial statements of the XBRL filings from the company.",
+                 [
+                     ('identifier', 'The stock market ticker symbol.'),
+                     ('statement',
+                      'The financial statement requested (e.g.income_statement, balance_sheet, cash_flow_statement)'),
+                     ('fiscal_year', 'the fiscal year associated with the fundamental OR the sequence of the requested fundamental'),
+                     ('fiscal_period', 'the fiscal period associated with the fundamental, or the fiscal period type'),
+                     ('xbrl_tag', 'The specified XBRL tag'),
+                     ('domain_tag', 'The specified domain XBRL tag')
+                 ])
 xcu.generate("build/intrinio.xcu")
 xcu.dump_functions()
 

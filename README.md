@@ -91,7 +91,7 @@ Excel AddIn function.
 OR
 =IntrinioFinancials(identifier, statement, sequence, type, tag, rounding)
 ```
-Some expalnation is in order as the Intrinio documentation does not really clarify
+Some explanation is in order as the Intrinio documentation does not really clarify
 exactly how the parameters work.
 
 The IntrinioFinancials function starts by assuming that the first form
@@ -105,6 +105,51 @@ function.
 ```
 fiscal_year = IntrinioFundamentals(ticker, statement, type, sequence, "fiscal_year")
 fiscal_period = IntrinioFundamentals(ticker, statement, type, sequence, "fiscal_period")
+```
+Essentially, this maps the sequence parameter to a year in an inverse order.
+Sequence value 0 will correspond to the most recent fundamental while
+value 1 will be back one increment. For example, if the type value is "FY",
+then the sequence number will be the relative fiscal year.
+
+### IntrinioReportedFundamentals
+This function works like the equivalent
+[IntrinioReportedFundamentals](http://docs.intrinio.com/excel-addin#intrinioreportedfundamentals)
+Excel AddIn function.
+```
+=IntrinioReportedFundamentals(identifier, statement, type, sequence, item)
+```
+
+### IntrinioReportedTags
+This function works like the equivalent
+[IntrinioReportedTags](http://docs.intrinio.com/excel-addin#intrinioreportedtags)
+Excel AddIn function.
+```
+=IntrinioReportedTags(identifier, statement, sequence, item)
+```
+
+### IntrinioReportedFinancials
+This function works like the equivalent
+[IntrinioReportedFinancials](http://docs.intrinio.com/excel-addin#intrinioreportedfinancials)
+Excel AddIn function.
+```
+=IntrinioReportedFinancials(identifier, statement, fiscal_year, fiscal_period, xbrl_tag, domain_tag)
+OR
+=IntrinioFinancials(identifier, statement, sequence, type, xbrl_tag, domain_tag)
+```
+Some explanation is in order as the Intrinio documentation does not really clarify
+exactly how the parameters work.
+
+The IntrinioReportedFinancials function starts by assuming that the first form
+is being used. However, if the fiscal_year parameter is a value
+less than 1900, the value is treated as a sequence number. This
+implies that the second form is being used.
+
+In this case, the sequence and type parameters are translated to
+a fiscal_year and fiscal_period value by using the IntrinioReportedFundamentals
+function.
+```
+fiscal_year = IntrinioReportedFundamentals(identifier, statement, type, sequence, "fiscal_year")
+fiscal_period = IntrinioReportedFundamentals(identifier, statement, type, sequence, "fiscal_period")
 ```
 Essentially, this maps the sequence parameter to a year in an inverse order.
 Sequence value 0 will correspond to the most recent fundamental while

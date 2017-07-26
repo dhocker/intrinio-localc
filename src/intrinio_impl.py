@@ -257,6 +257,76 @@ class IntrinioImpl(unohelper.Base, XIntrinio ):
             pass
         return v
 
+    def IntrinioReportedFundamentals(self, ticker, statement, period_type, sequence_number, item):
+        """
+        Returns a list of available as reported fundamentals.
+        :param ticker:
+        :param statement:
+        :param period_type:
+        :param sequence_number:
+        :param item:
+        :return:
+        """
+        logger.debug("IntrinioReportedFundamentals called: %s %s %s %d %s", ticker, statement, period_type, sequence_number, item)
+        # if _check_configuration():
+        #     if is_valid_identifier(ticker):
+        #         v = get_fundamentals_data(ticker, statement, period_type, sequence_number, item)
+        #         # Convert ISO date to LO date-float
+        #         # if item == "publication_date":
+        #         #     v = date_str_to_float(v)
+        #         return v
+        #     else:
+        #         logger.debug("Invalid ticker %s", ticker)
+        #         return "Invalid ticker: " + ticker
+        # else:
+        #     return "No configuration"
+        return "Not implemented"
+
+    def IntrinioReportedTags(self, identifier, statement, fiscal_year, fiscal_period, sequence_number, item):
+        """
+        Returns the as reported XBRL tags and labels for a given ticker, statement, and date or fiscal year/fiscal quarter.
+        :param identifier:
+        :param statement:
+        :param sequence_number:
+        :param item:
+        :return:
+        """
+        logger.debug("IntrinioReportedTags called: %s %s %d %s %d %s", identifier, statement, fiscal_year, fiscal_period, sequence_number, item)
+        # if _check_configuration():
+        #     if is_valid_identifier(identifier):
+        #         v = get_tags(identifier, statement, sequence_number, item)
+        #         return v
+        #     else:
+        #         logger.debug("Invalid identifier %s", identifier)
+        #         return "Invalid identifier"
+        # else:
+        #     return "No configuration"
+        return "Not implemented"
+
+    def IntrinioReportedFinancials(self, ticker, statement, fiscalyear, fiscalperiod, xbrltag, xbrldomain):
+        """
+        Returns the As Reported Financials directly from the financial statements of the XBRL filings from the company.
+        :param ticker:
+        :param statement:
+        :param fiscalyear:
+        :param fiscalperiod:
+        :param tag:
+        :param rounding:
+        :return:
+        """
+        logger.debug("IntrinioReportedFinancials called: %s %s %d %s %s %s", ticker, statement, fiscalyear, fiscalperiod, xbrltag, xbrldomain)
+        # if _check_configuration():
+        #     if is_valid_identifier(ticker):
+        #         v = get_financials_data(ticker, statement, fiscalyear, fiscalperiod, tag)
+        #     else:
+        #         logger.debug("Invalid ticker %s", ticker)
+        #         return "Invalid ticker"
+        # else:
+        #     return "No configuration"
+        #
+        # return v
+        return "Not implemented"
+
 
 # Configuration lock. Used to deal with the fact that sometimes
 # LO Calc makes concurrent calls into the extension.
