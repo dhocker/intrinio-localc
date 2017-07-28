@@ -37,6 +37,14 @@ module com {
                   // Returns the As Reported Financials directly from the financial statements of the XBRL filings from the company.
                   any IntrinioReportedFinancials( [in] string identifier, [in] string statement, [in] long fiscalyear,
                      [in] string fiscalperiod, [in] string xbrltag, [in] any domaintag);
+                  // Returns a list of available standardized fundamentals
+                  any IntrinioBankFundamentals( [in] string identifier, [in] string statement, [in] string periodtype,
+                    [in] long sequencenumber, [in] string item);
+                  // Returns the Bank Call Report or UBPR Report XBRL tags and labels
+                  any IntrinioBankTags( [in] string identifier, [in] string statement, [in] long sequencenumber, [in] string item);
+                  // Returns professional-grade historical financial data for bank and bank holding companies.
+                  any IntrinioBankFinancials( [in] string identifier, [in] string statement, [in] long fiscalyear,
+                    [in] string fiscalperiod, [in] string tag, [in] any rounding);
                 };
             };
         };

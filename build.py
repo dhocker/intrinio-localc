@@ -71,6 +71,9 @@ shutil.copy("src/extn_helper.py", "build/")
 # Generate the XCU file
 print ("Generating intrinio.xcu")
 xcu = XCUFile("com.intrinio.fintech.localc.python.IntrinioImpl", "XIntrinio")
+#
+# Note: DO NOT use underscores in parameter names. LO does not accept them.
+#
 xcu.add_function("IntrinioUsage", "Get Intrinio usage satistics",
                  [
                      ('a', 'The access code ID.'),
@@ -85,77 +88,102 @@ xcu.add_function("IntrinioHistoricalPrices", "Get Intrinio historical price data
                  [
                      ('ticker', 'Ticker symbol.'),
                      ('item', 'The selected observation of the historical price (e.g. open, close, etc.).'),
-                     ('sequence_number', 'An integer, 0-last available data point.'),
-                     ('start_date', 'Optional, first date of prices.'),
-                     ('end_date', 'Optional, last date of prices.'),
+                     ('sequencenumber', 'An integer, 0-last available data point.'),
+                     ('startdate', 'Optional, first date of prices.'),
+                     ('enddate', 'Optional, last date of prices.'),
                      ('frequency', 'Periodicity of data points (e.g. daily, weekly, monthly, quarterly, yearly).')
                  ])
 xcu.add_function("IntrinioHistoricalData", "Get the historical data for a selected identifier",
                  [
                      ('identifier', 'Ticker symbol.'),
                      ('item', 'The specified standardized tag requested'),
-                     ('sequence_number', 'An integer, 0-last available data point'),
-                     ('start_date', 'Optional, first date of data'),
-                     ('end_date', 'Optional, last date of data'),
+                     ('sequencenumber', 'An integer, 0-last available data point'),
+                     ('startdate', 'Optional, first date of data'),
+                     ('enddate', 'Optional, last date of data'),
                      ('frequency', 'Periodicity of data points (e.g. daily, weekly, monthly, quarterly, yearly).'),
-                     ('period_type', 'The type of periods requested (e.g. FY, QTR, TTM, YTD  or count, sum, max, 75thpctl, mean, median, 25thpctl, min'),
-                     ('show_date', 'Show date (True) or show data (false, default).')
+                     ('periodtype', 'The type of periods requested (e.g. FY, QTR, TTM, YTD  or count, sum, max, 75thpctl, mean, median, 25thpctl, min'),
+                     ('showdate', 'Show date (True) or show data (false, default).')
                  ])
 xcu.add_function("IntrinioNews", "Get news for the selected identifier",
                  [
                      ('identifier', 'Ticker symbol.'),
-                     ('item', 'News attribute: title, publication_date, summary, url'),
-                     ('sequence_number', 'An integer, 0-last available data point')
+                     ('item', 'News attribute: title, publicationdate, summary, url'),
+                     ('sequencenumber', 'An integer, 0-last available data point')
                  ])
 xcu.add_function("IntrinioFundamentals", "Returns a list of available standardized fundamentals",
                  [
                      ('ticker', 'Ticker symbol.'),
-                     ('statement', 'The financial statement requested (e.g.income_statement, balance_sheet, cash_flow_statement, calculations)'),
-                     ('period_type', 'The type of periods requested (e.g. FY, QTR, TTM, YTD)'),
-                     ('sequence_number', 'An integer, 0-last available data point'),
-                     ('item', 'The return value for the fundamental (e.g. fiscal_year, fiscal_period, end_date, start_date)')
+                     ('statement', 'The financial statement requested (e.g.incomestatement, balancesheet, cashflowstatement, calculations)'),
+                     ('periodtype', 'The type of periods requested (e.g. FY, QTR, TTM, YTD)'),
+                     ('sequencenumber', 'An integer, 0-last available data point'),
+                     ('item', 'The return value for the fundamental (e.g. fiscalyear, fiscalperiod, enddate, startdate)')
                  ])
 xcu.add_function("IntrinioTags", "Returns the standardized tags and labels for a given ticker, statement, and date or fiscal year/fiscal quarter.",
                  [
                      ('identifier', 'Ticker symbol.'),
-                     ('statement', 'The financial statement requested (e.g. income_statement, balance_sheet, cash_flow_statement, calculations, current)'),
-                     ('sequence_number', 'An integer, 0-last available data point'),
+                     ('statement', 'The financial statement requested (e.g. incomestatement, balancesheet, cashflowstatement, calculations, current)'),
+                     ('sequencenumber', 'An integer, 0-last available data point'),
                      ('item', 'The return value for the tag (e.g. name, tag, parent, factor, balance, type, units')
                  ])
 xcu.add_function("IntrinioFinancials", "Returns professional-grade historical financial data.",
                  [
                      ('ticker', 'The stock market ticker symbol.'),
                      ('statement',
-                      'The financial statement requested (e.g.income_statement, balance_sheet, cash_flow_statement, calculations)'),
-                     ('fiscal_year', 'the fiscal year associated with the fundamental OR the sequence of the requested fundamental'),
-                     ('fiscal_period', 'the fiscal period associated with the fundamental, or the fiscal period type'),
+                      'The financial statement requested (e.g.incomestatement, balancesheet, cashflowstatement, calculations)'),
+                     ('fiscalyear', 'the fiscal year associated with the fundamental OR the sequence of the requested fundamental'),
+                     ('fiscalperiod', 'the fiscal period associated with the fundamental, or the fiscal period type'),
                      ('tag', 'The specified standardized tag'),
                      ('rounding', 'Round the returned value (e.g. A, K, M, B)')
                  ])
 xcu.add_function("IntrinioReportedFundamentals", "Returns a list of available as reported fundamentals",
                  [
                      ('ticker', 'Ticker symbol.'),
-                     ('statement', 'The financial statement requested (e.g.income_statement, balance_sheet, cash_flow_statement)'),
-                     ('period_type', 'The type of periods requested (e.g. FY, QTR)'),
-                     ('sequence_number', 'An integer, 0-last available data point'),
-                     ('item', 'The return value for the fundamental (e.g. fiscal_year, fiscal_period, end_date, start_date, filing_date)')
+                     ('statement', 'The financial statement requested (e.g.incomestatement, balancesheet, cashflowstatement)'),
+                     ('periodtype', 'The type of periods requested (e.g. FY, QTR)'),
+                     ('sequencenumber', 'An integer, 0-last available data point'),
+                     ('item', 'The return value for the fundamental (e.g. fiscalyear, fiscalperiod, enddate, startdate, filingdate)')
                  ])
 xcu.add_function("IntrinioReportedTags", "Returns the as reported XBRL tags and labels for a given ticker, statement, and date or fiscal year/fiscal quarter.",
                  [
                      ('identifier', 'Ticker symbol.'),
-                     ('statement', 'The financial statement requested (e.g. income_statement, balance_sheet, cash_flow_statement)'),
-                     ('sequence_number', 'An integer, 0-last available data point'),
-                     ('item', 'The return value for the tag (e.g. name, tag, balance, unit, domain_tag, abstract, sequence, depth, factor)')
+                     ('statement', 'The financial statement requested (e.g. incomestatement, balancesheet, cashflowstatement)'),
+                     ('sequencenumber', 'An integer, 0-last available data point'),
+                     ('item', 'The return value for the tag (e.g. name, tag, balance, unit, domaintag, abstract, sequence, depth, factor)')
                  ])
 xcu.add_function("IntrinioReportedFinancials", "Returns the As Reported Financials directly from the financial statements of the XBRL filings from the company.",
                  [
                      ('identifier', 'The stock market ticker symbol.'),
                      ('statement',
-                      'The financial statement requested (e.g.income_statement, balance_sheet, cash_flow_statement)'),
-                     ('fiscal_year', 'the fiscal year associated with the fundamental OR the sequence of the requested fundamental'),
-                     ('fiscal_period', 'the fiscal period associated with the fundamental, or the fiscal period type'),
-                     ('xbrl_tag', 'The specified XBRL tag'),
-                     ('domain_tag', 'The specified domain XBRL tag')
+                      'The financial statement requested (e.g.incomestatement, balancesheet, cashflowstatement)'),
+                     ('fiscalyear', 'the fiscal year associated with the fundamental OR the sequence of the requested fundamental'),
+                     ('fiscalperiod', 'the fiscal period associated with the fundamental, or the fiscal period type'),
+                     ('xbrltag', 'The specified XBRL tag'),
+                     ('domaintag', 'The specified domain XBRL tag')
+                 ])
+xcu.add_function("IntrinioBankFundamentals", "Returns a list of available standardized fundamentals",
+                 [
+                     ('identifier', 'Ticker symbol.'),
+                     ('statement', 'The Call Report/UBPR/Y-9C financial statement requested'),
+                     ('periodtype', 'The type of periods requested (e.g. FY, QTR)'),
+                     ('sequencenumber', 'An integer, 0-last available data point'),
+                     ('item', 'The return value for the fundamental (e.g. statementcode, enddate, startdate, months, fiscalyear, fiscalperiod, report)')
+                 ])
+xcu.add_function("IntrinioBankTags", "Returns the Bank Call Report or UBPR Report XBRL tags and labels",
+                 [
+                     ('identifier', 'Ticker symbol.'),
+                     ('statement', 'The Call Report/UBPR/Y-9C financial statement requested'),
+                     ('sequencenumber', 'An integer, 0-last available data point'),
+                     ('item', 'The return value for the tag (e.g. name, tag, unit, sequence, depth, abstract)')
+                 ])
+xcu.add_function("IntrinioBankFinancials", "Returns professional-grade historical financial data for bank and bank holding companies",
+                 [
+                     ('identifier', 'The stock market ticker symbol.'),
+                     ('statement',
+                      'The Call Report/UBPR/Y-9C financial statement requested'),
+                     ('fiscalyear', 'The fiscal year associated with the fundamental OR the sequence of the requested fundamental'),
+                     ('fiscalperiod', 'The fiscal period associated with the fundamental, or the fiscal period type'),
+                     ('tag', 'The specified Call Report/UBPR/Y-9C XBRL Tag requested'),
+                     ('rounding', 'Round the returned value (e.g. A, K, M, B)')
                  ])
 xcu.generate("build/intrinio.xcu")
 xcu.dump_functions()
