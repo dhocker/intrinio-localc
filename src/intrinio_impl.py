@@ -46,7 +46,7 @@ if cmd_folder not in sys.path:
 from intrinio_app_logger import AppLogger
 from intrinio_lib import IntrinioBase, QConfiguration, intrinio_login, is_valid_identifier, get_data_point, \
     get_historical_prices, get_historical_data, get_news, get_fundamentals_data, get_tags, \
-    get_financials_data, get_reported_fundamentals_data
+    get_financials_data, get_reported_fundamentals_data, get_reported_tags
 from intrinio_cache import UsageDataCache
 from extn_helper import date_str_to_float
 import xml.etree.ElementTree as etree
@@ -288,16 +288,15 @@ class IntrinioImpl(unohelper.Base, XIntrinio ):
         :return:
         """
         logger.debug("IntrinioReportedTags called: %s %s %d %s %d %s", identifier, statement, fiscal_year, fiscal_period, sequence_number, item)
-        # if _check_configuration():
-        #     if is_valid_identifier(identifier):
-        #         v = get_tags(identifier, statement, sequence_number, item)
-        #         return v
-        #     else:
-        #         logger.debug("Invalid identifier %s", identifier)
-        #         return "Invalid identifier"
-        # else:
-        #     return "No configuration"
-        return "Not implemented"
+        if _check_configuration():
+            if is_valid_identifier(identifier):
+                v = get_reported_tags(identifier, statement, fiscal_year, fiscal_period, sequence_number, item)
+                return v
+            else:
+                logger.debug("Invalid identifier %s", identifier)
+                return "Invalid identifier"
+        else:
+            return "No configuration"
 
     def IntrinioReportedFinancials(self, ticker, statement, fiscalyear, fiscalperiod, xbrltag, xbrldomain):
         """

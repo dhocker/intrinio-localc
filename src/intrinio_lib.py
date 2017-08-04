@@ -577,9 +577,37 @@ class IntrinioReportedFundamentals(IntrinioBase):
         return res
 
 
+class IntrinioReportedTags(IntrinioBase):
+    def __init__(self):
+        pass
+
+    @staticmethod
+    def get_tags_page(identifier, statement, fiscal_year, fiscal_period, sequence):
+        """
+        Returns the As Reported XBRL tags and labels
+        :param identifier:
+        :param sequence:
+        :param start_date:
+        :param end_date:
+        :param frequency:
+        :param period_type:
+        :return:
+        """
+        page_number = IntrinioReportedTags.get_page_number(sequence)
+
+        template_url = "{0}/tags/reported?identifier={1}&statement={2}&page_size={3}&page_number={4}&fiscal_year={5}&fiscal_period={6}"
+        url_string = template_url.format(QConfiguration.base_url, identifier.upper(), statement,
+                                         IntrinioReportedTags.page_size, page_number, fiscal_year, fiscal_period)
+
+        # print (url_string)
+        res = IntrinioReportedTags.exec_request(url_string)
+        # print (res)
+        return res
+
+
 from intrinio_cache import IdentifierCache, DataPointCache, UsageDataCache, HistoricalPricesCache, \
     HistoricalDataCache, IntrinioNewsCache, FundamentalsCache, IntrinioTagsCache, FinancialsDataCache, \
-    FinancialsQueryCache, ReportedFundamentalsCache
+    FinancialsQueryCache, ReportedFundamentalsCache, ReportedTagsCache
 
 def is_valid_identifier(identifier):
     """
@@ -990,6 +1018,61 @@ def get_reported_fundamentals_data(identifier, statement, period_type, sequence,
                 v = "Invalid item: " + item
         else:
             v = "Sequence is out of range"
+        return v
+
+    return IntrinioBase.status_code_message(res["status_code"])
+
+
+def get_reported_tags(identifier, statement, fiscal_year, fiscal_period, sequence, item):
+    """
+    Returns the As Reported XBRL tags and labels for a given ticker, statement, and date or fiscal year/fiscal quarter.
+    :param identifier:
+    :param statement:
+    :param fiscal_year:
+    :param fiscal_period:
+    :param sequence:
+    :param item:
+    :return:
+    """
+    logger.debug("get_reported_tags: %s %s %d %s %d %s", identifier, statement, fiscal_year, fiscal_period, sequence, item)
+
+    page_number = IntrinioBase.get_page_number(sequence)
+    page_index = IntrinioBase.get_page_index(sequence)
+
+    # Translate fiscal year and period if required
+    if int(fiscal_year) < 1900:
+        # fiscal year is a sequence number and fiscal period is a type
+        lookup_fp = fiscal_period
+        lookup_fy = int(fiscal_year)
+        fiscal_year = get_reported_fundamentals_data(identifier, statement, lookup_fp, lookup_fy, "fiscal_year")
+        fiscal_period = get_reported_fundamentals_data(identifier, statement, lookup_fp, lookup_fy, "fiscal_period")
+
+    if ReportedTagsCache.is_query_value_cached(identifier, statement, fiscal_year, fiscal_period, page_number):
+        logger.debug("Cache hit for reported tags %s %s %d %s %s %d", identifier, statement, fiscal_year, fiscal_period, item, sequence)
+        query_value = ReportedTagsCache.get_query_value(identifier, statement, fiscal_year, fiscal_period, page_number)
+        if len(query_value["data"]) > page_index:
+            v =  query_value["data"][page_index][item]
+        else:
+            v = "Sequence out of range"
+        # Special case since domain_tag can be None (null)
+        if item == "domain_tag" and not v:
+            v = ""
+        return v
+
+    res = IntrinioReportedTags.get_tags_page(identifier, statement, fiscal_year, fiscal_period, sequence)
+
+    if "data" in res:
+        ReportedTagsCache.add_query_value(res, identifier, statement, fiscal_year, fiscal_period, page_number)
+        if len(res["data"]) > sequence:
+            if item in res["data"][page_index]:
+                v = res["data"][page_index][item]
+            else:
+                v = "na"
+        else:
+            v = "Sequence is out of range"
+        # Special case since domain_tag can be None (null)
+        if item == "domain_tag" and not v:
+            v = ""
         return v
 
     return IntrinioBase.status_code_message(res["status_code"])
