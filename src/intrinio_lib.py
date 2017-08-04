@@ -193,8 +193,12 @@ class IntrinioBase:
             logger.error(str(ex))
             return {"status_code":ex.code}
 
-        j = json.loads(res)
-        j["status_code"] = status_code
+        # Not every URL returns something
+        if res:
+            j = json.loads(res)
+            j["status_code"] = status_code
+        else:
+            j = {"status_code" : status_code}
         return j
 
     @staticmethod
