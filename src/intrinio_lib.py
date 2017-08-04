@@ -549,9 +549,37 @@ class IntrinioFinancials(IntrinioBase):
         return res
 
 
+class IntrinioReportedFundamentals(IntrinioBase):
+    def __init__(self):
+        pass
+
+    @staticmethod
+    def get_fundamentals_page(identifier, statement, period_type, sequence):
+        """
+
+        :param identifier: Ticker symbol
+        :param statement: income_statement | balance_sheet | cash_flow_statement
+        :param period_type: FY | QTR
+        :param sequence: most recent first: 0..last available
+        It should be noted that the dates go backwards. Sequence 0 will always
+        be the newest date, while sequence numbers 1 to n will go backwards in time.
+        :return:
+        """
+        page_number = IntrinioReportedFundamentals.get_page_number(sequence)
+
+        template_url = "{0}/fundamentals/reported?ticker={1}&statement={2}&page_size={3}&page_number={4}&type={5}"
+        url_string = template_url.format(QConfiguration.base_url, identifier.upper(), statement,
+                                         IntrinioReportedFundamentals.page_size, page_number, period_type)
+
+        # print (url_string)
+        res = IntrinioReportedFundamentals.exec_request(url_string)
+        # print (res)
+        return res
+
+
 from intrinio_cache import IdentifierCache, DataPointCache, UsageDataCache, HistoricalPricesCache, \
     HistoricalDataCache, IntrinioNewsCache, FundamentalsCache, IntrinioTagsCache, FinancialsDataCache, \
-    FinancialsQueryCache
+    FinancialsQueryCache, ReportedFundamentalsCache
 
 def is_valid_identifier(identifier):
     """
@@ -922,6 +950,49 @@ def get_financials_data(identifier, statement, fiscal_year, fiscal_period, tag):
     FinancialsDataCache.add_query_value("na", identifier, statement, fiscal_year, fiscal_period, tag)
     logger.debug("Adding financials data cache: %s %s %d %s %s %s", "na", identifier, statement, fiscal_year, fiscal_period, tag)
     return "na"
+
+
+def get_reported_fundamentals_data(identifier, statement, period_type, sequence, item):
+    """
+    Returns an as reported fundamental.
+    :param identifier:
+    :param statement:
+    :param period_type:
+    :param sequence:
+    :param item:
+    :return:
+    """
+    logger.debug("get_reported_fundamentals_data: %s %s %s %d %s", identifier, statement, period_type, sequence, item)
+
+    page_number = IntrinioBase.get_page_number(sequence)
+    page_index = IntrinioBase.get_page_index(sequence)
+
+    if ReportedFundamentalsCache.is_query_value_cached(identifier, statement, period_type, page_number):
+        logger.debug("Cache hit for fundamentals data %s %s %s %d %s", identifier, statement, period_type, sequence, item)
+        query_value = ReportedFundamentalsCache.get_query_value(identifier, statement, period_type, page_number)
+        if len(query_value["data"]) > page_index:
+            if item in query_value["data"][page_index]:
+                v =  query_value["data"][page_index][item]
+            else:
+                v = "na"
+        else:
+            v = "Sequence out of range"
+        return v
+
+    res = IntrinioReportedFundamentals.get_fundamentals_page(identifier, statement, period_type, sequence)
+
+    if "data" in res:
+        ReportedFundamentalsCache.add_query_value(res, identifier, statement, period_type, page_number)
+        if len(res["data"]) > page_index:
+            if item in res["data"][page_index]:
+                v = res["data"][page_index][item]
+            else:
+                v = "Invalid item: " + item
+        else:
+            v = "Sequence is out of range"
+        return v
+
+    return IntrinioBase.status_code_message(res["status_code"])
 
 
 #

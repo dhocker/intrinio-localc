@@ -326,3 +326,35 @@ class FinancialsQueryCache:
     def add_query_value(cls, query_value, identifier, statement, fiscal_year, fiscal_period):
         key = cls._query_key(identifier, statement, fiscal_year, fiscal_period)
         cls.query_values[key] = query_value
+
+
+class ReportedFundamentalsCache:
+    """
+    Used to track reported fundamental data queries
+    """
+    # The key is a compound value consisting of all of the parameters
+    # that are used in the API call.
+    query_values = {}
+
+    def __init__(self):
+        pass
+
+    @staticmethod
+    def _query_key(identifier, statement, period_type, page_number):
+        return identifier + "_" + statement + "_" + str(period_type) + "_" + str(page_number)
+
+    @classmethod
+    def is_query_value_cached(cls, identifier, statement, period_type, page_number):
+        key = cls._query_key(identifier, statement, period_type, page_number)
+        return key in cls.query_values
+
+    @classmethod
+    def get_query_value(cls, identifier, statement, period_type, page_number):
+        key = cls._query_key(identifier, statement, period_type, page_number)
+        # This returns the entire API call result (which is a large dict)
+        return cls.query_values[key]
+
+    @classmethod
+    def add_query_value(cls, query_value, identifier, statement, period_type, page_number):
+        key = cls._query_key(identifier, statement, period_type, page_number)
+        cls.query_values[key] = query_value

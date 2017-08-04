@@ -46,7 +46,7 @@ if cmd_folder not in sys.path:
 from intrinio_app_logger import AppLogger
 from intrinio_lib import IntrinioBase, QConfiguration, intrinio_login, is_valid_identifier, get_data_point, \
     get_historical_prices, get_historical_data, get_news, get_fundamentals_data, get_tags, \
-    get_financials_data
+    get_financials_data, get_reported_fundamentals_data
 from intrinio_cache import UsageDataCache
 from extn_helper import date_str_to_float
 import xml.etree.ElementTree as etree
@@ -268,19 +268,15 @@ class IntrinioImpl(unohelper.Base, XIntrinio ):
         :return:
         """
         logger.debug("IntrinioReportedFundamentals called: %s %s %s %d %s", ticker, statement, period_type, sequence_number, item)
-        # if _check_configuration():
-        #     if is_valid_identifier(ticker):
-        #         v = get_fundamentals_data(ticker, statement, period_type, sequence_number, item)
-        #         # Convert ISO date to LO date-float
-        #         # if item == "publication_date":
-        #         #     v = date_str_to_float(v)
-        #         return v
-        #     else:
-        #         logger.debug("Invalid ticker %s", ticker)
-        #         return "Invalid ticker: " + ticker
-        # else:
-        #     return "No configuration"
-        return "Not implemented"
+        if _check_configuration():
+            if is_valid_identifier(ticker):
+                v = get_reported_fundamentals_data(ticker, statement, period_type, sequence_number, item)
+                return v
+            else:
+                logger.debug("Invalid ticker %s", ticker)
+                return "Invalid ticker: " + ticker
+        else:
+            return "No configuration"
 
     def IntrinioReportedTags(self, identifier, statement, fiscal_year, fiscal_period, sequence_number, item):
         """
