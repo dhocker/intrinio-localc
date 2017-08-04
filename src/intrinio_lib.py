@@ -181,8 +181,9 @@ class IntrinioBase:
         """
         # print(url_string)
         IntrinioBase.setup_authorization(url_string)
+        status_code = 666
         try:
-            logger.debug("Calling Intrinio: %s", url_string)
+            logger.debug("HTTPS GET: %s", url_string)
             response = urllib.request.urlopen(url_string)
             status_code = response.getcode()
             logger.debug("Status code: %d", status_code)
@@ -191,11 +192,18 @@ class IntrinioBase:
         except urllib.error.HTTPError as ex:
             logger.error(ex.msg)
             logger.error(str(ex))
-            return {"status_code":ex.code}
+            return {"status_code":ex.code, "error_message":ex.msg}
 
         # Not every URL returns something
         if res:
-            j = json.loads(res)
+            # Guard against invalid result returned by URL
+            try:
+                j = json.loads(res)
+            except:
+                logger.error("HTTPS GET: %s", url_string)
+                logger.error("Status code: %d", status_code)
+                logger.error("Returned invalid/unexpected JSON response: %s", res)
+                j = {"bad_payload": res}
             j["status_code"] = status_code
         else:
             j = {"status_code" : status_code}
