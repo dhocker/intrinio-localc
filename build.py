@@ -71,6 +71,7 @@ shutil.copy("src/intrinio_impl.py", "build/")
 shutil.copy("src/intrinio_app_logger.py", "build/")
 shutil.copy("src/intrinio_lib.py", "build/")
 shutil.copy("src/intrinio_cache.py", "build/")
+shutil.copy("src/intrinio_access.py", "build/")
 shutil.copy("src/extn_helper.py", "build/")
 # shutil.copy("src/intrinio_stats.py", "build/")
 

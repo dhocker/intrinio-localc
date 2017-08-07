@@ -36,7 +36,8 @@ if cmd_folder not in sys.path:
 
 # Local imports go here
 from intrinio_app_logger import AppLogger
-from intrinio_lib import IntrinioBase, QConfiguration, intrinio_login, is_valid_identifier, get_data_point, \
+from intrinio_lib import IntrinioBase, QConfiguration
+from intrinio_access import intrinio_login, is_valid_identifier, get_data_point, \
     get_historical_prices, get_historical_data, get_news, get_fundamentals_data, get_tags, \
     get_financials_data, get_reported_fundamentals_data, get_reported_tags, get_reported_financials_data
 from intrinio_cache import UsageDataCache
