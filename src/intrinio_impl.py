@@ -46,7 +46,7 @@ if cmd_folder not in sys.path:
 from intrinio_app_logger import AppLogger
 from intrinio_lib import IntrinioBase, QConfiguration, intrinio_login, is_valid_identifier, get_data_point, \
     get_historical_prices, get_historical_data, get_news, get_fundamentals_data, get_tags, \
-    get_financials_data, get_reported_fundamentals_data, get_reported_tags
+    get_financials_data, get_reported_fundamentals_data, get_reported_tags, get_reported_financials_data
 from intrinio_cache import UsageDataCache
 from extn_helper import date_str_to_float
 import xml.etree.ElementTree as etree
@@ -310,16 +310,16 @@ class IntrinioImpl(unohelper.Base, XIntrinio ):
         :return:
         """
         logger.debug("IntrinioReportedFinancials called: %s %s %d %s %s %s", ticker, statement, fiscalyear, fiscalperiod, xbrltag, xbrldomain)
-        # if _check_configuration():
-        #     if is_valid_identifier(ticker):
-        #         v = get_financials_data(ticker, statement, fiscalyear, fiscalperiod, tag)
-        #     else:
-        #         logger.debug("Invalid ticker %s", ticker)
-        #         return "Invalid ticker"
-        # else:
-        #     return "No configuration"
-        #
-        # return v
+        if _check_configuration():
+            if is_valid_identifier(ticker):
+                v = get_reported_financials_data(ticker, statement, fiscalyear, fiscalperiod, xbrltag, xbrldomain)
+            else:
+                logger.debug("Invalid ticker %s", ticker)
+                return "Invalid ticker"
+        else:
+            return "No configuration"
+
+        return v
         return "Not implemented"
 
     def IntrinioBankFundamentals(self, ticker, statement, period_type, sequence_number, item):

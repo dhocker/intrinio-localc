@@ -389,3 +389,70 @@ class ReportedTagsCache:
     def add_query_value(cls, query_value, identifier, statement, fiscal_year, fiscal_period, page_number):
         key = cls._query_key(identifier, statement, fiscal_year, fiscal_period, page_number)
         cls.query_values[key] = query_value
+
+
+class ReportedFinancialsCache:
+    """
+    Used to track reported financials data queries
+    """
+    # The key is a compound value consisting of all of the parameters
+    # that are used in the API call.
+    query_values = {}
+
+    def __init__(self):
+        pass
+
+    @staticmethod
+    def _query_key(identifier, statement, fiscal_year, fiscal_period, tag, domain_tag=None):
+        if domain_tag:
+            return identifier + "_" + statement + "_" + str(fiscal_year) + "_" + str(fiscal_period) + "_" + tag + "_" + domain_tag
+        return identifier + "_" + statement + "_" + str(fiscal_year) + "_" + str(fiscal_period) + "_" + tag
+
+    @classmethod
+    def is_query_value_cached(cls, identifier, statement, fiscal_year, fiscal_period, tag, domain_tag=None):
+        key = cls._query_key(identifier, statement, fiscal_year, fiscal_period, tag, domain_tag)
+        return key in cls.query_values
+
+    @classmethod
+    def get_query_value(cls, identifier, statement, fiscal_year, fiscal_period, tag, domain_tag=None):
+        key = cls._query_key(identifier, statement, fiscal_year, fiscal_period, tag, domain_tag)
+        # This returns the entire API call result (which is a large dict)
+        return cls.query_values[key]
+
+    @classmethod
+    def add_query_value(cls, query_value, identifier, statement, fiscal_year, fiscal_period, tag, domain_tag=None):
+        key = cls._query_key(identifier, statement, fiscal_year, fiscal_period, tag, domain_tag)
+        cls.query_values[key] = query_value
+
+
+class ReportedFinancialsQueryCache:
+    """
+    Used to track financials queries. This is so we can know that specific query has
+    already been run and avoid running it more than once.
+    """
+    # The key is a compound value consisting of all of the parameters
+    # that are used in the API call.
+    query_values = {}
+
+    def __init__(self):
+        pass
+
+    @staticmethod
+    def _query_key(identifier, statement, fiscal_year, fiscal_period):
+        return identifier + "_" + statement + "_" + str(fiscal_year) + "_" + str(fiscal_period)
+
+    @classmethod
+    def is_query_value_cached(cls, identifier, statement, fiscal_year, fiscal_period):
+        key = cls._query_key(identifier, statement, fiscal_year, fiscal_period)
+        return key in cls.query_values
+
+    @classmethod
+    def get_query_value(cls, identifier, statement, fiscal_year, fiscal_period):
+        key = cls._query_key(identifier, statement, fiscal_year, fiscal_period)
+        # This returns the entire API call result (which is a large dict)
+        return cls.query_values[key]
+
+    @classmethod
+    def add_query_value(cls, query_value, identifier, statement, fiscal_year, fiscal_period):
+        key = cls._query_key(identifier, statement, fiscal_year, fiscal_period)
+        cls.query_values[key] = query_value
