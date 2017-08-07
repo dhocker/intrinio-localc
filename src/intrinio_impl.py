@@ -23,15 +23,7 @@
 import os
 import sys
 import inspect
-import datetime
-#Try/except is for LibreOffice Python3.x vs. OpenOffice Python2.x.
-try:
-    from urllib.request import Request, urlopen
-    from urllib.error import URLError
-except ImportError:
-    from urllib2 import Request, urlopen, URLError
 import threading
-from codecs import iterdecode
 import unohelper
 from com.intrinio.fintech.localc import XIntrinio
 
