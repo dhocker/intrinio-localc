@@ -1,3 +1,4 @@
+#! /usr/local/bin/python3
 #
 # Package extension files into an .oxt file
 # Copyright (C) 2017  Dave Hocker (email: AtHomeX10@gmail.com)
@@ -28,9 +29,14 @@ from xcu_file import XCUFile
 import xml.etree.ElementTree as etree
 
 # Set up environment vars
-os.environ["PATH"] = os.environ["PATH"] + ":/usr/lib/ure/bin/"
-os.environ["PATH"] = os.environ["PATH"] + ":/Users/dhocker/LibreOffice5.3_SDK/bin"
-os.environ["DYLD_LIBRARY_PATH"] = os.environ["OO_SDK_URE_LIB_DIR"]
+if sys.platform == 'darwin':
+    # macOS
+    os.environ["PATH"] = os.environ["PATH"] + ":/usr/lib/ure/bin/"
+    os.environ["PATH"] = os.environ["PATH"] + ":/Users/dhocker/LibreOffice5.3_SDK/bin"
+    os.environ["DYLD_LIBRARY_PATH"] = os.environ["OO_SDK_URE_LIB_DIR"]
+else:
+    print ("Platform {0} is not supported by this build script".format(sys.platform))
+    exit(1)
 #subprocess.call("env")
 #print (os.environ["DYLD_LIBRARY_PATH"])
 
