@@ -90,14 +90,15 @@ class IntrinioImpl(unohelper.Base, XIntrinio ):
         :return:
         """
         logger.debug("IntrinioDataPoint called: %s %s", identifier, item)
-        if _check_configuration():
-            if is_valid_identifier(identifier):
-                return get_data_point(identifier, item)
-            else:
-                logger.debug("Invalid identifier %s", identifier)
-                return "Invalid identifier"
-        else:
+        if not _check_configuration():
             return "No configuration"
+        if not is_valid_identifier(identifier):
+            logger.debug("Invalid identifier %s", identifier)
+            return "Invalid identifier"
+        if not item:
+            return "Invalid item"
+
+        return get_data_point(identifier, item)
 
     def IntrinioHistoricalPrices(self, ticker, item, sequencenumber, startdate, enddate, frequency):
         """
@@ -112,14 +113,15 @@ class IntrinioImpl(unohelper.Base, XIntrinio ):
         :return:
         """
         logger.debug("IntrinioHistoricalPrices called: %s %s %d %s %s %s", ticker, item, sequencenumber, startdate, enddate, frequency)
-        if _check_configuration():
-            if is_valid_identifier(ticker):
-                return get_historical_prices(ticker, item, sequencenumber, startdate, enddate, frequency)
-            else:
-                logger.debug("Invalid ticker symbol %s", ticker)
-                return "Invalid ticker symbol"
-        else:
+        if not _check_configuration():
             return "No configuration"
+        if not is_valid_identifier(ticker):
+            logger.debug("Invalid ticker symbol %s", ticker)
+            return "Invalid ticker symbol"
+        if not item:
+            return "Invalid item"
+
+        return get_historical_prices(ticker, item, sequencenumber, startdate, enddate, frequency)
 
     def IntrinioHistoricalData(self, identifier, item, sequence_number, startdate, enddate, frequency, periodtype, showdate):
         """
@@ -136,14 +138,16 @@ class IntrinioImpl(unohelper.Base, XIntrinio ):
         """
         logger.debug("IntrinioHistoricalData called: %s %s %d %s %s %s %s %s", identifier, item, sequence_number,
                      startdate, enddate, frequency, periodtype, showdate)
-        if _check_configuration():
-            if is_valid_identifier(identifier):
-                return get_historical_data(identifier, item, sequence_number, startdate, enddate, frequency, periodtype, showdate)
-            else:
-                logger.debug("Invalid identifier %s", identifier)
-                return "Invalid identifier"
-        else:
+        if not _check_configuration():
             return "No configuration"
+        if not is_valid_identifier(identifier):
+            logger.debug("Invalid identifier %s", identifier)
+            return "Invalid identifier"
+        if not item:
+            return "Invalid item"
+
+        return get_historical_data(identifier, item, sequence_number, startdate, enddate, frequency, periodtype,
+                                   showdate)
 
     def IntrinioNews(self, identifier, item, sequence_number):
         """
@@ -154,18 +158,19 @@ class IntrinioImpl(unohelper.Base, XIntrinio ):
         :return:
         """
         logger.debug("IntrinioNews called: %s %s %d", identifier, item, sequence_number)
-        if _check_configuration():
-            if is_valid_identifier(identifier):
-                v = get_news(identifier, item, sequence_number)
-                # Convert ISO date to LO date-float
-                if item == "publication_date":
-                    v = date_str_to_float(v)
-                return v
-            else:
-                logger.debug("Invalid identifier %s", identifier)
-                return "Invalid identifier"
-        else:
+        if not _check_configuration():
             return "No configuration"
+        if not is_valid_identifier(identifier):
+            logger.debug("Invalid identifier %s", identifier)
+            return "Invalid identifier"
+        if not item:
+            return "Invalid item"
+
+        v = get_news(identifier, item, sequence_number)
+        # Convert ISO date to LO date-float
+        if item == "publication_date":
+            v = date_str_to_float(v)
+        return v
 
     def IntrinioFundamentals(self, ticker, statement, period_type, sequence_number, item):
         """
@@ -178,18 +183,21 @@ class IntrinioImpl(unohelper.Base, XIntrinio ):
         :return:
         """
         logger.debug("IntrinioFundamentals called: %s %s %s %d %s", ticker, statement, period_type, sequence_number, item)
-        if _check_configuration():
-            if is_valid_identifier(ticker):
-                v = get_fundamentals_data(ticker, statement, period_type, sequence_number, item)
-                # Convert ISO date to LO date-float
-                # if item == "publication_date":
-                #     v = date_str_to_float(v)
-                return v
-            else:
-                logger.debug("Invalid ticker %s", ticker)
-                return "Invalid ticker: " + ticker
-        else:
+        if not _check_configuration():
             return "No configuration"
+        if not is_valid_identifier(ticker):
+            logger.debug("Invalid ticker %s", ticker)
+            return "Invalid ticker"
+        if not statement:
+            return "Invalid statement"
+        if not item:
+            return "Invalid item"
+
+        v = get_fundamentals_data(ticker, statement, period_type, sequence_number, item)
+        # Convert ISO date to LO date-float
+        # if item == "publication_date":
+        #     v = date_str_to_float(v)
+        return v
 
     def IntrinioTags(self, identifier, statement, sequence_number, item):
         """
@@ -201,15 +209,18 @@ class IntrinioImpl(unohelper.Base, XIntrinio ):
         :return:
         """
         logger.debug("IntrinioTags called: %s %s %d %s", identifier, statement, sequence_number, item)
-        if _check_configuration():
-            if is_valid_identifier(identifier):
-                v = get_tags(identifier, statement, sequence_number, item)
-                return v
-            else:
-                logger.debug("Invalid identifier %s", identifier)
-                return "Invalid identifier"
-        else:
+        if not _check_configuration():
             return "No configuration"
+        if not is_valid_identifier(identifier):
+            logger.debug("Invalid identifier %s", identifier)
+            return "Invalid identifier"
+        if not statement:
+            return "Invalid statement"
+        if not item:
+            return "Invalid item"
+
+        v = get_tags(identifier, statement, sequence_number, item)
+        return v
 
     def IntrinioFinancials(self, ticker, statement, fiscalyear, fiscalperiod, tag, rounding):
         """
@@ -223,14 +234,17 @@ class IntrinioImpl(unohelper.Base, XIntrinio ):
         :return:
         """
         logger.debug("IntrinioFinancials called: %s %s %d %s %s %s", ticker, statement, fiscalyear, fiscalperiod, tag, rounding)
-        if _check_configuration():
-            if is_valid_identifier(ticker):
-                v = get_financials_data(ticker, statement, fiscalyear, fiscalperiod, tag)
-            else:
-                logger.debug("Invalid ticker %s", ticker)
-                return "Invalid ticker"
-        else:
+        if not _check_configuration():
             return "No configuration"
+        if not is_valid_identifier(ticker):
+            logger.debug("Invalid ticker %s", ticker)
+            return "Invalid ticker"
+        if not statement:
+            return "Invalid statement"
+        if not tag:
+            return "Invalid tag"
+
+        v = get_financials_data(ticker, statement, fiscalyear, fiscalperiod, tag)
 
         # Apply rounding factor to numeric values
         try:
@@ -261,15 +275,18 @@ class IntrinioImpl(unohelper.Base, XIntrinio ):
         :return:
         """
         logger.debug("IntrinioReportedFundamentals called: %s %s %s %d %s", ticker, statement, period_type, sequence_number, item)
-        if _check_configuration():
-            if is_valid_identifier(ticker):
-                v = get_reported_fundamentals_data(ticker, statement, period_type, sequence_number, item)
-                return v
-            else:
-                logger.debug("Invalid ticker %s", ticker)
-                return "Invalid ticker: " + ticker
-        else:
+        if not _check_configuration():
             return "No configuration"
+        if not is_valid_identifier(ticker):
+            logger.debug("Invalid ticker %s", ticker)
+            return "Invalid ticker"
+        if not statement:
+            return "Invalid statement"
+        if not item:
+            return "Invalid item"
+
+        v = get_reported_fundamentals_data(ticker, statement, period_type, sequence_number, item)
+        return v
 
     def IntrinioReportedTags(self, identifier, statement, fiscal_year, fiscal_period, sequence_number, item):
         """
@@ -281,15 +298,18 @@ class IntrinioImpl(unohelper.Base, XIntrinio ):
         :return:
         """
         logger.debug("IntrinioReportedTags called: %s %s %d %s %d %s", identifier, statement, fiscal_year, fiscal_period, sequence_number, item)
-        if _check_configuration():
-            if is_valid_identifier(identifier):
-                v = get_reported_tags(identifier, statement, fiscal_year, fiscal_period, sequence_number, item)
-                return v
-            else:
-                logger.debug("Invalid identifier %s", identifier)
-                return "Invalid identifier"
-        else:
+        if not _check_configuration():
             return "No configuration"
+        if not is_valid_identifier(identifier):
+            logger.debug("Invalid identifer %s", identifier)
+            return "Invalid ticker"
+        if not statement:
+            return "Invalid statement"
+        if not item:
+            return "Invalid item"
+
+        v = get_reported_tags(identifier, statement, fiscal_year, fiscal_period, sequence_number, item)
+        return v
 
     def IntrinioReportedFinancials(self, ticker, statement, fiscalyear, fiscalperiod, xbrltag, xbrldomain):
         """
@@ -303,17 +323,18 @@ class IntrinioImpl(unohelper.Base, XIntrinio ):
         :return:
         """
         logger.debug("IntrinioReportedFinancials called: %s %s %d %s %s %s", ticker, statement, fiscalyear, fiscalperiod, xbrltag, xbrldomain)
-        if _check_configuration():
-            if is_valid_identifier(ticker):
-                v = get_reported_financials_data(ticker, statement, fiscalyear, fiscalperiod, xbrltag, xbrldomain)
-            else:
-                logger.debug("Invalid ticker %s", ticker)
-                return "Invalid ticker"
-        else:
+        if not _check_configuration():
             return "No configuration"
+        if not is_valid_identifier(ticker):
+            logger.debug("Invalid ticker %s", ticker)
+            return "Invalid ticker"
+        if not statement:
+            return "Invalid statement"
+        if not xbrltag:
+            return "Invalid xbrl_tag"
 
+        v = get_reported_financials_data(ticker, statement, fiscalyear, fiscalperiod, xbrltag, xbrldomain)
         return v
-        return "Not implemented"
 
     def IntrinioBankFundamentals(self, ticker, statement, period_type, sequence_number, item):
         """

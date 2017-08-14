@@ -37,6 +37,11 @@ def is_valid_identifier(identifier):
     :param identifier: An Intrinio acceptable identifier (e.g a ticker symbol)
     :return: Returns True if the identifier is believed to be valid.
     """
+
+    # Weed out empty/blank identifiers
+    if not identifier:
+        return False
+
     id = identifier.upper()
 
     if not IdentifierCache.is_known_identifier(id):
