@@ -23,6 +23,7 @@ import os
 import os.path
 import ssl
 import math
+import inspect
 from intrinio_app_logger import AppLogger
 
 
@@ -44,6 +45,7 @@ class QConfiguration:
     full_file_path = ""
     cacerts = ""
     loglevel = ""
+    cwd = ""
 
     @classmethod
     def load(cls):
@@ -69,8 +71,6 @@ class QConfiguration:
             cfj = json.loads(cf.read())
             cls.auth_user = cfj["user"]
             cls.auth_passwd = cfj["password"]
-            if "certifi" in cfj:
-                cls.cacerts = cfj["certifi"]
             if "loglevel" in cfj:
                 cls.loglevel = cfj["loglevel"]
                 the_app_logger.set_log_level(cls.loglevel)
@@ -80,6 +80,20 @@ class QConfiguration:
         except Exception as ex:
             logger.error("An exception occurred while attempting to load intrinio.conf")
             logger.error(str(ex))
+
+        # Set up path to certs
+        cls.cwd = os.path.realpath(os.path.abspath
+                                          (os.path.split(inspect.getfile
+                                                         (inspect.currentframe()))[0]))
+        # The embedded versio of Python found in some versions of LO Calc
+        # does not handle certificates. Here we compensate by using the certificate
+        # package from the certifi project: https://github.com/certifi/python-certifi
+        if os.name == "posix":
+            cls.cacerts = "{0}/cacert.pem".format(cls.cwd)
+        elif os.name == "nt":
+            # This may not be necessary in Windows
+            cls.cacerts = "{0}\\cacert.pem".format(cls.cwd)
+        logger.debug("Path to cacert.pem: %s", cls.cacerts)
 
     @classmethod
     def save(cls, username, password):
