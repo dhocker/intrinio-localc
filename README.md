@@ -1,5 +1,5 @@
 # LibreOffice Calc Extension for Intrinio Marketplace
-Copyright © 2017 by Dave Hocker as TheAgency
+Copyright © 2017 by Dave Hocker as Qalydon
 
 ## Overview
 This project implements a LibreOffice Calc (LOCalc) addin extension that can
