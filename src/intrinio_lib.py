@@ -15,21 +15,25 @@
 # along with this program (the LICENSE.md file).  If not, see <http://www.gnu.org/licenses/>.
 #
 
-import urllib.request
-import urllib.parse
-import urllib.error
 import json
 import os
 import os.path
-import ssl
 import math
 import inspect
+import sys
 from intrinio_app_logger import AppLogger
-
+from url_helpers import setup_authorization3, setup_authorization2, exec_request3, exec_request2
 
 # Logger init
 the_app_logger = AppLogger("intrinio-extension")
 logger = the_app_logger.getAppLogger()
+
+# Python2 does not have FileNotFoundError
+try:
+    FileNotFoundError
+except NameError:
+    FileNotFoundError = IOError
+    logger.debug("FileNotFoundError defined")
 
 
 class QConfiguration:
@@ -148,18 +152,25 @@ class IntrinioBase:
 
     @staticmethod
     def setup_authorization(url_string):
-        """
-        Set up basic authorization for the given URL.
-        :param url_string:
-        :return: None
-        """
-        passman = urllib.request.HTTPPasswordMgrWithDefaultRealm()
-        passman.add_password(None, url_string, QConfiguration.auth_user, QConfiguration.auth_passwd)
-        authhandler = urllib.request.HTTPBasicAuthHandler(passman)
-        ssl_ctx = ssl.create_default_context(cafile=QConfiguration.cacerts)
-        httpshandler = urllib.request.HTTPSHandler(context=ssl_ctx)
-        opener = urllib.request.build_opener(httpshandler, authhandler)
-        urllib.request.install_opener(opener)
+        if sys.version_info[0] == 2:
+            setup_authorization2(url_string, QConfiguration.auth_user, QConfiguration.auth_passwd, QConfiguration.cacerts)
+        else:
+            setup_authorization3(url_string, QConfiguration.auth_user, QConfiguration.auth_passwd, QConfiguration.cacerts)
+
+    # @staticmethod
+    # def setup_authorization(url_string):
+    #     """
+    #     Set up basic authorization for the given URL.
+    #     :param url_string:
+    #     :return: None
+    #     """
+    #     passman = urllib.request.HTTPPasswordMgrWithDefaultRealm()
+    #     passman.add_password(None, url_string, QConfiguration.auth_user, QConfiguration.auth_passwd)
+    #     authhandler = urllib.request.HTTPBasicAuthHandler(passman)
+    #     ssl_ctx = ssl.create_default_context(cafile=QConfiguration.cacerts)
+    #     httpshandler = urllib.request.HTTPSHandler(context=ssl_ctx)
+    #     opener = urllib.request.build_opener(httpshandler, authhandler)
+    #     urllib.request.install_opener(opener)
 
     @staticmethod
     def get_usage(access_code):
@@ -193,33 +204,39 @@ class IntrinioBase:
         The status_code key is added to return the HTTPS status code.
         """
         # print(url_string)
-        IntrinioBase.setup_authorization(url_string)
-        status_code = 666
-        try:
-            logger.debug("HTTPS GET: %s", url_string)
-            response = urllib.request.urlopen(url_string)
-            status_code = response.getcode()
-            logger.debug("Status code: %d", status_code)
-            res = response.read()
-            res = str(res, "utf-8")
-        except urllib.error.HTTPError as ex:
-            logger.error(ex.msg)
-            logger.error(str(ex))
-            return {"status_code":ex.code, "error_message":ex.msg}
+        # IntrinioBase.setup_authorization(url_string)
+        # status_code = 666
+        # try:
+        #     logger.debug("HTTPS GET: %s", url_string)
+        #     response = urllib.request.urlopen(url_string)
+        #     status_code = response.getcode()
+        #     logger.debug("Status code: %d", status_code)
+        #     res = response.read()
+        #     res = str(res, "utf-8")
+        # except urllib.error.HTTPError as ex:
+        #     logger.error(ex.msg)
+        #     logger.error(str(ex))
+        #     return {"status_code":ex.code, "error_message":ex.msg}
+        #
+        # # Not every URL returns something
+        # if res:
+        #     # Guard against invalid result returned by URL
+        #     try:
+        #         j = json.loads(res)
+        #     except:
+        #         logger.error("HTTPS GET: %s", url_string)
+        #         logger.error("Status code: %d", status_code)
+        #         logger.error("Returned invalid/unexpected JSON response: %s", res)
+        #         j = {"bad_payload": res}
+        #     j["status_code"] = status_code
+        # else:
+        #     j = {"status_code" : status_code}
+        # return j
 
-        # Not every URL returns something
-        if res:
-            # Guard against invalid result returned by URL
-            try:
-                j = json.loads(res)
-            except:
-                logger.error("HTTPS GET: %s", url_string)
-                logger.error("Status code: %d", status_code)
-                logger.error("Returned invalid/unexpected JSON response: %s", res)
-                j = {"bad_payload": res}
-            j["status_code"] = status_code
+        if sys.version_info[0] == 2:
+            j = exec_request2(url_string, QConfiguration.auth_user, QConfiguration.auth_passwd, QConfiguration.cacerts)
         else:
-            j = {"status_code" : status_code}
+            j = exec_request3(url_string, QConfiguration.auth_user, QConfiguration.auth_passwd, QConfiguration.cacerts)
         return j
 
     @staticmethod
@@ -247,7 +264,13 @@ class IntrinioBase:
         :param sequence:
         :return:
         """
-        return math.ceil((sequence + 1) / IntrinioBase.page_size)
+        # return math.ceil((sequence + 1) / IntrinioBase.page_size)
+        # In Python2 ceil returns a float. In Python3 it returns an int
+        # All math is done in float to avoid Python2/3 differences
+        s = float(sequence)
+        ps = float(IntrinioBase.page_size)
+        pn = math.ceil((s + 1.0) / ps)
+        return int(pn)
 
     @staticmethod
     def get_page_index(sequence):
@@ -257,8 +280,12 @@ class IntrinioBase:
         :param sequence:
         :return:
         """
-        page_number = IntrinioBase.get_page_number(sequence)
-        return sequence - ((page_number - 1) * IntrinioBase.page_size)
+        # All math is done in float to avoid Python2/3 differences
+        pn = float(IntrinioBase.get_page_number(sequence))
+        ps = float(IntrinioBase.page_size)
+        s = float(sequence)
+        pi = s - ((pn - 1.0) * ps)
+        return int(pi)
 
 
 class IntrinioCompanies(IntrinioBase):

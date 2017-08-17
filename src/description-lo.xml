@@ -1,11 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- Apache OpenOffice specific description.xml file -->
+<!-- LibreOffice specific description.xml file -->
 <description
         xmlns="http://openoffice.org/extensions/description/2006"
         xmlns:d="http://openoffice.org/extensions/description/2006"
+        xmlns:l="http://libreoffice.org/extensions/description/2011"
         xmlns:xlink="http://www.w3.org/1999/xlink">
     <dependencies>
-        <OpenOffice.org-minimal-version value="2.4" d:name="OpenOffice.org 2.4"/>
+        <l:LibreOffice-minimal-version value="5.0" d:name="LibreOffice 5.0"/>
     </dependencies>
     <identifier value="com.intrinio.fintech.localc"/>
     <version value="0.2.0"/>

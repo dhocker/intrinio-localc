@@ -73,6 +73,7 @@ shutil.copy("src/intrinio_lib.py", "build/")
 shutil.copy("src/intrinio_cache.py", "build/")
 shutil.copy("src/intrinio_access.py", "build/")
 shutil.copy("src/extn_helper.py", "build/")
+shutil.copy("src/url_helpers.py", "build/")
 shutil.copy("certifi/cacert.pem", "build/")
 
 # Generate the XCU file

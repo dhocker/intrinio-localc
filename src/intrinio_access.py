@@ -30,6 +30,16 @@ from intrinio_lib import IntrinioCompanies, IntrinioSecurities, IntrinioBanks, \
 the_app_logger = AppLogger("intrinio-extension")
 logger = the_app_logger.getAppLogger()
 
+import sys
+if sys.version_info[0] == 2:
+    KEY_DATA = u'data'
+    KEY_VALUE = u'value'
+    KEY_DATE = u'date'
+else:
+    KEY_DATA = 'data'
+    KEY_VALUE = 'value'
+    KEY_DATE = 'date'
+
 
 def is_valid_identifier(identifier):
     """
@@ -73,12 +83,12 @@ def get_data_point(identifier, item):
         logger.debug("Cache hit for data point %s %s", identifier, item)
         return DataPointCache.get_value(identifier, item)
     res = IntrinioDataPoint.get_data_point(identifier, item)
-    if "value" in res:
-        v = res["value"]
+    if KEY_VALUE in res:
+        v = res[KEY_VALUE]
         DataPointCache.add_value(identifier, item, v)
         # After a successful API call, the usage stats are stale
         UsageDataCache.clear()
-        if str(v).isnumeric():
+        if str(v).isdigit():
             return float(v)
         return v
 
@@ -114,10 +124,10 @@ def get_historical_prices(identifier, item, sequence, start_date=None, end_date=
         logger.debug("Cache hit for historical price %s %s", identifier, item)
         query_value = HistoricalPricesCache.get_query_value(identifier, n_start_date, n_end_date, frequency, page_number)
         # Verify that item exists
-        if len(query_value["data"]) > page_index:
-            if item in query_value["data"][page_index]:
-                v =  query_value["data"][page_index][item]
-                if str(v).isnumeric():
+        if len(query_value[KEY_DATA]) > page_index:
+            if item in query_value[KEY_DATA][page_index]:
+                v =  query_value[KEY_DATA][page_index][item]
+                if str(v).isdigit():
                     return float(v)
             else:
                 v = "Invalid item"
@@ -127,13 +137,13 @@ def get_historical_prices(identifier, item, sequence, start_date=None, end_date=
 
     res = IntrinioHistoricalPrices.get_price_page(identifier, sequence, n_start_date, n_end_date, frequency)
 
-    if "data" in res:
+    if KEY_DATA in res:
         HistoricalPricesCache.add_query_value(res, identifier, n_start_date, n_end_date, frequency, page_number)
         # Verify that item exists
-        if len(res["data"]) > page_index:
-            if item in res["data"][page_index]:
-                v = res["data"][page_index][item]
-                if str(v).isnumeric():
+        if len(res[KEY_DATA]) > page_index:
+            if item in res[KEY_DATA][page_index]:
+                v = res[KEY_DATA][page_index][item]
+                if str(v).isdigit():
                     v = float(v)
             else:
                 v = "Invalid item"
@@ -173,12 +183,12 @@ def get_historical_data(identifier, item, sequence, start_date=None, end_date=No
     if HistoricalDataCache.is_query_value_cached(identifier, item, n_start_date, n_end_date, frequency, period_type, page_number):
         logger.debug("Cache hit for historical price %s %s", identifier, item)
         query_value = HistoricalDataCache.get_query_value(identifier, item, n_start_date, n_end_date, frequency, period_type, page_number)
-        if len(query_value["data"]) > page_index:
+        if len(query_value[KEY_DATA]) > page_index:
             if show_date:
-                v = query_value["data"][page_index]["date"]
+                v = query_value[KEY_DATA][page_index][KEY_DATE]
             else:
-                v =  query_value["data"][page_index]["value"]
-                if str(v).isnumeric():
+                v =  query_value[KEY_DATA][page_index][KEY_VALUE]
+                if str(v).isdigit():
                     v = float(v)
         else:
             v = "Sequence out of range"
@@ -187,14 +197,14 @@ def get_historical_data(identifier, item, sequence, start_date=None, end_date=No
     res = IntrinioHistoricalData.get_historical_data_page(identifier, item, sequence, n_start_date, n_end_date,
                                                           frequency, period_type)
 
-    if "data" in res:
+    if KEY_DATA in res:
         HistoricalDataCache.add_query_value(res, identifier, item, n_start_date, n_end_date, frequency, period_type, page_number)
-        if len(res["data"]) > page_index:
+        if len(res[KEY_DATA]) > page_index:
             if show_date:
-                v = res["data"][page_index]["date"]
+                v = res[KEY_DATA][page_index][KEY_DATE]
             else:
-                v = res["data"][page_index]["value"]
-                if str(v).isnumeric():
+                v = res[KEY_DATA][page_index][KEY_VALUE]
+                if str(v).isdigit():
                     v = float(v)
         else:
             v = "Sequence is out of range"
@@ -219,9 +229,9 @@ def get_news(identifier, item, sequence):
     if IntrinioNewsCache.is_query_value_cached(identifier, page_number):
         logger.debug("Cache hit for company news %s %s %d", identifier, item, sequence)
         query_value = IntrinioNewsCache.get_query_value(identifier, page_number)
-        if len(query_value["data"]) > page_index:
-            if item in query_value["data"][page_index]:
-                v =  query_value["data"][page_index][item]
+        if len(query_value[KEY_DATA]) > page_index:
+            if item in query_value[KEY_DATA][page_index]:
+                v =  query_value[KEY_DATA][page_index][item]
             else:
                 v = "Invalid item"
         else:
@@ -231,11 +241,11 @@ def get_news(identifier, item, sequence):
 
     res = IntrinioNews.get_news_page(identifier, sequence)
 
-    if "data" in res:
+    if KEY_DATA in res:
         IntrinioNewsCache.add_query_value(res, identifier, page_number)
-        if len(res["data"]) > page_index:
-            if item in res["data"][page_index]:
-                v = res["data"][page_index][item]
+        if len(res[KEY_DATA]) > page_index:
+            if item in res[KEY_DATA][page_index]:
+                v = res[KEY_DATA][page_index][item]
             else:
                 v = "Invalid item"
         else:
@@ -262,9 +272,9 @@ def get_fundamentals_data(identifier, statement, period_type, sequence, item):
     if FundamentalsCache.is_query_value_cached(identifier, statement, period_type, page_number):
         logger.debug("Cache hit for fundamentals data %s %s %s %d", identifier, statement, period_type, sequence)
         query_value = FundamentalsCache.get_query_value(identifier, statement, period_type, page_number)
-        if len(query_value["data"]) > page_index:
-            if item in query_value["data"][page_index]:
-                v =  query_value["data"][page_index][item]
+        if len(query_value[KEY_DATA]) > page_index:
+            if item in query_value[KEY_DATA][page_index]:
+                v =  query_value[KEY_DATA][page_index][item]
             else:
                 v = "Invalid item: " + item
         else:
@@ -273,11 +283,11 @@ def get_fundamentals_data(identifier, statement, period_type, sequence, item):
 
     res = IntrinioFundamentals.get_fundamentals_page(identifier, statement, period_type, sequence)
 
-    if "data" in res:
+    if KEY_DATA in res:
         FundamentalsCache.add_query_value(res, identifier, statement, period_type, page_number)
-        if len(res["data"]) > page_index:
-            if item in res["data"][page_index]:
-                v = res["data"][page_index][item]
+        if len(res[KEY_DATA]) > page_index:
+            if item in res[KEY_DATA][page_index]:
+                v = res[KEY_DATA][page_index][item]
             else:
                 v = "Invalid item: " + item
         else:
@@ -302,9 +312,9 @@ def get_tags(identifier, statement, sequence, item):
     if IntrinioTagsCache.is_query_value_cached(identifier, statement, page_number):
         logger.debug("Cache hit for standardized tags %s %s %s %d", identifier, statement, item, sequence)
         query_value = IntrinioTagsCache.get_query_value(identifier, statement, page_number)
-        if len(query_value["data"]) > page_index:
-            if item in query_value["data"][page_index]:
-                v =  query_value["data"][page_index][item]
+        if len(query_value[KEY_DATA]) > page_index:
+            if item in query_value[KEY_DATA][page_index]:
+                v =  query_value[KEY_DATA][page_index][item]
             else:
                 v = "Invalid item: " + item
         else:
@@ -313,11 +323,11 @@ def get_tags(identifier, statement, sequence, item):
 
     res = IntrinioTags.get_tags_page(identifier, statement, sequence)
 
-    if "data" in res:
+    if KEY_DATA in res:
         IntrinioTagsCache.add_query_value(res, identifier, statement, page_number)
-        if len(res["data"]) > sequence:
-            if item in res["data"][page_index]:
-                v = res["data"][page_index][item]
+        if len(res[KEY_DATA]) > sequence:
+            if item in res[KEY_DATA][page_index]:
+                v = res[KEY_DATA][page_index][item]
             else:
                 v = "Invalid item: " + item
         else:
@@ -378,18 +388,18 @@ def get_financials_data(identifier, statement, fiscal_year, fiscal_period, tag):
             # This is an error
             return IntrinioBase.status_code_message(res["status_code"])
         # Cache each tag/value pair in this page
-        if "data" not in res:
+        if KEY_DATA not in res:
             logger.debug("Financials page contains no data")
-        for tv in res["data"]:
-            logger.debug("Adding to financials data cache: %s %s %s %d %s %s", tv["value"],
+        for tv in res[KEY_DATA]:
+            logger.debug("Adding to financials data cache: %s %s %s %d %s %s", tv[KEY_VALUE],
                    identifier, statement, fiscal_year, fiscal_period, tv["tag"])
             # Note that this overwrites an existing cache entry
-            FinancialsDataCache.add_query_value(tv["value"], identifier, statement, fiscal_year, fiscal_period, tv["tag"])
+            FinancialsDataCache.add_query_value(tv[KEY_VALUE], identifier, statement, fiscal_year, fiscal_period, tv["tag"])
             # Note when we find the desired tag and its value
             if tv["tag"] == tag:
                 tag_found = True
-                v = tv["value"]
-                logger.debug("Financial tag found: %s=%s", tv["tag"], tv["value"])
+                v = tv[KEY_VALUE]
+                logger.debug("Financial tag found: %s=%s", tv["tag"], tv[KEY_VALUE])
 
         # Mark this query as cached
         FinancialsQueryCache.add_query_value(True, identifier, statement, fiscal_year, fiscal_period)
@@ -425,9 +435,9 @@ def get_reported_fundamentals_data(identifier, statement, period_type, sequence,
     if ReportedFundamentalsCache.is_query_value_cached(identifier, statement, period_type, page_number):
         logger.debug("Cache hit for fundamentals data %s %s %s %d %s", identifier, statement, period_type, sequence, item)
         query_value = ReportedFundamentalsCache.get_query_value(identifier, statement, period_type, page_number)
-        if len(query_value["data"]) > page_index:
-            if item in query_value["data"][page_index]:
-                v =  query_value["data"][page_index][item]
+        if len(query_value[KEY_DATA]) > page_index:
+            if item in query_value[KEY_DATA][page_index]:
+                v =  query_value[KEY_DATA][page_index][item]
             else:
                 v = "na"
         else:
@@ -436,11 +446,11 @@ def get_reported_fundamentals_data(identifier, statement, period_type, sequence,
 
     res = IntrinioReportedFundamentals.get_fundamentals_page(identifier, statement, period_type, sequence)
 
-    if "data" in res:
+    if KEY_DATA in res:
         ReportedFundamentalsCache.add_query_value(res, identifier, statement, period_type, page_number)
-        if len(res["data"]) > page_index:
-            if item in res["data"][page_index]:
-                v = res["data"][page_index][item]
+        if len(res[KEY_DATA]) > page_index:
+            if item in res[KEY_DATA][page_index]:
+                v = res[KEY_DATA][page_index][item]
             else:
                 v = "Invalid item: " + item
         else:
@@ -477,8 +487,8 @@ def get_reported_tags(identifier, statement, fiscal_year, fiscal_period, sequenc
     if ReportedTagsCache.is_query_value_cached(identifier, statement, fiscal_year, fiscal_period, page_number):
         logger.debug("Cache hit for reported tags %s %s %d %s %s %d", identifier, statement, fiscal_year, fiscal_period, item, sequence)
         query_value = ReportedTagsCache.get_query_value(identifier, statement, fiscal_year, fiscal_period, page_number)
-        if len(query_value["data"]) > page_index:
-            v =  query_value["data"][page_index][item]
+        if len(query_value[KEY_DATA]) > page_index:
+            v =  query_value[KEY_DATA][page_index][item]
         else:
             v = "Sequence out of range"
         # Special case since domain_tag can be None (null)
@@ -488,11 +498,11 @@ def get_reported_tags(identifier, statement, fiscal_year, fiscal_period, sequenc
 
     res = IntrinioReportedTags.get_tags_page(identifier, statement, fiscal_year, fiscal_period, sequence)
 
-    if "data" in res:
+    if KEY_DATA in res:
         ReportedTagsCache.add_query_value(res, identifier, statement, fiscal_year, fiscal_period, page_number)
-        if len(res["data"]) > sequence:
-            if item in res["data"][page_index]:
-                v = res["data"][page_index][item]
+        if len(res[KEY_DATA]) > sequence:
+            if item in res[KEY_DATA][page_index]:
+                v = res[KEY_DATA][page_index][item]
             else:
                 v = "na"
         else:
@@ -560,17 +570,17 @@ def get_reported_financials_data(identifier, statement, fiscal_year, fiscal_peri
             # This is an error
             return IntrinioBase.status_code_message(res["status_code"])
         # Cache each tag/value pair in this page
-        for tv in res["data"]:
+        for tv in res[KEY_DATA]:
             # Note that this overwrites an existing cache entry
             # If domain_tag key exists, make it part of the cache key
-            ReportedFinancialsCache.add_query_value(tv["value"], identifier, statement, fiscal_year, fiscal_period,
+            ReportedFinancialsCache.add_query_value(tv[KEY_VALUE], identifier, statement, fiscal_year, fiscal_period,
                                                     tv["xbrl_tag"], tv["domain_tag"])
-            logger.debug("Adding reported financials cache: %s %s %s %d %s %s %s", tv["value"],
+            logger.debug("Adding reported financials cache: %s %s %s %d %s %s %s", tv[KEY_VALUE],
                    identifier, statement, fiscal_year, fiscal_period, tv["xbrl_tag"], tv["domain_tag"])
             # Note when we find the desired tag and its value
             if tv["xbrl_tag"] == tag:
                 tag_found = True
-                v = tv["value"]
+                v = tv[KEY_VALUE]
 
         # Mark this query as cached
         ReportedFinancialsQueryCache.add_query_value(True, identifier, statement, fiscal_year, fiscal_period)
