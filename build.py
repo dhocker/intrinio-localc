@@ -49,9 +49,13 @@ print ("=============================")
 print ("Building Version:", build_version)
 print ("=============================")
 
+# Clean build folder
+print ("Cleaning build folder...")
+shutil.rmtree("build")
+
 # Create required build folders
 if not os.path.exists("build"):
-    print ("Creating build folder")
+    print ("Creating new build folder")
     os.mkdir("build")
 if not os.path.exists("build/META-INF"):
     print ("Creating build/META-INF folder")
