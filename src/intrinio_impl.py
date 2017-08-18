@@ -412,25 +412,34 @@ class IntrinioImpl(unohelper.Base, XIntrinio ):
 dialog_lock = threading.Lock()
 
 def _check_configuration():
-   """
-   Force Intrinio configuration. Even if the configuration attempt
-   fails, we'll continue on because the request might hit cache.
-   Only if we need to call Intrinio will we fail the request.
-   :return: Returns True if Intrinio is configured. Otherwise,
-   returns False.
-   """
-   configured = QConfiguration.is_configured()
-   if not configured:
+    """
+    Force Intrinio configuration. Even if the configuration attempt
+    fails, we'll continue on because the request might hit cache.
+    Only if we need to call Intrinio will we fail the request.
+    :return: Returns True if Intrinio is configured. Otherwise,
+    returns False.
+    """
+    configured = QConfiguration.is_configured()
+
+    if not configured:
+        # Do not ask again is an automatic "not configured"
+        if QConfiguration.do_not_ask_again:
+            logger.debug("Configuration is not initialized and do not ask again is set")
+            return False
+
         try:
             if dialog_lock.acquire(blocking=False):
                 logger.debug("Calling intrinio_login()")
                 res = intrinio_login()
                 logger.debug("Returned from intrinio_login()")
-                if res:
-                    # The return value is a tuple (username, password)
-                    QConfiguration.save(res[0], res[1])
+                if res[0]:
+                    # The return value is a tuple (True, username, password)
+                    QConfiguration.save(res[1], res[2])
                 else:
+                    # The return value is a tuple (False, DoNotAskAgain)
                     logger.error("intrinio_login() returned false")
+                    if res[1]:
+                        QConfiguration.do_not_ask_again = True
                 configured = QConfiguration.is_configured()
             else:
                 logger.warn("Intrinio configuration dialog is already active")
@@ -438,7 +447,8 @@ def _check_configuration():
             logger.error("Exception occurred trying to create configuraton: %s", str(ex))
         finally:
             dialog_lock.release()
-   return configured
+
+    return configured
 
 #
 # Boiler plate code for adding an instance of the extension

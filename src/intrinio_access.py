@@ -636,12 +636,14 @@ def intrinio_login():
     ctx = uno.getComponentContext()
     smgr = ctx.ServiceManager
     dlg_model = smgr.createInstance("com.sun.star.awt.UnoControlDialogModel")
-    dlg_model.Title = 'Intrinio Access Keys'
+    dlg_model.Title = 'Enter Intrinio Access Keys'
+
     _add_awt_model(dlg_model, 'FixedText', 'lblName', {
         'Label': 'User Name',
     }
                    )
     _add_awt_model(dlg_model, 'Edit', 'txtName', {})
+
     _add_awt_model(dlg_model, 'FixedText', 'lblPWD', {
         'Label': 'Password',
     }
@@ -650,6 +652,12 @@ def intrinio_login():
         'EchoChar': 42,
     }
                    )
+
+    _add_awt_model(dlg_model, 'CheckBox', 'cbDoNotAsk', {
+        'Label': 'Do not ask again',
+    }
+                   )
+
     _add_awt_model(dlg_model, 'Button', 'btnOK', {
         'Label': 'Save',
         'DefaultButton': True,
@@ -677,21 +685,23 @@ def intrinio_login():
         "txtName": [lmargin + 100, tmargin, 250, cheight],
         "lblPWD": [lmargin, tmargin + (theight * 1), 100, cheight],
         "txtPWD": [lmargin + 100, tmargin + (theight * 1), 250, cheight],
-        "btnOK": [lmargin + 100, tmargin + (theight * 2), 100, cheight],
-        "btnCancel": [lmargin + 200, tmargin + (theight * 2), 100, cheight]
+        "cbDoNotAsk": [lmargin + 100, tmargin + (theight * 2), 200, cheight],
+        "btnOK": [lmargin + 100, tmargin + (theight * 3), 100, cheight],
+        "btnCancel": [lmargin + 200, tmargin + (theight * 3), 100, cheight]
     }
 
     dialog = smgr.createInstance("com.sun.star.awt.UnoControlDialog")
     dialog.setModel(dlg_model)
     name_ctl = dialog.getControl('txtName')
     pass_ctl = dialog.getControl('txtPWD')
+    do_not_ask_ctl = dialog.getControl("cbDoNotAsk")
 
     # Apply layout to controls. Must be done within the dialog.
     for name, d in layout.items():
         ctl = dialog.getControl(name)
         ctl.setPosSize(d[0], d[1], d[2], d[3], POSSIZE)
 
-    dialog.setPosSize(300, 300, lmargin + rmargin + 100 + 250, tmargin + bmargin + (theight * 3), POSSIZE)
+    dialog.setPosSize(300, 300, lmargin + rmargin + 100 + 250, tmargin + bmargin + (theight * 4), POSSIZE)
     dialog.setVisible(True)
 
     # Run the dialog. Returns the value of the PushButtonType.
@@ -700,6 +710,6 @@ def intrinio_login():
     button_id = dialog.execute()
     logger.debug("intrinio login dialog returned: %s", button_id)
     if button_id == 1:
-        return (name_ctl.getText(), pass_ctl.getText())
+        return (True, name_ctl.getText(), pass_ctl.getText())
     else:
-        return False
+        return (False, do_not_ask_ctl.getState())

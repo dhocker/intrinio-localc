@@ -44,8 +44,9 @@ class QConfiguration:
     file_path = ""
     full_file_path = ""
     cacerts = ""
-    loglevel = ""
+    loglevel = "info"
     cwd = ""
+    do_not_ask_again = False
 
     @classmethod
     def load(cls):
@@ -62,7 +63,7 @@ class QConfiguration:
             cls.macOS = (os.uname()[0] == "Darwin")
         elif os.name == "nt":
             # Windows
-            cls.file_path = "{0}\\libreoffice\\intrinio\\".format(os.environ["APPDATALOCAL"])
+            cls.file_path = "{0}\\libreoffice\\intrinio\\".format(os.environ["LOCALAPPDATA"])
         cls.full_file_path = cls.file_path + file_name
 
         # Read intrinio.conf file
@@ -73,13 +74,15 @@ class QConfiguration:
             cls.auth_passwd = cfj["password"]
             if "loglevel" in cfj:
                 cls.loglevel = cfj["loglevel"]
-                the_app_logger.set_log_level(cls.loglevel)
             cf.close()
         except FileNotFoundError as ex:
             logger.error("%s was not found", cls.full_file_path)
         except Exception as ex:
             logger.error("An exception occurred while attempting to load intrinio.conf")
             logger.error(str(ex))
+
+        # Either the default or the config override
+        the_app_logger.set_log_level(cls.loglevel)
 
         # Set up path to certs
         cls.cwd = os.path.realpath(os.path.abspath
@@ -112,6 +115,7 @@ class QConfiguration:
         conf["user"] = cls.auth_user
         conf["password"] = cls.auth_passwd
         conf["certifi"] = cls.cacerts
+        conf["loglevel"] = cls.loglevel
 
         logger.debug("Saving configuration to %s", cls.full_file_path)
         cf = open(cls.full_file_path, "w")
