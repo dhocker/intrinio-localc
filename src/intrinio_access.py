@@ -129,6 +129,8 @@ def get_historical_prices(identifier, item, sequence, start_date=None, end_date=
 
     if "data" in res:
         HistoricalPricesCache.add_query_value(res, identifier, n_start_date, n_end_date, frequency, page_number)
+        # After a successful API call, the usage stats are stale
+        UsageDataCache.clear()
         # Verify that item exists
         if len(res["data"]) > page_index:
             if item in res["data"][page_index]:
@@ -189,6 +191,8 @@ def get_historical_data(identifier, item, sequence, start_date=None, end_date=No
 
     if "data" in res:
         HistoricalDataCache.add_query_value(res, identifier, item, n_start_date, n_end_date, frequency, period_type, page_number)
+        # After a successful API call, the usage stats are stale
+        UsageDataCache.clear()
         if len(res["data"]) > page_index:
             if show_date:
                 v = res["data"][page_index]["date"]
@@ -233,6 +237,8 @@ def get_news(identifier, item, sequence):
 
     if "data" in res:
         IntrinioNewsCache.add_query_value(res, identifier, page_number)
+        # After a successful API call, the usage stats are stale
+        UsageDataCache.clear()
         if len(res["data"]) > page_index:
             if item in res["data"][page_index]:
                 v = res["data"][page_index][item]
@@ -275,6 +281,8 @@ def get_fundamentals_data(identifier, statement, period_type, sequence, item):
 
     if "data" in res:
         FundamentalsCache.add_query_value(res, identifier, statement, period_type, page_number)
+        # After a successful API call, the usage stats are stale
+        UsageDataCache.clear()
         if len(res["data"]) > page_index:
             if item in res["data"][page_index]:
                 v = res["data"][page_index][item]
@@ -315,6 +323,8 @@ def get_tags(identifier, statement, sequence, item):
 
     if "data" in res:
         IntrinioTagsCache.add_query_value(res, identifier, statement, page_number)
+        # After a successful API call, the usage stats are stale
+        UsageDataCache.clear()
         if len(res["data"]) > sequence:
             if item in res["data"][page_index]:
                 v = res["data"][page_index][item]
@@ -385,6 +395,8 @@ def get_financials_data(identifier, statement, fiscal_year, fiscal_period, tag):
                    identifier, statement, fiscal_year, fiscal_period, tv["tag"])
             # Note that this overwrites an existing cache entry
             FinancialsDataCache.add_query_value(tv["value"], identifier, statement, fiscal_year, fiscal_period, tv["tag"])
+            # After a successful API call, the usage stats are stale
+            UsageDataCache.clear()
             # Note when we find the desired tag and its value
             if tv["tag"] == tag:
                 tag_found = True
@@ -438,6 +450,8 @@ def get_reported_fundamentals_data(identifier, statement, period_type, sequence,
 
     if "data" in res:
         ReportedFundamentalsCache.add_query_value(res, identifier, statement, period_type, page_number)
+        # After a successful API call, the usage stats are stale
+        UsageDataCache.clear()
         if len(res["data"]) > page_index:
             if item in res["data"][page_index]:
                 v = res["data"][page_index][item]
@@ -490,6 +504,8 @@ def get_reported_tags(identifier, statement, fiscal_year, fiscal_period, sequenc
 
     if "data" in res:
         ReportedTagsCache.add_query_value(res, identifier, statement, fiscal_year, fiscal_period, page_number)
+        # After a successful API call, the usage stats are stale
+        UsageDataCache.clear()
         if len(res["data"]) > sequence:
             if item in res["data"][page_index]:
                 v = res["data"][page_index][item]
@@ -567,6 +583,8 @@ def get_reported_financials_data(identifier, statement, fiscal_year, fiscal_peri
                                                     tv["xbrl_tag"], tv["domain_tag"])
             logger.debug("Adding reported financials cache: %s %s %s %d %s %s %s", tv["value"],
                    identifier, statement, fiscal_year, fiscal_period, tv["xbrl_tag"], tv["domain_tag"])
+            # After a successful API call, the usage stats are stale
+            UsageDataCache.clear()
             # Note when we find the desired tag and its value
             if tv["xbrl_tag"] == tag:
                 tag_found = True
