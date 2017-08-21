@@ -39,7 +39,8 @@ from intrinio_app_logger import AppLogger
 from intrinio_lib import IntrinioBase, QConfiguration
 from intrinio_access import intrinio_login, is_valid_identifier, get_data_point, \
     get_historical_prices, get_historical_data, get_news, get_fundamentals_data, get_tags, \
-    get_financials_data, get_reported_fundamentals_data, get_reported_tags, get_reported_financials_data
+    get_financials_data, get_reported_fundamentals_data, get_reported_tags, get_reported_financials_data, \
+    get_usage
 from intrinio_cache import UsageDataCache
 from extn_helper import date_str_to_float
 import xml.etree.ElementTree as etree
@@ -70,16 +71,10 @@ class IntrinioImpl(unohelper.Base, XIntrinio ):
         :return:
         """
         logger.debug("IntrinioUsage called: %s %s", accesscode, key)
-        if _check_configuration():
-            if not UsageDataCache.is_usage_data():
-                usage_data = IntrinioBase.get_usage(accesscode)
-                UsageDataCache.add_usage_data(usage_data)
-            else:
-                logger.debug("Cache hit for usage data %s %s", accesscode, key)
-            return UsageDataCache.get_usage_data()[key]
-        else:
+        if not _check_configuration():
             UsageDataCache.clear()
             return "No configuration"
+        return get_usage(accesscode, key)
 
     def IntrinioDataPoint(self, identifier, item):
         """

@@ -62,6 +62,31 @@ def is_valid_identifier(identifier):
     return IdentifierCache.is_valid_identifier(id)
 
 
+def get_usage(access_code, key):
+    """
+    Return current usage data
+    :param access_code:
+    :param key:
+    :return:
+    """
+    if not UsageDataCache.is_usage_data():
+        usage_data = IntrinioBase.get_usage(access_code)
+        if "access_code" in usage_data:
+            UsageDataCache.add_usage_data(usage_data)
+            if key in usage_data:
+                return usage_data[key]
+            else:
+                return "na"
+        else:
+            return IntrinioBase.status_code_message(usage_data["status_code"])
+
+    usage_data = UsageDataCache.get_usage_data()
+    if key in usage_data:
+        logger.debug("Cache hit for usage data %s %s", access_code, key)
+        return usage_data[key]
+    return "na"
+
+
 def get_data_point(identifier, item):
     """
     Return a data point value for a given identifer and item/tag.
