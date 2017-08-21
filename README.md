@@ -10,7 +10,7 @@ Currently, only functions that will work with a basic, free Intrinio
 account have been implemented. In the future, the function set may be
 expanded to provide parity with the Intrinio Excel AddIn.
 
-The addin should work on the Windows, macOS and Ubuntu versions of
+The addin works on the Windows, macOS and Ubuntu versions of
 [LibreOffice (version >= 5.0)](https://www.libreoffice.org/).
 
 ## License
@@ -18,11 +18,31 @@ GNU GENERAL PUBLIC LICENSE Version 3, 29 June 2007. Refer to the
 [LICENSE.md](https://github.com/dhocker/intrinio-localc/blob/master/README.md)
 file for complete details.
 
+## Installation
+1. Download the latest intrinio.oxt (the add-in file) from
+[here](https://github.com/qalydon/intrinio-localc/releases).
+1. Start LibreOffice or LibreOffice Calc.
+1. From the Tools menu, open the Extension Manager.
+1. Look through the list of installed add-ins for Intrinio Fintech
+Marketplace. If you find it, click the Remove button to remove it.
+For best results, **remove an existing Intrinio Fintech Markeplace
+add-in first**.
+1. Click the Add button.
+1. Navigate to the location where you downloaded intrinio.oxt. Select
+it.
+1. Choose if you want the add-in installed for you or everyone.
+1. Click the Close button.
+1. If LibreOffice asks to restart, do so.
+
+It is recommended that you always remove an existing version of the
+add-in before installing an update. Othwerwise, your results may be
+unpredictable.
 
 ## LOCalc Functions
 The addin provides a number of functions for retrieving data from
 the Intrinio Marketplace service. To the degree possible, these functions
-work like the similarly named Intrinio Excel Addin functions.
+work like the similarly named
+[Intrinio Excel Addin functions](http://docs.intrinio.com/excel-addin#intrinio-excel-functions).
 
 ### IntrinoUsage
 Use IntrinioUsage to retrieve information about how much of the Intrinio
@@ -30,7 +50,8 @@ service you have used.
 ```
 =IntrinioUsage(access_code, item)
 ```
-[access_code list](http://docs.intrinio.com/?javascript--api#usage)
+[access_code list](http://docs.intrinio.com/?javascript--api#usage): The com_fin_data
+access_code covers most of the basic, free Intrinio service.
 
 item: current | percent | limit | status_code
 
