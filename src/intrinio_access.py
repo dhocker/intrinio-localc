@@ -76,7 +76,7 @@ def get_usage(access_code, key):
             if key in usage_data:
                 return usage_data[key]
             else:
-                return "na"
+                return ""
         else:
             return IntrinioBase.status_code_message(usage_data["status_code"])
 
@@ -84,7 +84,7 @@ def get_usage(access_code, key):
     if key in usage_data:
         logger.debug("Cache hit for usage data %s %s", access_code, key)
         return usage_data[key]
-    return "na"
+    return ""
 
 
 def get_data_point(identifier, item):
