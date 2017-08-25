@@ -38,6 +38,13 @@ It is recommended that you always remove an existing version of the
 add-in before installing an update. Othwerwise, your results may be
 unpredictable.
 
+## Example Files
+You can find a number of example files in the examples folder. The
+examples are mostly LO conversions/derivatives of template files from the
+[Intrinio Excel AddIn.](https://github.com/intrinio/intrinio-excel)
+These files show you how most of the LOCalc Extension functions
+can be used.
+
 ## LOCalc Functions
 The addin provides a number of functions for retrieving data from
 the Intrinio Marketplace service. To the degree possible, these functions
