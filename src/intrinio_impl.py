@@ -322,11 +322,13 @@ class IntrinioImpl(unohelper.Base, XIntrinio ):
             return "No configuration"
         if not is_valid_identifier(ticker):
             logger.debug("Invalid ticker %s", ticker)
-            return "Invalid ticker"
+            return ""
         if not statement:
-            return "Invalid statement"
+            logger.debug("Invalid statement %s", statement)
+            return ""
         if not xbrltag:
-            return "Invalid xbrl_tag"
+            logger.debug("Invalid xbrl_tag %s", xbrltag)
+            return ""
 
         v = get_reported_financials_data(ticker, statement, fiscalyear, fiscalperiod, xbrltag, xbrldomain)
         return v

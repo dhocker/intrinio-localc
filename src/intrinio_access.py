@@ -147,7 +147,7 @@ def get_historical_prices(identifier, item, sequence, start_date=None, end_date=
             else:
                 v = "Invalid item"
         else:
-            v = "Sequence out of range"
+            v = ""
         return v
 
     res = IntrinioHistoricalPrices.get_price_page(identifier, sequence, n_start_date, n_end_date, frequency)
@@ -165,7 +165,7 @@ def get_historical_prices(identifier, item, sequence, start_date=None, end_date=
             else:
                 v = "Invalid item"
         else:
-            v = "Sequence out of range"
+            v = ""
         return v
 
     return IntrinioBase.status_code_message(res["status_code"])
@@ -208,7 +208,7 @@ def get_historical_data(identifier, item, sequence, start_date=None, end_date=No
                 if str(v).isnumeric():
                     v = float(v)
         else:
-            v = "Sequence out of range"
+            v = ""
         return v
 
     res = IntrinioHistoricalData.get_historical_data_page(identifier, item, sequence, n_start_date, n_end_date,
@@ -226,7 +226,7 @@ def get_historical_data(identifier, item, sequence, start_date=None, end_date=No
                 if str(v).isnumeric():
                     v = float(v)
         else:
-            v = "Sequence is out of range"
+            v = ""
         return v
 
     return IntrinioBase.status_code_message(res["status_code"])
@@ -254,7 +254,7 @@ def get_news(identifier, item, sequence):
             else:
                 v = "Invalid item"
         else:
-            v = "Sequence out of range"
+            v = ""
 
         return v
 
@@ -270,7 +270,7 @@ def get_news(identifier, item, sequence):
             else:
                 v = "Invalid item"
         else:
-            v = "Sequence is out of range"
+            v = ""
         return v
 
     return IntrinioBase.status_code_message(res["status_code"])
@@ -299,7 +299,7 @@ def get_fundamentals_data(identifier, statement, period_type, sequence, item):
             else:
                 v = "Invalid item: " + item
         else:
-            v = "Sequence out of range"
+            v = ""
         return v
 
     res = IntrinioFundamentals.get_fundamentals_page(identifier, statement, period_type, sequence)
@@ -314,7 +314,7 @@ def get_fundamentals_data(identifier, statement, period_type, sequence, item):
             else:
                 v = "Invalid item: " + item
         else:
-            v = "Sequence is out of range"
+            v = ""
         return v
 
     return IntrinioBase.status_code_message(res["status_code"])
@@ -341,7 +341,7 @@ def get_tags(identifier, statement, sequence, item):
             else:
                 v = "Invalid item: " + item
         else:
-            v = "Sequence out of range"
+            v = ""
         return v
 
     res = IntrinioTags.get_tags_page(identifier, statement, sequence)
@@ -356,7 +356,7 @@ def get_tags(identifier, statement, sequence, item):
             else:
                 v = "Invalid item: " + item
         else:
-            v = "Sequence is out of range"
+            v = ""
         return v
 
     return IntrinioBase.status_code_message(res["status_code"])
@@ -468,7 +468,7 @@ def get_reported_fundamentals_data(identifier, statement, period_type, sequence,
             else:
                 v = "na"
         else:
-            v = "Sequence out of range"
+            v = ""
         return v
 
     res = IntrinioReportedFundamentals.get_fundamentals_page(identifier, statement, period_type, sequence)
@@ -483,7 +483,7 @@ def get_reported_fundamentals_data(identifier, statement, period_type, sequence,
             else:
                 v = "Invalid item: " + item
         else:
-            v = "Sequence is out of range"
+            v = ""
         return v
 
     return IntrinioBase.status_code_message(res["status_code"])
@@ -519,7 +519,7 @@ def get_reported_tags(identifier, statement, fiscal_year, fiscal_period, sequenc
         if len(query_value["data"]) > page_index:
             v =  query_value["data"][page_index][item]
         else:
-            v = "Sequence out of range"
+            v = ""
         # Special case since domain_tag can be None (null)
         if item == "domain_tag" and not v:
             v = ""
@@ -537,7 +537,7 @@ def get_reported_tags(identifier, statement, fiscal_year, fiscal_period, sequenc
             else:
                 v = "na"
         else:
-            v = "Sequence is out of range"
+            v = ""
         # Special case since domain_tag can be None (null)
         if item == "domain_tag" and not v:
             v = ""
