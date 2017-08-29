@@ -26,6 +26,9 @@ logger.debug("Logger running...")
 
 
 if __name__ == '__main__':
+    # Inject certificate file location
+    QConfiguration.cacerts = "../certifi/cacert.pem"
+
     r = IntrinioBase.get_usage("com_fin_data")
     if r["status_code"] == HTTPStatus.OK:
         print ("Stats for Intrinio account with username", QConfiguration.get_masked_user())
