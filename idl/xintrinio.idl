@@ -45,6 +45,21 @@ module com {
                   // Returns professional-grade historical financial data for bank and bank holding companies.
                   any IntrinioBankFinancials( [in] string identifier, [in] string statement, [in] long fiscalyear,
                     [in] string fiscalperiod, [in] string tag, [in] any rounding);
+                  // Returns an item for an index using a query
+                  any IntrinioIndicesQuery( [in] string query, [in] string indextype,
+                    [in] long sequencenumber, [in] string item);
+                  // Returns the result count for an indices query
+                  any IntrinioIndicesQueryCount( [in] string query, [in] string indextype);
+                  // Returns the count of items/tags available for an indices query
+                  any IntrinioIndicesQueryTagCount( [in] string query, [in] string indextype);
+                  // Returns an item/tag name for an indices query
+                  any IntrinioIndicesQueryTag( [in] string query, [in] string indextype, [in] long sequencenumber);
+                  // Returns an item for an index using an index identifier
+                  any IntrinioIndex( [in] string identifier, [in] string item);
+                  // Returns the count of items/tags available for an index
+                  any IntrinioIndexTagCount( [in] string identifier );
+                  // Returns an item/tag name for an index
+                  any IntrinioIndexTag([in] string identifier, [in] long sequencenumber);
                 };
             };
         };

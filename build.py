@@ -76,6 +76,8 @@ shutil.copy("src/intrinio_app_logger.py", "build/")
 shutil.copy("src/intrinio_lib.py", "build/")
 shutil.copy("src/intrinio_cache.py", "build/")
 shutil.copy("src/intrinio_access.py", "build/")
+shutil.copy("src/intrinio_indices.py", "build/")
+shutil.copy("src/intrinio_companies.py", "build/")
 shutil.copy("src/extn_helper.py", "build/")
 shutil.copy("certifi/cacert.pem", "build/")
 
@@ -195,6 +197,43 @@ xcu.add_function("IntrinioBankFinancials", "Returns professional-grade historica
                      ('fiscalperiod', 'The fiscal period associated with the fundamental, or the fiscal period type'),
                      ('tag', 'The specified Call Report/UBPR/Y-9C XBRL Tag requested'),
                      ('rounding', 'Round the returned value (e.g. A, K, M, B)')
+                 ])
+xcu.add_function("IntrinioIndicesQuery", "Returns indices information for all indices covered by Intrinio.",
+                 [
+                     ('query', 'The stock market ticker symbol.'),
+                     ('indextype', 'The type of indices specified (e.g. stock_market)'),
+                     ('sequencenumber', 'An integer, 0-last available index'),
+                     ('item', 'The name of the item/tag to be returned')
+                 ])
+xcu.add_function("IntrinioIndicesQueryCount", "Returns the result count for an indices query.",
+                 [
+                     ('query', 'The stock market ticker symbol.'),
+                     ('indextype', 'The type of indices specified (e.g. stock_market)')
+                 ])
+xcu.add_function("IntrinioIndicesQueryTagCount", "Returns the number of items available for an indeces query",
+                 [
+                     ('query', 'The stock market ticker symbol.'),
+                     ('indextype', 'The type of indices specified (e.g. stock_market)')
+                 ])
+xcu.add_function("IntrinioIndicesQueryTag", "Returns an item/tag name for a queried index.",
+                 [
+                     ('query', 'The stock market ticker symbol.'),
+                     ('indextype', 'The type of indices specified (e.g. stock_market)'),
+                     ('sequencenumber', 'An integer, 0-last available item/tag')
+                 ])
+xcu.add_function("IntrinioIndex", "Returns indices information for a specific index covered by Intrinio.",
+                 [
+                     ('identifier', 'The Intrinio symbol associated with the index.'),
+                     ('item', 'The name of the item/tag to be returned')
+                 ])
+xcu.add_function("IntrinioIndexTagCount", "Returns the number of items available for an index",
+                 [
+                     ('identifier', 'The Intrinio symbol associated with the index.')
+                 ])
+xcu.add_function("IntrinioIndexTag", "Returns an item/tag name for an index.",
+                 [
+                     ('identifier', 'The Intrinio symbol associated with the index.'),
+                     ('sequencenumber', 'An integer, 0-last available item/tag')
                  ])
 xcu.generate("build/intrinio.xcu")
 xcu.dump_functions()

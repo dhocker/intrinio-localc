@@ -42,6 +42,9 @@ from intrinio_access import intrinio_login, is_valid_identifier, get_data_point,
     get_financials_data, get_reported_fundamentals_data, get_reported_tags, get_reported_financials_data, \
     get_usage
 from intrinio_cache import UsageDataCache
+from intrinio_indices import get_indices_by_query_count, get_indices_by_query, get_indices_by_query_tag_count, \
+    get_indices_by_query_tag, get_index_by_identifier_tag_count, get_index_by_identifier_tag, \
+    get_index_by_identifier
 from extn_helper import date_str_to_float
 import xml.etree.ElementTree as etree
 
@@ -402,6 +405,62 @@ class IntrinioImpl(unohelper.Base, XIntrinio ):
         #
         # return v
         return "Not implemented"
+
+    def IntrinioIndicesQuery(self, query, indextype, sequence, item):
+        if _check_configuration():
+            v = get_indices_by_query(query, indextype, sequence, item)
+        else:
+            v = "No configuration"
+
+        return v
+
+    def IntrinioIndicesQueryCount(self, query, indextype):
+        if _check_configuration():
+            v = get_indices_by_query_count(query, indextype)
+        else:
+            v = "No configuration"
+
+        return v
+
+    def IntrinioIndicesQueryTagCount(self, query, indextype):
+        if _check_configuration():
+            v = get_indices_by_query_tag_count(query, indextype)
+        else:
+            v = "No configuration"
+
+        return v
+
+    def IntrinioIndicesQueryTag(self, query, indextype, sequence):
+        if _check_configuration():
+            v = get_indices_by_query_tag(query, indextype, sequence)
+        else:
+            v = "No configuration"
+
+        return v
+
+    def IntrinioIndex(self, identifier, item):
+        if _check_configuration():
+            v = get_index_by_identifier(identifier, item)
+        else:
+            v = "No configuration"
+
+        return v
+
+    def IntrinioIndexTagCount(self, identifier):
+        if _check_configuration():
+            v = get_index_by_identifier_tag_count()
+        else:
+            v = "No configuration"
+
+        return v
+
+    def IntrinioIndexTag(self, identifier, sequencenumber):
+        if _check_configuration():
+            v = get_index_by_identifier_tag(sequencenumber)
+        else:
+            v = "No configuration"
+
+        return v
 
 
 # Configuration lock. Used to deal with the fact that sometimes
