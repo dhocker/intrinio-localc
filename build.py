@@ -235,6 +235,43 @@ xcu.add_function("IntrinioIndexTag", "Returns an item/tag name for an index.",
                      ('identifier', 'The Intrinio symbol associated with the index.'),
                      ('sequencenumber', 'An integer, 0-last available item/tag')
                  ])
+xcu.add_function("IntrinioCompaniesQuery", "Returns company list and information for all companies covered by Intrinio.",
+                 [
+                     ('query', 'The stock market ticker symbol.'),
+                     ('latestfilingdate', 'A date value that returns the list of companies whose latest SEC filing was filed on or after this date'),
+                     ('sequencenumber', 'An integer, 0-last available index'),
+                     ('item', 'The name of the item/tag to be returned')
+                 ])
+xcu.add_function("IntrinioCompaniesQueryCount", "Returns the result count for a companies query.",
+                 [
+                     ('query', 'The stock market ticker symbol.'),
+                     ('latestfilingdate', 'A date value that returns the list of companies whose latest SEC filing was filed on or after this date')
+                 ])
+xcu.add_function("IntrinioCompaniesQueryTagCount", "Returns the number of items available for a companies query",
+                 [
+                     ('query', 'The stock market ticker symbol.'),
+                     ('latestfilingdate', 'A date value that returns the list of companies whose latest SEC filing was filed on or after this date')
+                 ])
+xcu.add_function("IntrinioCompaniesQueryTag", "Returns an item/tag name for a queried company.",
+                 [
+                     ('query', 'The stock market ticker symbol.'),
+                     ('latestfilingdate', 'A date value that returns the list of companies whose latest SEC filing was filed on or after this date'),
+                     ('sequencenumber', 'An integer, 0-last available item/tag')
+                 ])
+xcu.add_function("IntrinioCompany", "Returns company information.",
+                 [
+                     ('identifier', 'The stock market ticker symbol.'),
+                     ('item', 'The name of the item/tag to be returned')
+                 ])
+xcu.add_function("IntrinioCompanyTagCount", "Returns the number of items available for a company",
+                 [
+                     ('identifier', 'The stock market ticker symbol.')
+                 ])
+xcu.add_function("IntrinioCompanyTag", "Returns an item/tag name for a company.",
+                 [
+                     ('identifier', 'The stock market ticker symbol.'),
+                     ('sequencenumber', 'An integer, 0-last available item/tag')
+                 ])
 xcu.generate("build/intrinio.xcu")
 xcu.dump_functions()
 

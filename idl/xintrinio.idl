@@ -60,6 +60,21 @@ module com {
                   any IntrinioIndexTagCount( [in] string identifier );
                   // Returns an item/tag name for an index
                   any IntrinioIndexTag([in] string identifier, [in] long sequencenumber);
+                  // Returns an item for an index using a query
+                  any IntrinioCompaniesQuery( [in] string query, [in] string latestfilingdate,
+                    [in] long sequencenumber, [in] string item);
+                  // Returns the result count for an indices query
+                  any IntrinioCompaniesQueryCount( [in] string query, [in] string latestfilingdate);
+                  // Returns the count of items/tags available for an indices query
+                  any IntrinioCompaniesQueryTagCount( [in] string query, [in] string latestfilingdate);
+                  // Returns an item/tag name for an indices query
+                  any IntrinioCompaniesQueryTag( [in] string query, [in] string latestfilingdate, [in] long sequencenumber);
+                  // Returns an item for a company
+                  any IntrinioCompany( [in] string identifier, [in] string item);
+                  // Returns the count of items/tags available for an indices query
+                  any IntrinioCompanyTagCount( [in] string identifier);
+                  // Returns an item/tag name for a company
+                  any IntrinioCompanyTag( [in] string identifier, [in] long sequencenumber);
                 };
             };
         };

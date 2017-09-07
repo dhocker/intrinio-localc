@@ -45,6 +45,9 @@ from intrinio_cache import UsageDataCache
 from intrinio_indices import get_indices_by_query_count, get_indices_by_query, get_indices_by_query_tag_count, \
     get_indices_by_query_tag, get_index_by_identifier_tag_count, get_index_by_identifier_tag, \
     get_index_by_identifier
+from intrinio_companies import get_companies_by_query, get_companies_by_query_count, get_companies_by_query_tag_count, \
+    get_companies_by_query_tag, get_company_by_identifier, get_company_by_identifier_tag_count, \
+    get_company_by_identifier_tag
 from extn_helper import date_str_to_float
 import xml.etree.ElementTree as etree
 
@@ -457,6 +460,70 @@ class IntrinioImpl(unohelper.Base, XIntrinio ):
     def IntrinioIndexTag(self, identifier, sequencenumber):
         if _check_configuration():
             v = get_index_by_identifier_tag(sequencenumber)
+        else:
+            v = "No configuration"
+
+        return v
+
+    def IntrinioCompaniesQuery(self, query, latestfilingdate, sequence, item):
+        if _check_configuration():
+            v = get_companies_by_query(query, latestfilingdate, sequence, item)
+        else:
+            v = "No configuration"
+
+        return v
+
+    def IntrinioCompaniesQueryCount(self, query, latestfilingdate):
+        if _check_configuration():
+            v = get_companies_by_query_count(query, latestfilingdate)
+        else:
+            v = "No configuration"
+
+        return v
+
+    def IntrinioCompaniesQueryTagCount(self, query, latestfilingdate):
+        if _check_configuration():
+            v = get_companies_by_query_tag_count()
+        else:
+            v = "No configuration"
+
+        return v
+
+    def IntrinioCompaniesQueryTag(self, query, latestfilingdate, sequence):
+        if _check_configuration():
+            v = get_companies_by_query_tag(sequence)
+        else:
+            v = "No configuration"
+
+        return v
+
+    def IntrinioCompany(self, identifier, item):
+        if _check_configuration():
+            v = get_company_by_identifier(identifier, item)
+            # The securities item is a list. We condense it to a string of symbols.
+            if item == "securities":
+                s = ""
+                for security in v:
+                    if s:
+                        s += ", "
+                    s += security["ticker"]
+                v = s
+        else:
+            v = "No configuration"
+
+        return v
+
+    def IntrinioCompanyTagCount(self, identifier):
+        if _check_configuration():
+            v = get_company_by_identifier_tag_count()
+        else:
+            v = "No configuration"
+
+        return v
+
+    def IntrinioCompanyTag(self, identifier, sequence):
+        if _check_configuration():
+            v = get_company_by_identifier_tag(sequence)
         else:
             v = "No configuration"
 
