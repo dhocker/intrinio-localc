@@ -48,6 +48,9 @@ from intrinio_indices import get_indices_by_query_count, get_indices_by_query, g
 from intrinio_companies import get_companies_by_query, get_companies_by_query_count, get_companies_by_query_tag_count, \
     get_companies_by_query_tag, get_company_by_identifier, get_company_by_identifier_tag_count, \
     get_company_by_identifier_tag
+from intrinio_securities import get_securities_by_query, get_securities_by_query_count, \
+    get_securities_by_query_tag_count, get_securities_by_query_tag, get_security_by_identifier, \
+    get_security_identifier_tag_count, get_security_identifier_tag
 from extn_helper import date_str_to_float
 import xml.etree.ElementTree as etree
 
@@ -524,6 +527,70 @@ class IntrinioImpl(unohelper.Base, XIntrinio ):
     def IntrinioCompanyTag(self, identifier, sequence):
         if _check_configuration():
             v = get_company_by_identifier_tag(sequence)
+        else:
+            v = "No configuration"
+
+        return v
+
+    def IntrinioSecuritiesQuery(self, query, exchangesymbol, lastcrspadjdate, sequence, item):
+        if _check_configuration():
+            v = get_securities_by_query(query, exchangesymbol, lastcrspadjdate, sequence, item)
+        else:
+            v = "No configuration"
+
+        return v
+
+    def IntrinioSecuritiesQueryCount(self, query, exchangesymbol, lastcrspadjdate):
+        if _check_configuration():
+            v = get_securities_by_query_count(query, exchangesymbol, lastcrspadjdate)
+        else:
+            v = "No configuration"
+
+        return v
+
+    def IntrinioSecuritiesQueryTagCount(self, query, exchangesymbol, lastcrspadjdate):
+        if _check_configuration():
+            v = get_securities_by_query_tag_count()
+        else:
+            v = "No configuration"
+
+        return v
+
+    def IntrinioSecuritiesQueryTag(self, query, exchangesymbol, lastcrspadjdate, sequence):
+        if _check_configuration():
+            v = get_securities_by_query_tag(sequence)
+        else:
+            v = "No configuration"
+
+        return v
+
+    def IntrinioSecurity(self, identifier, item):
+        if _check_configuration():
+            v = get_security_by_identifier(identifier, item)
+            # The securities item is a list. We condense it to a string of symbols.
+            if item == "securities":
+                s = ""
+                for security in v:
+                    if s:
+                        s += ", "
+                    s += security["ticker"]
+                v = s
+        else:
+            v = "No configuration"
+
+        return v
+
+    def IntrinioSecurityTagCount(self, identifier):
+        if _check_configuration():
+            v = get_security_identifier_tag_count()
+        else:
+            v = "No configuration"
+
+        return v
+
+    def IntrinioSecurityTag(self, identifier, sequence):
+        if _check_configuration():
+            v = get_security_identifier_tag(sequence)
         else:
             v = "No configuration"
 

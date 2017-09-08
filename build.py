@@ -78,6 +78,7 @@ shutil.copy("src/intrinio_cache.py", "build/")
 shutil.copy("src/intrinio_access.py", "build/")
 shutil.copy("src/intrinio_indices.py", "build/")
 shutil.copy("src/intrinio_companies.py", "build/")
+shutil.copy("src/intrinio_securities.py", "build/")
 shutil.copy("src/extn_helper.py", "build/")
 shutil.copy("certifi/cacert.pem", "build/")
 
@@ -198,6 +199,7 @@ xcu.add_function("IntrinioBankFinancials", "Returns professional-grade historica
                      ('tag', 'The specified Call Report/UBPR/Y-9C XBRL Tag requested'),
                      ('rounding', 'Round the returned value (e.g. A, K, M, B)')
                  ])
+
 xcu.add_function("IntrinioIndicesQuery", "Returns indices information for all indices covered by Intrinio.",
                  [
                      ('query', 'The stock market ticker symbol.'),
@@ -235,6 +237,7 @@ xcu.add_function("IntrinioIndexTag", "Returns an item/tag name for an index.",
                      ('identifier', 'The Intrinio symbol associated with the index.'),
                      ('sequencenumber', 'An integer, 0-last available item/tag')
                  ])
+
 xcu.add_function("IntrinioCompaniesQuery", "Returns company list and information for all companies covered by Intrinio.",
                  [
                      ('query', 'The stock market ticker symbol.'),
@@ -272,6 +275,49 @@ xcu.add_function("IntrinioCompanyTag", "Returns an item/tag name for a company."
                      ('identifier', 'The stock market ticker symbol.'),
                      ('sequencenumber', 'An integer, 0-last available item/tag')
                  ])
+
+xcu.add_function("IntrinioSecuritiesQuery", "Returns company list and information for securities covered by Intrinio.",
+                 [
+                     ('query', 'The stock market ticker symbol.'),
+                     ('exchangesymbol', 'The Intrinio Stock Market Symbol, to specify the exchange for the list of securities'),
+                     ('lastcrspadjdate', 'A date value that returns the list of securities that have had adjusted stock prices due to a corporate event after this date'),
+                     ('sequencenumber', 'An integer, 0-last available index'),
+                     ('item', 'The name of the item/tag to be returned')
+                 ])
+xcu.add_function("IntrinioSecuritiesQueryCount", "Returns the result count for a companies query.",
+                 [
+                     ('query', 'The stock market ticker symbol.'),
+                     ('exchangesymbol', 'The Intrinio Stock Market Symbol, to specify the exchange for the list of securities'),
+                     ('lastcrspadjdate', 'A date value that returns the list of securities that have had adjusted stock prices due to a corporate event after this date')
+                 ])
+xcu.add_function("IntrinioSecuritiesQueryTagCount", "Returns the number of items available for a companies query",
+                 [
+                     ('query', 'The stock market ticker symbol.'),
+                     ('exchangesymbol', 'The Intrinio Stock Market Symbol, to specify the exchange for the list of securities'),
+                     ('lastcrspadjdate', 'A date value that returns the list of securities that have had adjusted stock prices due to a corporate event after this date')
+                 ])
+xcu.add_function("IntrinioSecuritiesQueryTag", "Returns an item/tag name for a queried company.",
+                 [
+                     ('query', 'The stock market ticker symbol.'),
+                     ('exchangesymbol', 'The Intrinio Stock Market Symbol, to specify the exchange for the list of securities'),
+                     ('lastcrspadjdate', 'A date value that returns the list of securities that have had adjusted stock prices due to a corporate event after this date'),
+                     ('sequencenumber', 'An integer, 0-last available item/tag')
+                 ])
+xcu.add_function("IntrinioSecurity", "Returns security information.",
+                 [
+                     ('identifier', 'The stock market ticker symbol.'),
+                     ('item', 'The name of the item/tag to be returned')
+                 ])
+xcu.add_function("IntrinioSecurityTagCount", "Returns the number of items available for a security",
+                 [
+                     ('identifier', 'The stock market ticker symbol.')
+                 ])
+xcu.add_function("IntrinioSecurityTag", "Returns an item/tag name for a security.",
+                 [
+                     ('identifier', 'The stock market ticker symbol.'),
+                     ('sequencenumber', 'An integer, 0-last available item/tag')
+                 ])
+
 xcu.generate("build/intrinio.xcu")
 xcu.dump_functions()
 

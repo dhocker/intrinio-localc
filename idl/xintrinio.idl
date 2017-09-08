@@ -75,6 +75,24 @@ module com {
                   any IntrinioCompanyTagCount( [in] string identifier);
                   // Returns an item/tag name for a company
                   any IntrinioCompanyTag( [in] string identifier, [in] long sequencenumber);
+                  // Returns an item for an index using a query
+                  any IntrinioSecuritiesQuery( [in] string query, [in] string exchangesymbol, [in] string lastcrspadjdate,
+                    [in] long sequencenumber, [in] string item);
+                  // Returns the result count for a securities query
+                  any IntrinioSecuritiesQueryCount( [in] string query, [in] string exchangesymbol,
+                    [in] string lastcrspadjdate);
+                  // Returns the count of items/tags available for a securities query
+                  any IntrinioSecuritiesQueryTagCount( [in] string query, [in] string exchangesymbol,
+                    [in] string lastcrspadjdate);
+                  // Returns an item/tag name for a securities query
+                  any IntrinioSecuritiesQueryTag( [in] string query, [in] string exchangesymbol,
+                    [in] string lastcrspadjdate, [in] long sequencenumber);
+                  // Returns an item for an index using a security identifier
+                  any IntrinioSecurity( [in] string identifier, [in] string item);
+                  // Returns the count of items/tags available for a security
+                  any IntrinioSecurityTagCount( [in] string identifier );
+                  // Returns an item/tag name for a security
+                  any IntrinioSecurityTag([in] string identifier, [in] long sequencenumber);
                 };
             };
         };
