@@ -5,12 +5,13 @@ Copyright © 2017 by Dave Hocker as Qalydon
 This project implements a LibreOffice Calc (LOCalc) addin extension that can
 retrieve data from the Intrinio Marketplace service. It provides a
 subset of the functions implemented by the
-[Intrinio Excel AddIn](https://github.com/intrinio/intrinio-excel).
+[Intrinio Excel AddIn](https://github.com/intrinio/intrinio-excel) plus
+an additional set of functions not found in the Intrinio Excel AddIn.
 Currently, only functions that will work with a basic, free Intrinio
 account have been implemented. In the future, the function set may be
 expanded to provide parity with the Intrinio Excel AddIn.
 
-The addin works on the Windows, macOS and Ubuntu versions of
+The LOCalc addin works on the Windows, macOS and Ubuntu versions of
 [LibreOffice (version >= 5.0)](https://www.libreoffice.org/).
 
 ## License
@@ -39,16 +40,22 @@ add-in before installing an update. Othwerwise, your results may be
 unpredictable.
 
 ## Example Files
-You can find a number of example files in the examples folder. The
-examples are mostly LO conversions/derivatives of template files from the
+You can find a number of example files in the examples folder. Some of
+the examples are LO conversions/derivatives of template files from the
 [Intrinio Excel AddIn.](https://github.com/intrinio/intrinio-excel)
 These files show you how most of the LOCalc Extension functions
 can be used.
 
 ## LOCalc Functions
 The addin provides a number of functions for retrieving data from
-the Intrinio Marketplace service. To the degree possible, these functions
-work like the similarly named
+the Intrinio Marketplace service. The total set of functions is
+divided into two groups.
+
+1. Functions that are common to the Intrinio Excel AddIn.
+1. Functions that are **unique** to the LOCalc AddIn.
+
+## Functions Common to the Excel AddIn
+To the degree possible, these functions work like the similarly named
 [Intrinio Excel Addin functions](http://docs.intrinio.com/excel-addin#intrinio-excel-functions).
 
 ### IntrinoUsage
@@ -183,6 +190,92 @@ Essentially, this maps the sequence parameter to a year in an inverse order.
 Sequence value 0 will correspond to the most recent fundamental while
 value 1 will be back one increment. For example, if the type value is "FY",
 then the sequence number will be the relative fiscal year.
+
+## Functions Unique to the LOCalc AddIn
+These functions provide access to additonal data - data that cannot be
+accessed from the Excel AddIn.
+
+There is a general usage model at play for these functions. There is
+a query set and an identifier set. The query set contains query,
+query-count, tag-count and tag functions.
+The identifier set contains identifier, tag-count and tag functions.
+
+The query-count function can be used to determine how many indices
+are in the result set of a given query. Using this value, you can
+construct a spreadsheet with cells for each index in the result set.
+Similarly, you can use the tag-count function to determine how many
+data items are available for an index. Use the tag function to
+retrieve the tag/item name for each available tag.
+
+The **IntrinioIndices.ods** spreadsheet provides an example of how this
+is done.
+
+### Indices
+This set of functions returns indices list and information for all
+indices covered by [Intrinio](http://docs.intrinio.com/?javascript--api#indices37).
+#### Indices by Query
+```
+=IntrinioIndicesQuery(query, indextype, sequence, item)
+```
+Returns a single data item for a selected index.
+* query - a string that is used to filter the list of indices by
+index name or symbol.
+* indextype - stock_market, economic or sector.
+* sequence - refers to the nth (0 < n < query-count) index in the list.
+* item - the/tag value to be returned.
+
+```
+=IntrinioIndicesQueryCount(query, indextype)
+```
+Returns the count of indices in the resultant list.
+* query - a string that is used to filter the list of indices by
+index name or symbol.
+* indextype - stock_market, economic or sector.
+
+```
+=IntrinioIndicesQueryTagCount(query, indextype)
+```
+Returns the number of tags/items that are available for an index.
+* query - a string that is used to filter the list of indices by
+index name or symbol.
+* indextype - stock_market, economic or sector.
+
+```
+=IntrinioIndicesQueryTag(query, indextype, sequence)
+```
+Returns a tag/item name for a selected index.
+* query - a string that is used to filter the list of indices by
+index name or symbol.
+* indextype - stock_market, economic or sector.
+* sequence - refers to the nth (0 < n < tag-count) tag/item in the list
+of available tags/items.
+
+#### Indices by Identifier
+```
+=IntrinioIndex(identifier, item)
+```
+Returns a single data item for the given index.
+* identifier - the Intrinio symbol associated with the index. See
+[Stock Market Indices](http://docs.intrinio.com/master/stock-indices).
+* item - the/tag value to be returned.
+
+```
+=IntrinioIndexTagCount(identifier)
+```
+Returns the number of tags/items that are available for an index.
+* identifier - the Intrinio symbol associated with the index.
+
+```
+=IntrinioIndexTag(identifier, sequence):
+```
+Returns a tag/item name for an index.
+* identifier - the Intrinio symbol associated with the index.
+* sequence - refers to the nth (0 < n < tag-count) tag/item in the list of available
+tags/items.
+
+### Companies
+
+### Securities
 
 ## References
 * [Intrinio Web Site](https://intrinio.com)

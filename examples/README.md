@@ -41,3 +41,18 @@ file. It includes the following tabs.
 * Standardized Cash Flows
 * Historic Metrics and Ratios
 * As Reported Statements
+
+### IntrinioIndices.ods
+This spreadsheet provides information for stock market indices. It
+illustrates how to use the indices-by-query and index-by-identifier
+functions.
+
+### IntrinioCompanies.ods
+This spreadsheet provides information for companies. It
+illustrates how to use the companies-by-query and company-by-identifier
+functions.
+
+### IntrinioSecurities.ods
+This spreadsheet provides information for securities. It
+illustrates how to use the securities-by-query and security-by-identifier
+functions.
