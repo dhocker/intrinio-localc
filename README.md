@@ -19,8 +19,12 @@ GNU GENERAL PUBLIC LICENSE Version 3, 29 June 2007. Refer to the
 [LICENSE.md](https://github.com/dhocker/intrinio-localc/blob/master/README.md)
 file for complete details.
 
+## Download
+Download the latest **intrinio.oxt** (the add-in file) from
+[here](https://github.com/qalydon/intrinio-localc/releases).
+
 ## Installation
-1. Download the latest intrinio.oxt (the add-in file) from
+1. Download the latest **intrinio.oxt** (the add-in file) from
 [here](https://github.com/qalydon/intrinio-localc/releases).
 1. Start LibreOffice or LibreOffice Calc.
 1. From the Tools menu, open the Extension Manager.
@@ -29,8 +33,8 @@ Marketplace. If you find it, click the Remove button to remove it.
 For best results, **remove an existing Intrinio Fintech Markeplace
 add-in first**.
 1. Click the Add button.
-1. Navigate to the location where you downloaded intrinio.oxt. Select
-it.
+1. Navigate to the location where you downloaded **intrinio.oxt**.
+Select it.
 1. Choose if you want the add-in installed for you or everyone.
 1. Click the Close button.
 1. If LibreOffice asks to restart, do so.
@@ -211,7 +215,7 @@ The **IntrinioIndices.ods** spreadsheet provides an example of how this
 is done.
 
 ### Indices
-This set of functions returns indices list and information for all
+This set of functions returns an indices list and information for all
 indices covered by [Intrinio](http://docs.intrinio.com/?javascript--api#indices37).
 #### Indices by Query
 ```
@@ -221,8 +225,9 @@ Returns a single data item for a selected index.
 * query - a string that is used to filter the list of indices by
 index name or symbol.
 * indextype - stock_market, economic or sector.
-* sequence - refers to the nth (0 < n < query-count) index in the list.
-* item - the/tag value to be returned.
+* sequence - refers to the nth (0 < n < query-count) index in the
+result list.
+* item - the tag/item value to be returned.
 
 ```
 =IntrinioIndicesQueryCount(query, indextype)
@@ -270,12 +275,155 @@ Returns the number of tags/items that are available for an index.
 ```
 Returns a tag/item name for an index.
 * identifier - the Intrinio symbol associated with the index.
-* sequence - refers to the nth (0 < n < tag-count) tag/item in the list of available
-tags/items.
+* sequence - refers to the nth (0 < n < tag-count) tag/item in the list
+of available tags/items.
 
 ### Companies
+For addtional information on avaliable data see
+[Intrinio](http://docs.intrinio.com/?javascript--api#companies).
+#### Companies by Query
+```
+=IntrinioCompaniesQuery(query, lastfilingdate, sequence, item)
+```
+Returns a single data item for a selected company.
+* query - a string that is used to filter the list of companies by
+company name or symbol.
+* lastfilingdate - a date value that returns the list of companies whose
+latest SEC filing was filed on or after this date.
+* sequence - refers to the nth (0 < n < query-count) company in the
+result list.
+* item - the tag/item value to be returned.
+
+```
+=IntrinioCompaniesQueryCount(query, lastfilingdate)
+```
+Returns the count of companies in the resultant list.
+* query - a string that is used to filter the list of companies by
+company name or symbol.
+* lastfilingdate - a date value that returns the list of companies whose
+latest SEC filing was filed on or after this date.
+
+```
+=IntrinioCompaniesQueryTagCount(query, lastfilingdate)
+```
+Returns the number of tags/items that are available for a company.
+* query - a string that is used to filter the list of companies by
+company name or symbol.
+* lastfilingdate - a date value that returns the list of companies whose
+latest SEC filing was filed on or after this date.
+
+```
+=IntrinioCompaniesQueryTag(query, lastfilingdate, sequence)
+```
+Returns a tag/item name for a selected company.
+* query - a string that is used to filter the list of companies by
+company name or symbol.
+* lastfilingdate - a date value that returns the list of companies whose
+latest SEC filing was filed on or after this date.
+* sequence - refers to the nth (0 < n < tag-count) tag/item in the list
+of available tags/items.
+
+#### Companies by Identifier
+```
+=IntrinioCompany(identifier, item)
+```
+Returns a single data item for the given company.
+* identifier - the [Intrinio](http://docs.intrinio.com/master/us-securities#home)
+symbol associated with the company.
+* item - the/tag value to be returned.
+
+```
+=IntrinioCompanyTagCount(identifier)
+```
+Returns the number of tags/items that are available for a company.
+* identifier - the [Intrinio](http://docs.intrinio.com/master/us-securities#home)
+symbol associated with the company.
+
+```
+=IntrinioCompanyTag(identifier, sequence):
+```
+Returns a tag/item name for an company.
+* identifier - the [Intrinio](http://docs.intrinio.com/master/us-securities#home)
+symbol associated with the company.
+* sequence - refers to the nth (0 < n < tag-count) tag/item in the list
+of available tags/items.
 
 ### Securities
+For additinal information on avaliable security data see
+[Intrinio](http://docs.intrinio.com/?javascript--api#securities).
+
+#### Securities by Query
+```
+=IntrinioSecuritiesQuery(query, exchangesymbol, lastcrspadjdate, sequence, item)
+```
+Returns a single data item for a selected security.
+* query - a string that is used to filter the list of securities by
+security name or symbol.
+* exhangesymbol - the [Intrinio Stock Market Symbol](http://docs.intrinio.com/master/stock-exchanges#home)
+for the list of securities.
+* lastcrspadjdate - filters the result to securities that have had
+adjusted stock prices due to a corporate event after this date.
+* sequence - refers to the nth (0 < n < query-count) security in the
+result list.
+* item - the tag/item value to be returned.
+
+```
+=IntrinioSecuritiesQueryCount(query, exchangesymbol, lastcrspadjdate)
+```
+Returns the count of securities in the resultant list.
+* query - a string that is used to filter the list of securities by
+security name or symbol.
+* exhangesymbol - the [Intrinio Stock Market Symbol](http://docs.intrinio.com/master/stock-exchanges#home)
+for the list of securities.
+* lastcrspadjdate - filters the result to securities that have had
+adjusted stock prices due to a corporate event after this date.
+
+```
+=IntrinioSecuritiesQueryTagCount(query, exchangesymbol, lastcrspadjdate)
+```
+Returns the number of tags/items that are available for a security.
+* query - a string that is used to filter the list of securities by
+security name or symbol.
+* exhangesymbol - the [Intrinio Stock Market Symbol](http://docs.intrinio.com/master/stock-exchanges#home)
+for the list of securities.
+* lastcrspadjdate - filters the result to securities that have had
+adjusted stock prices due to a corporate event after this date.
+
+```
+=IntrinioSecuritiesQueryTag(query, exchangesymbol, lastcrspadjdate, sequence)
+```
+Returns a tag/item name for a selected security.
+* query - a string that is used to filter the list of securities by
+security name or symbol.
+* exhangesymbol - the [Intrinio Stock Market Symbol](http://docs.intrinio.com/master/stock-exchanges#home)
+for the list of securities.
+* lastcrspadjdate - filters the result to securities that have had
+adjusted stock prices due to a corporate event after this date.
+* sequence - refers to the nth (0 < n < tag-count) tag/item in the list
+of available tags/items.
+
+#### Securities by Identifier
+```
+=IntrinioSecurity(identifier, item)
+```
+Returns a single data item for the given security.
+* identifier - the [Intrinio](http://docs.intrinio.com/master/us-securities#home)
+symbol associated with the security.
+* item - the/tag value to be returned.
+
+```
+=IntrinioSecurityTagCount(identifier)
+```
+Returns the number of tags/items that are available for a security.
+* identifier - the Intrinio symbol associated with the security.
+
+```
+=IntrinioSecurityTag(identifier, sequence):
+```
+Returns a tag/item name for an security.
+* identifier - the Intrinio symbol associated with the security.
+* sequence - refers to the nth (0 < n < tag-count) tag/item in the list
+of available tags/items.
 
 ## References
 * [Intrinio Web Site](https://intrinio.com)
