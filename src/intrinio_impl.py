@@ -51,6 +51,8 @@ from intrinio_companies import get_companies_by_query, get_companies_by_query_co
 from intrinio_securities import get_securities_by_query, get_securities_by_query_count, \
     get_securities_by_query_tag_count, get_securities_by_query_tag, get_security_by_identifier, \
     get_security_identifier_tag_count, get_security_identifier_tag
+from intrinio_company_sec_filings import get_company_sec_filings, get_company_sec_filings_count, \
+    get_company_sec_filings_tag_count, get_company_sec_filings_tag
 from extn_helper import date_str_to_float
 import xml.etree.ElementTree as etree
 
@@ -591,6 +593,40 @@ class IntrinioImpl(unohelper.Base, XIntrinio ):
     def IntrinioSecurityTag(self, identifier, sequence):
         if _check_configuration():
             v = get_security_identifier_tag(sequence)
+        else:
+            v = "No configuration"
+
+        return v
+
+    def IntrinioCompanySECFilings(self, identifier, report_type, start_date, end_date, sequence, item):
+        if _check_configuration():
+            # TODO Date conversion
+            v = get_company_sec_filings(identifier, report_type, start_date, end_date, sequence, item)
+        else:
+            v = "No configuration"
+
+        return v
+
+    def IntrinioCompanySECFilingsCount(self, identifier, report_type, start_date, end_date):
+        if _check_configuration():
+            # TODO Date conversion
+            v = get_company_sec_filings_count(identifier, report_type, start_date, end_date)
+        else:
+            v = "No configuration"
+
+        return v
+
+    def IntrinioCompanySECFilingsTagCount(self):
+        if _check_configuration():
+            v = get_company_sec_filings_tag_count()
+        else:
+            v = "No configuration"
+
+        return v
+
+    def IntrinioCompanySECFilingsTag(self, sequence):
+        if _check_configuration():
+            v = get_company_sec_filings_tag(sequence)
         else:
             v = "No configuration"
 

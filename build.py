@@ -79,6 +79,7 @@ shutil.copy("src/intrinio_access.py", "build/")
 shutil.copy("src/intrinio_indices.py", "build/")
 shutil.copy("src/intrinio_companies.py", "build/")
 shutil.copy("src/intrinio_securities.py", "build/")
+shutil.copy("src/intrinio_company_sec_filings.py", "build/")
 shutil.copy("src/extn_helper.py", "build/")
 shutil.copy("certifi/cacert.pem", "build/")
 
@@ -315,6 +316,29 @@ xcu.add_function("IntrinioSecurityTagCount", "Returns the number of items availa
 xcu.add_function("IntrinioSecurityTag", "Returns an item/tag name for a security.",
                  [
                      ('identifier', 'The stock market ticker symbol.'),
+                     ('sequencenumber', 'An integer, 0-last available item/tag')
+                 ])
+xcu.add_function("IntrinioCompanySECFilings", "Returns information about SEC filings for a company.",
+                 [
+                     ('identifier', 'The stock market ticker symbol.'),
+                     ('reporttype', 'See https://en.wikipedia.org/wiki/SEC_filing#All_filing_types'),
+                     ('startdate', 'The starting date for SEC filings'),
+                     ('enddate', 'The ending date for SEC filings'),
+                     ('sequencenumber', 'An integer, 0-last available filing'),
+                     ('item', 'The name of the item/tag to be returned')
+                 ])
+xcu.add_function("IntrinioCompanySECFilingsCount", "Returns the result count for SEC filings.",
+                 [
+                     ('identifier', 'The stock market ticker symbol.'),
+                     ('reporttype', 'See https://en.wikipedia.org/wiki/SEC_filing#All_filing_types'),
+                     ('startdate', 'The starting date for SEC filings'),
+                     ('enddate', 'The ending date for SEC filings')
+                 ])
+xcu.add_function("IntrinioCompanySECFilingsTagCount", "Returns the number of tags that are available for a filing",
+                 [
+                 ])
+xcu.add_function("IntrinioCompanySECFilingsTag", "Returns an item/tag name for a company filing.",
+                 [
                      ('sequencenumber', 'An integer, 0-last available item/tag')
                  ])
 

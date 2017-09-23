@@ -68,7 +68,7 @@ def normalize_date(tgtdate):
         if tgtdate == 0.0:
             return None
         return float_to_date_str(tgtdate)
-    elif type(tgtdate) == str:
+    elif type(tgtdate) == str and tgtdate != "":
         # Assumed to be a string in ISO format (YYYY-MM-DD).
         try:
             dt = datetime.datetime.strptime(tgtdate, "%Y-%m-%d")
@@ -81,7 +81,7 @@ def normalize_date(tgtdate):
             return dt.strftime("%Y-%m-%d")
         except Exception:
             pass
-    elif tgtdate is None:
+    elif tgtdate is None or tgtdate == "":
         return tgtdate
 
     raise ValueError("Unsupported date format type: {0} value: {1}".format(type(tgtdate), tgtdate))

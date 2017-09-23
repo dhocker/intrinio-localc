@@ -93,6 +93,16 @@ module com {
                   any IntrinioSecurityTagCount( [in] string identifier );
                   // Returns an item/tag name for a security
                   any IntrinioSecurityTag([in] string identifier, [in] long sequencenumber);
+                  // Returns an item for an SEC filing
+                  any IntrinioCompanySECFilings( [in] string identifier, [in] string reporttype,
+                    [in] any startdate, [in] any enddate, [in] long sequencenumber, [in] string item );
+                  // Returns the number of filings available for an identifier
+                  any IntrinioCompanySECFilingsCount( [in] string identifier, [in] string reporttype,
+                    [in] any startdate, [in] any enddate );
+                  // Returns the count of items/tags available for a filing
+                  any IntrinioCompanySECFilingsTagCount();
+                  // Returns an item/tag name for a filing
+                  any IntrinioCompanySECFilingsTag( [in] long sequencenumber);
                 };
             };
         };
