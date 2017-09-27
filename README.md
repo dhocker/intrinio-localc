@@ -44,7 +44,8 @@ add-in before installing an update. Othwerwise, your results may be
 unpredictable.
 
 ## Example Files
-You can find a number of example files in the examples folder. Some of
+You can find a number of example files in the [examples folder](https://github.com/qalydon/intrinio-localc/tree/master/examples).
+Some of
 the examples are LO conversions/derivatives of template files from the
 [Intrinio Excel AddIn.](https://github.com/intrinio/intrinio-excel)
 These files show you how most of the LOCalc Extension functions
@@ -422,6 +423,43 @@ Returns the number of tags/items that are available for a security.
 ```
 Returns a tag/item name for an security.
 * identifier - the Intrinio symbol associated with the security.
+* sequence - refers to the nth (0 < n < tag-count) tag/item in the list
+of available tags/items.
+
+### Company SEC Filings
+For additional information on avaliable SEC filing data see
+[Intrinio](http://docs.intrinio.com/?javascript--api#company-sec-filings).
+
+```
+=IntrinioCompanySECFilings(identifier, reporttype, startdate, enddate, sequence, item)
+```
+Returns a single data item for a selected company filing.
+* identifier - the Intrinio symbol associated with the security.
+* reporttype - 10-K, 10-Q, 8-K, 4, etc. See [report types](https://en.wikipedia.org/wiki/SEC_filing#All_filing_types).
+* startdate - the earliest filing date for which to return filings.
+* enddate - the last filing date for which to return filings.
+* sequence - refers to the nth (0 < n < count) filing in the list
+of available filings.
+* item - the/tag value to be returned.
+
+```
+=IntrinioCompanySECFilingsCount(identifier, reporttype, startdate, enddate)
+```
+Returns the count of available company filings.
+* identifier - the Intrinio symbol associated with the security.
+* reporttype - 10-K, 10-Q, 8-K, 4, etc. See [report types](https://en.wikipedia.org/wiki/SEC_filing#All_filing_types).
+* startdate - the earliest filing date for which to return filings.
+* enddate - the last filing date for which to return filings.
+
+```
+=IntrinioCompanySECFilingsTagCount()
+```
+Returns the count of data items/tags available for each filing.
+
+```
+=IntrinioCompanySECFilingsTag(sequence)
+```
+Returns the name of a data item/tag available for each filing.
 * sequence - refers to the nth (0 < n < tag-count) tag/item in the list
 of available tags/items.
 
