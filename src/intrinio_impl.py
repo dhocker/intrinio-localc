@@ -415,6 +415,14 @@ class IntrinioImpl(unohelper.Base, XIntrinio ):
         return "Not implemented"
 
     def IntrinioIndicesQuery(self, query, indextype, sequence, item):
+        """
+        Returns a single data item for a selected index.
+        :param query: a string that is used to filter the list of indices by index name or symbol.
+        :param indextype: stock_market, economic or sector.
+        :param sequence: refers to the nth (0 < n < query-count) index in the result list.
+        :param item: refers to the nth (0 < n < query-count) index in the result list.
+        :return:
+        """
         if _check_configuration():
             v = get_indices_by_query(query, indextype, sequence, item)
         else:
@@ -423,6 +431,12 @@ class IntrinioImpl(unohelper.Base, XIntrinio ):
         return v
 
     def IntrinioIndicesQueryCount(self, query, indextype):
+        """
+        Returns the count of indices in the resultant list.
+        :param query: a string that is used to filter the list of indices by index name or symbol.
+        :param indextype: stock_market, economic or sector.
+        :return:
+        """
         if _check_configuration():
             v = get_indices_by_query_count(query, indextype)
         else:
@@ -431,6 +445,12 @@ class IntrinioImpl(unohelper.Base, XIntrinio ):
         return v
 
     def IntrinioIndicesQueryTagCount(self, query, indextype):
+        """
+        Returns the number of tags/items that are available for an index.
+        :param query: a string that is used to filter the list of indices by index name or symbol.
+        :param indextype: stock_market, economic or sector.
+        :return:
+        """
         if _check_configuration():
             v = get_indices_by_query_tag_count(query, indextype)
         else:
@@ -439,6 +459,14 @@ class IntrinioImpl(unohelper.Base, XIntrinio ):
         return v
 
     def IntrinioIndicesQueryTag(self, query, indextype, sequence):
+        """
+        Returns a tag/item name for a selected index.
+        :param query: a string that is used to filter the list of indices by index name or symbol.
+        :param indextype: stock_market, economic or sector.
+        :param sequence: refers to the nth (0 < n < tag-count) tag/item in the list
+        of available tags/items.
+        :return:
+        """
         if _check_configuration():
             v = get_indices_by_query_tag(query, indextype, sequence)
         else:
@@ -447,6 +475,12 @@ class IntrinioImpl(unohelper.Base, XIntrinio ):
         return v
 
     def IntrinioIndex(self, identifier, item):
+        """
+        Returns a single data item for the given index.
+        :param identifier: the Intrinio symbol associated with the index.
+        :param item: the item/tag value to be returned.
+        :return:
+        """
         if _check_configuration():
             v = get_index_by_identifier(identifier, item)
         else:
@@ -455,6 +489,11 @@ class IntrinioImpl(unohelper.Base, XIntrinio ):
         return v
 
     def IntrinioIndexTagCount(self, identifier):
+        """
+        Returns the number of tags/items that are available for an index.
+        :param identifier: the Intrinio symbol associated with the index.
+        :return:
+        """
         if _check_configuration():
             v = get_index_by_identifier_tag_count()
         else:
@@ -463,6 +502,12 @@ class IntrinioImpl(unohelper.Base, XIntrinio ):
         return v
 
     def IntrinioIndexTag(self, identifier, sequencenumber):
+        """
+        Returns a tag/item name for an index.
+        :param identifier: the Intrinio symbol associated with the index.
+        :param sequencenumber: refers to the nth (0 < n < tag-count) tag/item in the list of available tags/items.
+        :return:
+        """
         if _check_configuration():
             v = get_index_by_identifier_tag(sequencenumber)
         else:
@@ -471,6 +516,15 @@ class IntrinioImpl(unohelper.Base, XIntrinio ):
         return v
 
     def IntrinioCompaniesQuery(self, query, latestfilingdate, sequence, item):
+        """
+        Returns a single data item for a selected company.
+        :param query: a string that is used to filter the list of companies by company name or symbol.
+        :param latestfilingdate: a date value that returns the list of companies whose latest SEC filing was filed
+        on or after this date.
+        :param sequence: refers to the nth (0 < n < query-count) company in the result list.
+        :param item: the tag/item value to be returned.
+        :return:
+        """
         if _check_configuration():
             v = get_companies_by_query(query, latestfilingdate, sequence, item)
         else:
@@ -479,6 +533,13 @@ class IntrinioImpl(unohelper.Base, XIntrinio ):
         return v
 
     def IntrinioCompaniesQueryCount(self, query, latestfilingdate):
+        """
+        Returns the count of companies in the resultant list.
+        :param query: a string that is used to filter the list of companies by company name or symbol.
+        :param latestfilingdate: a date value that returns the list of companies whose latest SEC filing was filed
+        on or after this date.
+        :return:
+        """
         if _check_configuration():
             v = get_companies_by_query_count(query, latestfilingdate)
         else:
@@ -487,6 +548,13 @@ class IntrinioImpl(unohelper.Base, XIntrinio ):
         return v
 
     def IntrinioCompaniesQueryTagCount(self, query, latestfilingdate):
+        """
+        Returns the number of tags/items that are available for a company.
+        :param query: a string that is used to filter the list of companies by company name or symbol.
+        :param latestfilingdate: a date value that returns the list of companies whose latest SEC filing was filed
+        on or after this date.
+        :return:
+        """
         if _check_configuration():
             v = get_companies_by_query_tag_count()
         else:
@@ -495,6 +563,14 @@ class IntrinioImpl(unohelper.Base, XIntrinio ):
         return v
 
     def IntrinioCompaniesQueryTag(self, query, latestfilingdate, sequence):
+        """
+        Returns a tag/item name for a selected company.
+        :param query: a string that is used to filter the list of companies by company name or symbol.
+        :param latestfilingdate: a date value that returns the list of companies whose latest SEC filing was filed
+        on or after this date.
+        :param sequence: refers to the nth (0 < n < tag-count) tag/item in the list of available tags/items.
+        :return:
+        """
         if _check_configuration():
             v = get_companies_by_query_tag(sequence)
         else:
@@ -503,6 +579,13 @@ class IntrinioImpl(unohelper.Base, XIntrinio ):
         return v
 
     def IntrinioCompany(self, identifier, item):
+        """
+        No cost lookup of security by identifier. See http://docs.intrinio.com/?javascript--api#securities.
+        :param identifier: the identifier for the legal entity or a security associated with
+        the company: TICKER SYMBOL | FIGI | OTHER IDENTIFIER.
+        :param item: See http://docs.intrinio.com/?javascript--api#companies for a list of items/tags.
+        :return:
+        """
         if _check_configuration():
             v = get_company_by_identifier(identifier, item)
             # The securities item is a list. We condense it to a string of symbols.
@@ -519,6 +602,12 @@ class IntrinioImpl(unohelper.Base, XIntrinio ):
         return v
 
     def IntrinioCompanyTagCount(self, identifier):
+        """
+        Returns the number of tags/items available for a company.
+        :param identifier: the identifier for the legal entity or a security associated with
+        the company: TICKER SYMBOL | FIGI | OTHER IDENTIFIER.
+        :return:
+        """
         if _check_configuration():
             v = get_company_by_identifier_tag_count()
         else:
@@ -527,6 +616,13 @@ class IntrinioImpl(unohelper.Base, XIntrinio ):
         return v
 
     def IntrinioCompanyTag(self, identifier, sequence):
+        """
+        Returns a tag/item value.
+        :param identifier: the identifier for the legal entity or a security associated with
+        the company: TICKER SYMBOL | FIGI | OTHER IDENTIFIER.
+        :param sequence: refers to the nth (0 < n < tag-count) tag/item in the list of available tags/items.
+        :return:
+        """
         if _check_configuration():
             v = get_company_by_identifier_tag(sequence)
         else:
@@ -535,6 +631,17 @@ class IntrinioImpl(unohelper.Base, XIntrinio ):
         return v
 
     def IntrinioSecuritiesQuery(self, query, exchangesymbol, lastcrspadjdate, sequence, item):
+        """
+        No cost query for securities info. See http://docs.intrinio.com/?javascript--api#securities.
+        :param query: a string query search of security name or ticker symbol with the returned
+        results being the relevant securities in compacted list format.
+        :param exchangesymbol: the Intrinio Stock Market Symbol, to specify the exchange for the list of securities
+        :param lastcrspadjdate: a date value that returns the list of securities that have had adjusted stock
+        prices due to a corporate event after this date. ISO date format.
+        :param sequence: 0-(n-1), where n is the number of securities returned by the query.
+        :param item: See http://docs.intrinio.com/?javascript--api#securities for available tags/items.
+        :return:
+        """
         if _check_configuration():
             v = get_securities_by_query(query, exchangesymbol, lastcrspadjdate, sequence, item)
         else:
@@ -543,6 +650,15 @@ class IntrinioImpl(unohelper.Base, XIntrinio ):
         return v
 
     def IntrinioSecuritiesQueryCount(self, query, exchangesymbol, lastcrspadjdate):
+        """
+        Returns the results count for a query of securities.
+        :param query: a string query search of security name or ticker symbol with the returned
+        results being the relevant securities in compacted list format.
+        :param exchangesymbol: the Intrinio Stock Market Symbol, to specify the exchange for the list of securities
+        :param lastcrspadjdate: a date value that returns the list of securities that have had adjusted stock
+        prices due to a corporate event after this date. ISO date format.
+        :return:
+        """
         if _check_configuration():
             v = get_securities_by_query_count(query, exchangesymbol, lastcrspadjdate)
         else:
@@ -551,6 +667,15 @@ class IntrinioImpl(unohelper.Base, XIntrinio ):
         return v
 
     def IntrinioSecuritiesQueryTagCount(self, query, exchangesymbol, lastcrspadjdate):
+        """
+        Returns the number of tags/items available for a queried security.
+        :param query: a string query search of security name or ticker symbol with the returned
+        results being the relevant securities in compacted list format.
+        :param exchangesymbol: the Intrinio Stock Market Symbol, to specify the exchange for the list of securities
+        :param lastcrspadjdate: a date value that returns the list of securities that have had adjusted stock
+        prices due to a corporate event after this date. ISO date format.
+        :return:
+        """
         if _check_configuration():
             v = get_securities_by_query_tag_count()
         else:
@@ -559,6 +684,16 @@ class IntrinioImpl(unohelper.Base, XIntrinio ):
         return v
 
     def IntrinioSecuritiesQueryTag(self, query, exchangesymbol, lastcrspadjdate, sequence):
+        """
+        Returns the name of an available tag/item for a queried security.
+        :param query: a string query search of security name or ticker symbol with the returned
+        results being the relevant securities in compacted list format.
+        :param exchangesymbol: the Intrinio Stock Market Symbol, to specify the exchange for the list of securities
+        :param lastcrspadjdate: a date value that returns the list of securities that have had adjusted stock
+        prices due to a corporate event after this date. ISO date format.
+        :param sequence: refers to the nth (0 < n < tag-count) tag/item in the list of available tags/items.
+        :return:
+        """
         if _check_configuration():
             v = get_securities_by_query_tag(sequence)
         else:
@@ -567,6 +702,13 @@ class IntrinioImpl(unohelper.Base, XIntrinio ):
         return v
 
     def IntrinioSecurity(self, identifier, item):
+        """
+        Returns a data item for a security.
+        :param identifier:  the identifier for the legal entity or a security associated with
+        the company: TICKER SYMBOL | FIGI | OTHER IDENTIFIER
+        :param item: See http://docs.intrinio.com/?javascript--api#securities.
+        :return:
+        """
         if _check_configuration():
             v = get_security_by_identifier(identifier, item)
             # The securities item is a list. We condense it to a string of symbols.
@@ -583,6 +725,12 @@ class IntrinioImpl(unohelper.Base, XIntrinio ):
         return v
 
     def IntrinioSecurityTagCount(self, identifier):
+        """
+        Returns the count of available tags/items for a security.
+        :param identifier:  the identifier for the legal entity or a security associated with
+        the company: TICKER SYMBOL | FIGI | OTHER IDENTIFIER
+        :return:
+        """
         if _check_configuration():
             v = get_security_identifier_tag_count()
         else:
@@ -591,6 +739,13 @@ class IntrinioImpl(unohelper.Base, XIntrinio ):
         return v
 
     def IntrinioSecurityTag(self, identifier, sequence):
+        """
+
+        :param identifier:  the identifier for the legal entity or a security associated with
+        the company: TICKER SYMBOL | FIGI | OTHER IDENTIFIER
+        :param sequence: refers to the nth (0 < n < tag-count) tag/item in the list of available tags/items.
+        :return:
+        """
         if _check_configuration():
             v = get_security_identifier_tag(sequence)
         else:
@@ -599,8 +754,17 @@ class IntrinioImpl(unohelper.Base, XIntrinio ):
         return v
 
     def IntrinioCompanySECFilings(self, identifier, report_type, start_date, end_date, sequence, item):
+        """
+        Returns a data item from the list of SEC filings for a company
+        :param identifier: The stock market ticker symbol associated with the company's common stock
+        :param report_type: See https://en.wikipedia.org/wiki/SEC_filing#All_filing_types
+        :param start_date:
+        :param end_date:
+        :param sequence: 0-(n-1) where n is the number of filings in the result
+        :param item: The data item to be returned
+        :return:
+        """
         if _check_configuration():
-            # TODO Date conversion
             v = get_company_sec_filings(identifier, report_type, start_date, end_date, sequence, item)
         else:
             v = "No configuration"
@@ -608,8 +772,15 @@ class IntrinioImpl(unohelper.Base, XIntrinio ):
         return v
 
     def IntrinioCompanySECFilingsCount(self, identifier, report_type, start_date, end_date):
+        """
+        Returns the number of filings for the report type and date range.
+        :param identifier: The stock market ticker symbol associated with the company's common stock
+        :param report_type: See https://en.wikipedia.org/wiki/SEC_filing#All_filing_types
+        :param start_date:
+        :param end_date:
+        :return:
+        """
         if _check_configuration():
-            # TODO Date conversion
             v = get_company_sec_filings_count(identifier, report_type, start_date, end_date)
         else:
             v = "No configuration"
@@ -617,6 +788,10 @@ class IntrinioImpl(unohelper.Base, XIntrinio ):
         return v
 
     def IntrinioCompanySECFilingsTagCount(self):
+        """
+        Returns the number of tags/items available for a filing.
+        :return:
+        """
         if _check_configuration():
             v = get_company_sec_filings_tag_count()
         else:
@@ -625,6 +800,11 @@ class IntrinioImpl(unohelper.Base, XIntrinio ):
         return v
 
     def IntrinioCompanySECFilingsTag(self, sequence):
+        """
+        Returns a tag/item name.
+        :param sequence: refers to the nth (0 < n < tag-count) tag/item in the list of available tags/items.
+        :return:
+        """
         if _check_configuration():
             v = get_company_sec_filings_tag(sequence)
         else:

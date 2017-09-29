@@ -263,7 +263,7 @@ of available tags/items.
 Returns a single data item for the given index.
 * identifier - the Intrinio symbol associated with the index. See
 [Stock Market Indices](http://docs.intrinio.com/master/stock-indices).
-* item - the/tag value to be returned.
+* item - the item/tag value to be returned.
 
 ```
 =IntrinioIndexTagCount(identifier)
