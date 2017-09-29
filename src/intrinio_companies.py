@@ -17,6 +17,7 @@
 
 from intrinio_app_logger import AppLogger
 from intrinio_lib import QConfiguration, IntrinioBase
+from extn_helper import normalize_date
 
 # Logger init
 app_logger = AppLogger("intrinio-extension")
@@ -162,6 +163,13 @@ def get_companies_by_query(query, latest_filing_date, sequence, item):
 
 def __get_companies(query, latest_filing_date, sequence):
     page_number = IntrinioBase.get_page_number(sequence)
+
+    # Normalize latest filing date
+    try:
+        latest_filing_date = normalize_date(latest_filing_date)
+    except Exception as ex:
+        logger.warning(str(ex))
+        return str(ex)
 
     if CompaniesQueryCache.is_query_value_cached(query, latest_filing_date, page_number):
         logger.debug("Cache hit for __get companies %s %s %d", query, latest_filing_date, sequence)

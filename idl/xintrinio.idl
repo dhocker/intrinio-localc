@@ -61,12 +61,12 @@ module com {
                   // Returns an item/tag name for an index
                   any IntrinioIndexTag([in] string identifier, [in] long sequencenumber);
                   // Returns an item for an index using a query
-                  any IntrinioCompaniesQuery( [in] string query, [in] string latestfilingdate,
+                  any IntrinioCompaniesQuery( [in] string query, [in] any latestfilingdate,
                     [in] long sequencenumber, [in] string item);
                   // Returns the result count for an indices query
-                  any IntrinioCompaniesQueryCount( [in] string query, [in] string latestfilingdate);
+                  any IntrinioCompaniesQueryCount( [in] string query, [in] any latestfilingdate);
                   // Returns the count of items/tags available for an indices query
-                  any IntrinioCompaniesQueryTagCount( [in] string query, [in] string latestfilingdate);
+                  any IntrinioCompaniesQueryTagCount( [in] string query, [in] any latestfilingdate);
                   // Returns an item/tag name for an indices query
                   any IntrinioCompaniesQueryTag( [in] string query, [in] string latestfilingdate, [in] long sequencenumber);
                   // Returns an item for a company
