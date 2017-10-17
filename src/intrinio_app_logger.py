@@ -47,6 +47,11 @@ class AppLogger:
                 file_path = "{0}\\libreoffice\\intrinio\\".format(os.environ["LOCALAPPDATA"])
             else:
                 file_path = ""
+
+            # Create directory if it doesn't exist
+            if not os.path.exists(file_path):
+                os.makedirs(file_path, exist_ok=True)
+            # Manufacture full path to log file
             logfile = file_path + logname + ".log"
 
             fh = logging.handlers.TimedRotatingFileHandler(logfile, when='midnight', backupCount=3)
