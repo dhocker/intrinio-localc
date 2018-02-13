@@ -1,5 +1,5 @@
-# LibreOffice Calc Extension for Intrinio Marketplace
-Copyright © 2017 by Dave Hocker as Qalydon
+# LibreOffice Calc Extension for IEX
+Copyright © 2017, 2018 by Dave Hocker as Qalydon
 
 ## Overview
 This project implements a LibreOffice Calc (LOCalc) addin extension that can
@@ -16,7 +16,7 @@ The LOCalc addin works on the Windows, macOS and Ubuntu versions of
 
 ## License
 GNU GENERAL PUBLIC LICENSE Version 3, 29 June 2007. Refer to the
-[LICENSE.md](https://github.com/dhocker/intrinio-localc/blob/master/README.md)
+[LICENSE.md](https://github.com/qalydon/intrinio-localc/blob/master/README.md)
 file for complete details.
 
 ## Download
