@@ -1,6 +1,4 @@
 #! /bin/bash
 # Get current Intrinio usage statisitics
 
-pushd src
-python3 intrinio_stats.py
-popd
+python3 show_stats.py

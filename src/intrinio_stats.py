@@ -18,6 +18,7 @@
 from http import HTTPStatus
 from intrinio_lib import IntrinioBase, QConfiguration
 from intrinio_app_logger import AppLogger
+import os
 
 # Logger init
 the_app_logger = AppLogger("intrinio-extension")
@@ -25,9 +26,16 @@ logger = the_app_logger.getAppLogger()
 logger.debug("Logger running...")
 
 
-if __name__ == '__main__':
+def print_stats():
+    """
+    Print Intrinio usage statistics.
+    :return:
+    """
     # Inject certificate file location
-    QConfiguration.cacerts = "../certifi/cacert.pem"
+    if os.path.exists("../certifi/cacert.pem"):
+        QConfiguration.cacerts = "../certifi/cacert.pem"
+    else:
+        QConfiguration.cacerts = "certifi/cacert.pem"
 
     r = IntrinioBase.get_usage("com_fin_data")
     if r["status_code"] == HTTPStatus.OK:
@@ -44,3 +52,7 @@ if __name__ == '__main__':
             print ("  ", k, ":", v)
     else:
         print ("Intrinio excel call failed: %d", r["status_code"])
+
+
+if __name__ == '__main__':
+    print_stats()
