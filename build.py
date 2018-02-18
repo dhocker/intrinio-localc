@@ -34,6 +34,10 @@ if sys.platform == 'darwin':
     os.environ["PATH"] = os.environ["PATH"] + ":/usr/lib/ure/bin/"
     os.environ["PATH"] = os.environ["PATH"] + ":/Users/dhocker/LibreOffice5.3_SDK/bin"
     os.environ["DYLD_LIBRARY_PATH"] = os.environ["OO_SDK_URE_LIB_DIR"]
+elif sys.platform == 'win32':
+    # Windows
+    # Nothing special requited beyond running setsdkenv_windows.bat
+    pass
 else:
     print ("Platform {0} is not supported by this build script".format(sys.platform))
     exit(1)
@@ -50,8 +54,9 @@ print ("Building Version:", build_version)
 print ("=============================")
 
 # Clean build folder
-print ("Cleaning build folder...")
-shutil.rmtree("build")
+print ("Cleaning build folder")
+if os.path.exists("build"):
+    shutil.rmtree("build")
 
 # Create required build folders
 if not os.path.exists("build"):
