@@ -1,4 +1,4 @@
-# LibreOffice Calc Extension for IEX
+# LibreOffice Calc Extension for Intrinio
 Copyright © 2017, 2018 by Dave Hocker as Qalydon
 
 ## Overview
