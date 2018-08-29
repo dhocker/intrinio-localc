@@ -16,6 +16,8 @@
 #
 
 from intrinio_app_logger import AppLogger
+from intrinio_lib import QConfiguration
+import datetime
 
 # Logger init
 the_app_logger = AppLogger("intrinio-extension")
@@ -80,7 +82,7 @@ class IdentifierCache:
 
 class DataPointCache:
     """
-    Used to track data point values
+    Used to track data point values with a finite life time
     """
     # The key is the identifier_item (e.g. GOOG_52_week_high
     id_values = {}
@@ -91,17 +93,25 @@ class DataPointCache:
     @classmethod
     def is_value_cached(cls, identifier, item):
         key = identifier + "_" + item
-        return key in cls.id_values
+        if key in cls.id_values:
+            # If the key is cached it must meet the cache life test
+            elapsed = datetime.datetime.now() - cls.id_values[key]["time"]
+            if int(elapsed.total_seconds()) <= QConfiguration.cache_life:
+                return True
+        return False
 
     @classmethod
     def get_value(cls, identifier, item):
         key = identifier + "_" + item
-        return cls.id_values[key]
+        return cls.id_values[key]["value"]
 
     @classmethod
     def add_value(cls, identifier, item, value):
         key = identifier + "_" + item
-        cls.id_values[key] = value
+        kv = {}
+        kv["time"] = datetime.datetime.now()
+        kv["value"] = value
+        cls.id_values[key] = kv
 
 
 class HistoricalPricesCache:

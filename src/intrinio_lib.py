@@ -47,6 +47,8 @@ class QConfiguration:
     loglevel = "info"
     cwd = ""
     do_not_ask_again = False
+    # Default cache life to 3 minutes
+    cache_life = 60 * 3
 
     @classmethod
     def load(cls):
@@ -80,6 +82,8 @@ class QConfiguration:
             cls.auth_passwd = cfj["password"]
             if "loglevel" in cfj:
                 cls.loglevel = cfj["loglevel"]
+            if "cachelife" in cfj:
+                cls.cache_life = int(cfj["cachelife"])
             cf.close()
         except FileNotFoundError as ex:
             logger.error("%s was not found", cls.full_file_path)
@@ -102,7 +106,8 @@ class QConfiguration:
         elif os.name == "nt":
             # This may not be necessary in Windows
             cls.cacerts = "{0}\\cacert.pem".format(cls.cwd)
-        logger.debug("Path to cacert.pem: %s", cls.cacerts)
+
+        cls.log_configuration()
 
     @classmethod
     def save(cls, username, password):
@@ -122,6 +127,7 @@ class QConfiguration:
         conf["password"] = cls.auth_passwd
         conf["certifi"] = cls.cacerts
         conf["loglevel"] = cls.loglevel
+        conf["cachelife"] = cls.cache_life
 
         logger.debug("Saving configuration to %s", cls.full_file_path)
         cf = open(cls.full_file_path, "w")
@@ -136,8 +142,24 @@ class QConfiguration:
             pass
 
     @classmethod
+    def log_configuration(cls):
+        logger.info("Current Configuration")
+        logger.info("user: %s", cls.get_masked_user())
+        logger.info("password: %s", cls.get_masked_password())
+        logger.info("certifi: %s", cls.cacerts)
+        logger.info("loglevel: %s", cls.loglevel)
+        logger.info("cachelife: %d", cls.cache_life)
+
+    @classmethod
     def get_masked_user(cls):
         return cls.auth_user[:int(len(cls.auth_user) / 2)] + ("*" * int(len(cls.auth_user) / 2))
+
+    @classmethod
+    def get_masked_password(cls):
+        pwl = len(cls.auth_passwd)
+        uml = int(pwl / 4)
+        ml = pwl - uml
+        return cls.auth_passwd[:uml] + ("*" * ml)
 
     @classmethod
     def is_configured(cls):
