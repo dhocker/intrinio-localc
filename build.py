@@ -32,7 +32,8 @@ import xml.etree.ElementTree as etree
 if sys.platform == 'darwin':
     # macOS
     os.environ["PATH"] = os.environ["PATH"] + ":/usr/lib/ure/bin/"
-    os.environ["PATH"] = os.environ["PATH"] + ":/Users/dhocker/LibreOffice5.3_SDK/bin"
+    # os.environ["PATH"] = os.environ["PATH"] + ":/Users/dhocker/LibreOffice5.4_SDK/bin"
+    os.environ["PATH"] = os.environ["PATH"] + ":" + os.environ["OO_SDK_HOME"] + "/bin"
     os.environ["DYLD_LIBRARY_PATH"] = os.environ["OO_SDK_URE_LIB_DIR"]
 elif sys.platform == 'win32':
     # Windows
