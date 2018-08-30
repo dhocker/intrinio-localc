@@ -38,10 +38,51 @@ Select it.
 1. Choose if you want the add-in installed for you or everyone.
 1. Click the Close button.
 1. If LibreOffice asks to restart, do so.
+1. The first time that you use an Intrinio function, the addin will
+prompt you for your user name and password.
 
 It is recommended that you always remove an existing version of the
 add-in before installing an update. Othwerwise, your results may be
 unpredictable.
+
+## Configuration File
+The addin keeps information such as your user name and password in
+a configuration file. You should be aware of this configuration file
+and make sure that its permissions allow only you to access it.
+
+Under Windows, only your user account should have access to the file.
+Under macOS or Ubuntu, the permissions on the file should be something
+like 600 (only your account has read/write access).
+
+The content of the configuration file is JSON and looks something like this.
+```
+{
+    "password": "0123456789abcdef0123456789abcdef",
+    "certifi": "/Volumes/Z77ExtremeDataSSD/username/Library/Application Support/LibreOffice/4/user/uno_packages/cache/uno_packages/lu1307vzgtuw.tmp_/intrinio.oxt/cacert.pem",
+    "user": "0123456789abcdef0123456789abcdef",
+    "loglevel": "debug",
+    "cachelife": 180
+}
+```
+
+| Key | Value |
+|:-----|:-------|
+| password | As supplied by Intrinio |
+| certifi | The location of the cacert.pem file |
+| user | As supplied by Intrinio |
+| loglevel | error, warning, info, debug (default) |
+| cachelife | The life time of cached IntrinioDataPoint data |
+
+Under normal circumstances, you should only need to change the loglevel and/or cachelife
+settings.
+
+The location of the configuration file depends on your operating system.
+
+| OS | Location |
+|----|----------|
+| Windows | C:\Users\username\AppData\Local\libreoffice\intrinio\intrinio.conf |
+| macOS | /Users/username/libreoffice/intrinio/intrinio.conf |
+| Ubuntu | /home/username/libreoffice/intrinio/intrinio.conf |
 
 ## Example Files
 You can find a number of example files in the [examples folder](https://github.com/qalydon/intrinio-localc/tree/master/examples).
@@ -58,6 +99,18 @@ divided into two groups.
 
 1. Functions that are common to the Intrinio Excel AddIn.
 1. Functions that are **unique** to the LOCalc AddIn.
+
+## Data Caching
+Most of the Intrinio functions cache (store for future reuse) the data they retrieve.
+This minimizes the number of calls to Intrinio APIs, thus increasing the utlity 
+of a free Intrinio account. All historical and static data
+is cached until LibreOffice is closed (sort of "forever"). 
+
+However, IntrinioDataPoint data is cached subject to a "cache life."
+The data is considered valid until its life expires at which point
+it will be re-retrieved as needed.
+The cache life defaults to 180 seconds or 3 minutes. The cache life setting
+can be customized through the [configuration file](#configuration-file).
 
 ## Functions Common to the Excel AddIn
 To the degree possible, these functions work like the similarly named
@@ -81,6 +134,7 @@ Excel AddIn function.
 ```
 =IntrinioDataPoint(identifier, item)
 ```
+**Remember, data retrieved by IntrinioDataPoint is subject to the cache life setting.**
 
 ### IntrinioHistoricalPrices
 This function works like the equivalent
