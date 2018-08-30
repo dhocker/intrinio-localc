@@ -98,6 +98,8 @@ class DataPointCache:
             elapsed = datetime.datetime.now() - cls.id_values[key]["time"]
             if int(elapsed.total_seconds()) <= QConfiguration.cache_life:
                 return True
+            else:
+                del cls.id_values[key]
         return False
 
     @classmethod
