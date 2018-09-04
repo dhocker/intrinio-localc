@@ -58,7 +58,6 @@ The content of the configuration file is JSON and looks something like this.
 ```
 {
     "password": "0123456789abcdef0123456789abcdef",
-    "certifi": "/Volumes/Z77ExtremeDataSSD/username/Library/Application Support/LibreOffice/4/user/uno_packages/cache/uno_packages/lu1307vzgtuw.tmp_/intrinio.oxt/cacert.pem",
     "user": "0123456789abcdef0123456789abcdef",
     "loglevel": "debug",
     "cachelife": 180
@@ -71,7 +70,7 @@ The content of the configuration file is JSON and looks something like this.
 | certifi | The location of the cacert.pem file |
 | user | As supplied by Intrinio |
 | loglevel | error, warning, info, debug (default) |
-| cachelife | The life time of cached IntrinioDataPoint data |
+| cachelife | The life time of cached IntrinioDataPoint data<br/>-1 means cache lives until LibreOffice closes.<br/>0 means no caching.<br/>&gt;0 sets a specific cache life value in seconds.|
 
 Under normal circumstances, you should only need to change the loglevel and/or cachelife
 settings.

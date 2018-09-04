@@ -1,6 +1,7 @@
+# coding: utf-8
 #
 # intrinio_cache - cache stores for various Intrinio data
-# Copyright (C) 2017  Dave Hocker (email: qalydon17@gmail.com)
+# Copyright © 2017, 2018  Dave Hocker (email: qalydon17@gmail.com)
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -96,7 +97,7 @@ class DataPointCache:
         if key in cls.id_values:
             # If the key is cached it must meet the cache life test
             elapsed = datetime.datetime.now() - cls.id_values[key]["time"]
-            if int(elapsed.total_seconds()) <= QConfiguration.cache_life:
+            if (QConfiguration.cache_life < 0) or (int(elapsed.total_seconds()) <= QConfiguration.cache_life):
                 return True
             else:
                 del cls.id_values[key]
