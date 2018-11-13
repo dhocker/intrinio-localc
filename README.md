@@ -1,6 +1,18 @@
 # LibreOffice Calc Extension for Intrinio
 Copyright © 2017, 2018 by Dave Hocker as Qalydon
 
+## Notice
+On 2018-11-12 I received email notification that Intrinio was going to
+shut down the free service as of 2018-12-12. If you have a free account,
+you probably received the same notification. Therefore, you must acquire
+a paid Intrinio account to continue using this extension after 2018-12-12.
+
+As an alternative you might consider using the IEX LOCalc extension for
+the [IEX Trading](https://iextrading.com) service. This extension is avilable
+on [GitHub](https://github.com/qalydon/iex-localc). The IEX service
+provides a different set of functions, but you might find it useful.
+Currently, the IEX service is free and requires no sign up.
+
 ## Overview
 This project implements a LibreOffice Calc (LOCalc) addin extension that can
 retrieve data from the Intrinio Marketplace service. It provides a
